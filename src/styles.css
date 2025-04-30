@@ -1,1 +1,113 @@
 /* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.mat-stepper-horizontal {
+    margin-top: 8px;
+  }
+  
+.mat-mdc-form-field {
+    margin-top: 16px;
+  }
+
+.bg-custom-gray {
+  background-color: #EEEEEE
+}
+
+.bg-custom-ligth-gray {
+  background-color: #f8f8f8
+}
+
+.bg-custom-black {
+  background-color: #000000
+}
+
+.bg-custom-light-violet {
+  background-color: #D0A2F7
+}
+
+.txt-custom-light-violet {
+  color: #9288F8
+}
+
+.bg-custom-subtask-si {
+  background-color: #F1EAFF
+}
+
+.my-popup-class {
+  z-index: 1095; /* Define your desired z-index value */
+}
+
+.gradient-primary {
+  background: linear-gradient(to right, #80B3FF, #687EFF); /* Replace colors as needed */
+}
+
+.gradient-warning {
+  background: linear-gradient(to right, #FFE15D, #F49D1A); /* Replace colors as needed */
+}
+
+.gradient-success {
+  background: linear-gradient(to right, #38E54D, #5BB318); /* Replace colors as needed */
+}
+
+.x-space-between{
+  display:flex; justify-content: space-between;align-items: center;
+}
+
+.x-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.x-start {
+  display: flex;
+  justify-content: flex-start; 
+  align-items: center; /* Keeps vertical centering */
+}
+
+.icon-hover-edit {
+  color: #59595a;
+}
+
+.icon-hover-edit:hover {
+  color: #007bff;
+  transform: scale(1.2);
+  transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.icon-hover-delete {
+  color: #59595a;
+}
+
+.icon-hover-delete:hover {
+  color: #ff0000;
+  transform: scale(1.2);
+  transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.text-hover {
+  color: #59595a;
+}
+
+.text-hover:hover {
+  color: #007bff;
+  transform: scale(1.05);
+  transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.tr-hover:hover {
+  background-color: #dee0e2;
+  transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+
+}
+.cdk-overlay-container{ z-index: 9999 !important; }
+
+.cdk-global-overlay-wrapper, .cdk-overlay-container {
+  z-index: 9999 !important;
+}
+
+::ng-deep .cdk-overlay-container {
+  z-index: 9999;
+}

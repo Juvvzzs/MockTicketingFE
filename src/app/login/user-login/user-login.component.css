@@ -1,0 +1,30 @@
+.bg-img {
+    background: url("src/assets/img/Login HRIS-01 (1).jpg");
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat; /* Prevent the background image from repeating */
+  }
+  
+  .login-card {
+    position: absolute;
+    top: 60%; /* Adjust the top percentage value to move the card down */
+    left: 83%; /* Adjust the left percentage value to center the card horizontally */
+    transform: translate(-50%, -50%);
+    width: 450px; /* Adjust the width as needed, you can use percentage or vw units */
+    height: 420px; /* Adjust the height as needed, you can use percentage or vh units */
+  }
+  
+  /* Media Query for Mobile View */
+  @media screen and (max-width: 1317px) {
+    .bg-img {
+      background: none; /* Remove background for mobile view */
+    }
+  
+    .login-card {
+      width: 90%;
+      left: 50%;
+      top: 40%;
+      transform: translate(-50%, -50%);
+    }
+  }
