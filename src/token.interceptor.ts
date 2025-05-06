@@ -19,7 +19,9 @@ export class TokenInterceptor implements HttpInterceptor {
     request: HttpRequest<unknown>,
     next: HttpHandler
   ): Observable<HttpEvent<unknown>> {
-    const token = this.Auth.getToken();
+    //const token = this.Auth.getToken();
+    const token = "";
+
     if (token) {
       request = request.clone({
         setHeaders: { Authorization: `Bearer ${token}` }, //"Bearer" + token
@@ -30,7 +32,7 @@ export class TokenInterceptor implements HttpInterceptor {
       catchError((err: any) => {
         if (err instanceof HttpErrorResponse) {
           if (err.status === 401) {
-            this.Auth.expiredToken();
+            //this.Auth.expiredToken();
             // this.Router.navigate(['login']);
             const Toast = Swal.mixin({
               toast: true,
