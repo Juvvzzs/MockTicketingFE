@@ -1,0 +1,137 @@
+<header class="page-header">
+    <h1>Incident Reports</h1>
+</header>
+
+<div class="summary-cards-row">
+    <div class="summary-card">
+       <div class="summary-card-content">
+           <div class="card-value">{{ criticalCount }}</div>
+           <div class="card-label">CRITICAL</div>
+       </div>
+      <i class="bi bi-exclamation-triangle-fill icon-critical"></i>
+   </div>
+    <div class="summary-card">
+        <div class="summary-card-content">
+           <div class="card-value">{{ highCount }}</div>
+           <div class="card-label">HIGH</div>
+       </div>
+       <i class="bi bi-exclamation-triangle icon-high"></i>
+   </div>
+    <div class="summary-card">
+        <div class="summary-card-content">
+            <div class="card-value">{{ mediumCount }}</div>
+            <div class="card-label">MEDIUM</div>
+        </div>
+        <i class="bi bi-exclamation-triangle icon-medium"></i>
+   </div>
+   <div class="summary-card">
+        <div class="summary-card-content">
+            <div class="card-value">{{ lowCount }}</div>
+            <div class="card-label">LOW</div>
+        </div>
+       <i class="bi bi-exclamation-triangle-fill icon-low"></i>
+   </div>
+</div>
+
+<div class="filters-bar">
+     <input type="search" placeholder="Search by ID, Ticket ID...">
+     <select>
+         <option value="">Filter by Severity</option>
+         <option value="critical">Critical</option>
+         <option value="high">High</option>
+         <option value="medium">Medium</option>
+         <option value="low">Low</option>
+     </select>
+      <select>
+         <option value="">Filter by Incident Type</option>
+         <option value="malware">Malware</option>
+         <option value="phishing">Phishing</option>
+         <option value="auth">Authentication Failure</option>
+         <option value="network">Network Outage</option>
+         <option value="data_breach">Data Breach</option>
+         <option value="other">Other</option>
+     </select>
+     <select>
+         <option value="">Filter by Status (Ticket)</option>
+         <option value="1 New">New</option>
+         <option value="2 In Progress">In Progress</option>
+         <option value="3 Resolved">Resolved</option>
+         <option value="4 Closed">Closed</option>
+     </select>
+     <input type="date" title="Report Start Date">
+     <input type="date" title="Report End Date">
+     <button class="btn btn-secondary">Filter</button>
+</div>
+
+<div class="table-title-bar content-card" style="border-radius: 12px 12px 0 0; margin-bottom: 0; box-shadow: none; border-bottom: 1px solid #e9ecef;">
+    <h2>Incident List</h2>
+</div>
+
+<div class="content-card" style="border-radius: 0 0 12px 12px; margin-top: 0; box-shadow: 0 10px 2rem -10px rgba(136,152,170,.15);">
+    <div class="table-container">
+       <table>
+    <thead>
+        <tr>
+            <th>Incident / Ticket</th>
+            <th>Severity</th>
+            <th>Incident Type</th>
+            <th>Reported Info</th>
+            <th title="Reported to Authorities?" class="col-authorities"><i class="fas fa-shield-alt"></i></th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Loading state -->
+        <tr *ngIf="loading">
+            <td colspan="8" style="text-align: center; padding: 2rem;">
+                Loading incidents...
+            </td>
+        </tr>
+
+        <!-- Data rows -->
+        <tr *ngFor="let incident of incidentList" (click)="viewDetails(incident.IncID)">
+            <td class="incident-ticket-cell">
+                {{ incident.IncID }}
+                <a *ngIf="incident.TktID" class="ticket-link" title="View Linked Ticket">
+                    #{{ incident.TktID }}
+                </a>
+            </td>
+            <td>
+                <span class="pill" [ngClass]="getSeverityClass(incident.severity)">
+                    {{ incident.severity }}
+                </span>
+            </td>
+            <td>{{ incident.IncidentType }}</td>
+            <td class="reported-cell">
+                <span class="reported-date" [title]="incident.ReportDateTime | date:'medium'">
+                    {{ incident.ReportDateTime | date:'longDate' }}
+                </span>
+                <small class="reported-by-subtext">by {{ incident.reportedBy }}</small>
+            </td>
+          
+            <td class="col-authorities">
+                <i *ngIf="incident.reportedToAuthorities" class="fas fa-check-circle icon-yes" title="Yes"></i>
+                <i *ngIf="!incident.reportedToAuthorities" class="fas fa-times-circle icon-no" title="No"></i>
+            </td>
+            <td>
+                <i class="bx bx-chevron-right action-icon" title="View Details"></i>
+            </td>
+        </tr>
+
+        <!-- Empty state -->
+        <tr *ngIf="!loading && incidentList.length === 0">
+            <td colspan="8" style="text-align: center; padding: 2rem;">
+                No incidents found.
+            </td>
+        </tr>
+    </tbody>
+</table>
+    </div>
+     <div class="pagination">
+        <span>Showing 1-4 of 15 Results</span>
+        <div>
+            <button class="btn btn-secondary" disabled>< Prev</button>
+            <button class="btn btn-secondary">Next ></button>
+        </div>
+    </div>
+</div>

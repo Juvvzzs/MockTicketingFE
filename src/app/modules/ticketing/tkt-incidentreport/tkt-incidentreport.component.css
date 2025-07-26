@@ -1,0 +1,491 @@
+tbody tr:hover {
+    cursor: pointer;
+}
+
+thead th:last-child {
+    text-align: right;
+}
+
+tbody td:last-child {
+    text-align: right;
+    vertical-align: middle;
+}
+
+.filters-bar input,
+.filters-bar select {
+  border: 1px solid #dee2e6;
+  color: #525f7f;
+  background-color: #ffffff;
+}
+
+.filters-bar input::placeholder {
+  color: #8898aa;
+  opacity: 1;
+}
+
+/* --- Page Header --- */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 0;
+    border-bottom: none; /* Removed border */
+}
+
+.title-with-pills {
+    display: flex;
+    align-items: center; /* Vertically align title and pills */
+    gap: 15px; /* Space between title and pills */
+}
+
+.page-header h1 {
+    margin-bottom: 0; /* Remove default bottom margin if any */
+}
+
+.header-pills {
+    display: flex;
+    gap: 8px; /* Space between pills */
+}
+
+.breadcrumbs {
+    font-size: 13px;
+    color: #8898aa; /* Lighter breadcrumb color */
+    margin-bottom: 5px;
+}
+.breadcrumbs a {
+    color: #5e72e4;
+}
+
+.header-actions button {
+    margin-left: 10px;
+}
+
+/* --- Buttons --- */
+.btn {
+    padding: 9px 20px; /* Slightly larger padding */
+    border: 1px solid transparent; /* Base border */
+    border-radius: 8px; /* Consistent rounded corners */
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600; /* Bolder buttons */
+    transition: all 0.15s ease-in-out;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    line-height: 1.5; /* Ensure text vertical alignment */
+    box-shadow: 0 1px 3px rgba(50, 50, 93, 0.11), 0 1px 0 rgba(0, 0, 0, 0.02); /* Subtle shadow */
+}
+
+.btn i {
+   font-size: 13px;
+   position: relative; /* Adjust icon position if needed */
+   top: -1px;
+}
+
+.btn-primary {
+    background-color: #5e72e4; /* Primary blue */
+    color: #fff;
+    border-color: #5e72e4;
+    box-shadow: 0 4px 6px rgba(94, 114, 228, 0.11), 0 1px 3px rgba(0,0,0,.08);
+}
+
+.btn-primary:hover {
+    background-color: #4a61d9;
+    border-color: #4a61d9;
+    transform: translateY(-1px); /* Slight lift on hover */
+    box-shadow: 0 7px 14px rgba(94,114,228,.1), 0 3px 6px rgba(0,0,0,.08);
+}
+
+.btn-secondary {
+    background-color: #ffffff; /* White background */
+    color: #5e72e4; /* Blue text */
+    border-color: #dee2e6; /* Light border */
+     box-shadow: none; /* Less prominent shadow */
+}
+
+.btn-secondary:hover {
+    background-color: #f6f9fc;
+    border-color: #dee2e6;
+     color: #4a61d9;
+     box-shadow: 0 4px 6px rgba(50,50,93,.11), 0 1px 3px rgba(0,0,0,.08);
+     transform: translateY(-1px);
+}
+
+.btn-small {
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.btn:disabled {
+    background-color: #e9ecef;
+    color: #8898aa;
+    cursor: not-allowed;
+    border-color: #e9ecef;
+    box-shadow: none;
+     transform: none;
+}
+
+
+/* --- Cards --- */
+.content-card, .summary-card {
+    background-color: #fff;
+    border-radius: 12px; /* More rounded corners */
+    border: none; /* Remove border */
+    box-shadow: 0 0 2rem 0 rgba(136,152,170,.15); /* Softer shadow from reference */
+    margin-bottom: 30px; /* Consistent spacing */
+}
+
+/* --- Summary Cards (Dashboard-like) --- */
+.summary-cards-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive grid */
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.summary-card {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Icon on the right */
+    margin-bottom: 0; /* Remove margin as grid handles gap */
+}
+
+
+.summary-card .card-value {
+    font-size: 24px;
+    font-weight: 600;
+    color: #344767;
+    margin-bottom: 2px;
+}
+
+.summary-card .card-label {
+    font-size: 14px;
+    color: #8898aa;
+    margin-bottom: 0;
+}
+
+.summary-card .card-icon-wrapper {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.summary-card .card-icon-wrapper i { font-size: 20px; }
+
+.summary-card:nth-child(1) .card-icon-wrapper { background-color: #ff0000; }
+.summary-card:nth-child(1) .card-icon-wrapper i { color: #ff0000; }
+.summary-card:nth-child(2) .card-icon-wrapper { background-color: #f6ff00; }
+.summary-card:nth-child(2) .card-icon-wrapper i { color: #f6ff00; }
+.summary-card:nth-child(3) .card-icon-wrapper { background-color: #13d402; }
+.summary-card:nth-child(3) .card-icon-wrapper i { color: #13d402; }
+
+.summary-card .card-link { display: none; }
+
+
+/* --- Filters Bar --- */
+.filters-bar {
+    display: flex;
+    flex-wrap: wrap; /* Allow filters to wrap on smaller screens */
+    gap: 15px;
+    margin-bottom: 25px;
+    background-color: transparent;
+    padding: 0;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+    align-items: center;
+}
+
+.filters-bar input[type="search"],
+.filters-bar select,
+.filters-bar input[type="date"] {
+    padding: 8px 12px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: #fff;
+     box-shadow: 0 1px 3px rgba(50, 50, 93, 0.1), 0 1px 0 rgba(0, 0, 0, 0.02);
+}
+.filters-bar input[type="search"] { flex-grow: 1;}
+.filters-bar button { font-weight: 500; }
+
+
+/* --- Tables --- */
+.table-container {
+    overflow-x: auto;
+    padding: 0;
+}
+
+.table-title-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 25px 15px 25px;
+}
+.table-title-bar h2 { margin-bottom: 0; font-size: 18px; } /* Match general H2 size */
+.table-title-bar select {
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    border: 1px solid #dee2e6;
+}
+
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+thead th {
+    background-color: #f6f9fc;
+    padding: 12px 25px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 13px;
+    color: #8898aa;
+    border-bottom: 1px solid #e9ecef;
+    white-space: nowrap;
+    border-top: 1px solid #e9ecef;
+}
+thead th:first-child { border-radius: 12px 0 0 0; padding-left: 25px; vertical-align: top; } /* Adjusted for combined column */
+thead th:last-child { border-radius: 0 12px 0 0; padding-right: 25px; }
+
+
+tbody tr { transition: background-color 0.1s ease; }
+tbody tr:hover { background-color: #f6f9fc; }
+
+td {
+    padding: 15px 25px;
+    text-align: left;
+    border-bottom: 1px solid #e9ecef;
+    white-space: nowrap;
+    color: #525f7f;
+    vertical-align: middle;
+}
+td:first-child { padding-left: 25px; }
+td:last-child { padding-right: 25px; text-align: right;} /* Align actions right */
+
+tbody tr:last-child td { border-bottom: none; }
+
+/* Combined Incident/Ticket Cell Style */
+.incident-ticket-cell {
+    line-height: 1.4; /* Adjust line height for two lines */
+    white-space: normal; /* Allow wrapping if needed */
+}
+.incident-ticket-cell .ticket-link {
+    display: block;
+    font-size: 0.85em;
+    color: #8898aa;
+    margin-top: 3px; /* Space between IDs */
+    font-weight: 400;
+}
+.incident-ticket-cell .ticket-link:hover { color: #5e72e4; }
+
+/* Reported Info Cell Style */
+.reported-cell {
+    line-height: 1.4;
+}
+.reported-by-subtext {
+    display: block;
+    font-size: 0.85em;
+    color: #8898aa;
+    margin-top: 3px;
+    font-weight: 400;
+}
+
+/* Authorities Column Style */
+.col-authorities {
+    text-align: center;
+    width: 60px; /* Narrow column */
+}
+.col-authorities i {
+    color: #2dce89; /* Green for 'Yes' */
+    font-size: 16px;
+}
+
+/* Icon Styles for Yes/No */
+.icon-yes {
+    color: #2dce89; /* Green */
+    font-size: 1.1em; /* Slightly larger */
+}
+
+.icon-no {
+    color: #f5365c; /* Red */
+    font-size: 1.1em; /* Slightly larger */
+}
+
+/* Update the color for 'fas fa-times-circle icon-no' to grey */
+.fas.fa-times-circle.icon-no {
+    color: #adb5bd; /* Grey color */
+}
+
+/* Avatar style */
+.avatar { width: 36px; height: 36px; border-radius: 50%; margin-right: 15px; vertical-align: middle; }
+td .user-info { display: flex; align-items: center; }
+
+.action-icon { color: #8898aa; margin: 0 6px; font-size: 16px; transition: color 0.2s ease; }
+.action-icon:hover { color: #5e72e4; text-decoration: none; }
+
+/* --- Pills / Badges --- */
+.pill {
+    display: inline-block;
+    padding: 5px 15px;
+    border-radius: 50px; /* Adjusted to make the pill containers circular */
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: capitalize;
+    color: #fff;
+    line-height: 1.5;
+}
+
+/* --- Pills / Badges --- */
+.pill {
+    display: inline-block;
+    padding: 5px 15px;
+    border-radius: 50px; /* Adjusted to make the pill containers circular */
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: capitalize;
+    color: #fff;
+    line-height: 1.5;
+}
+
+/* MODIFIED: .pill-closed is no longer here */
+.pill-online, .pill-resolved { background-color: #2dce89; } /* Green */
+
+.pill-break, .pill-high, .pill-monitoring { background-color: #fb8c00; } /* Orange/Yellow */
+.pill-on-leave, .pill-critical { background-color: #ff0000; } /* Red */
+.pill-medium { background-color: #f6ff00; color:#212529;}
+
+.pill-low, .pill-closed { background-color: #13d402; }
+
+.pill-ongoing, .pill-open, .pill-new { background-color: #5e72e4; } /* Blue */
+.pill-post-mortem { background-color: #adb5bd; }
+.pill-in-progress { background-color: #11cdef; }
+
+
+/* --- Incident Detail Page Specifics --- */
+
+/* Updated Key Info Card Style */
+.key-info-card {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Maintain 3 columns */
+    gap: 15px; /* Slightly reduce gap */
+    margin-bottom: 20px;
+    padding: 15px; /* Keep padding for spacing */
+}
+
+.info-item {
+    display: flex;
+    align-items: center; /* Align label and value horizontally */
+    gap: 10px; /* Space between label and value */
+    padding: 5px; /* Reduce padding for compactness */
+    border-radius: 8px; /* Keep slight rounding */
+  }
+
+.info-label {
+    font-size: 0.85em; /* Slightly smaller label font */
+    color: #666;
+    font-weight: 700; /* Changed to bold */
+    white-space: nowrap; /* Prevent wrapping */
+}
+
+.info-value {
+    font-weight: 500;
+    font-size: 0.95em;
+    color: #7e92b3; /* Darker value color */
+    line-height: 1.2; /* Compact line height */
+    word-break: break-word; /* Prevent overflow */
+}
+
+/* Responsive Adjustments */
+@media (max-width: 767px) {
+    .key-info-card {
+        grid-template-columns: 1fr; /* Stack items in one column on small screens */
+    }
+    .info-item {
+        flex-direction: column; /* Revert to vertical stack for small screens */
+        align-items: flex-start; /* Align items to the start */
+    }
+    .info-label {
+        margin-bottom: 3px; /* Add spacing between label and value */
+    }
+}
+
+
+
+/* --- Pagination --- */
+.pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    font-size: 13px;
+    color: #8898aa;
+    border-top: 1px solid #e9ecef;
+    background-color: #fff;
+    border-radius: 0 0 12px 12px;
+}
+
+.pagination button { margin-left: 5px; font-weight: 500; }
+
+/* --- Additions/Modifications for Tickets --- */
+
+/* Linked Incident Indicator */
+.linked-incident-indicator {
+    padding: 15px 20px;
+    margin-top: -15px; /* Pull up slightly below key info */
+    margin-bottom: 30px;
+    background-color: #fffbf0; /* Yellowish background */
+    border: 1px solid #ffecb3; /* Light yellow border */
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #6d5f00; /* Dark yellow text */
+}
+.linked-incident-indicator i {
+    color: #ffcc33; /* Yellow icon */
+    margin-right: 12px;
+    font-size: 16px;
+}
+.linked-incident-indicator a {
+    color: #5e72e4;
+    font-weight: 500;
+    margin-left: 5px;
+}
+
+
+/* Update table styles for wrapping */
+td, th {
+    white-space: normal; /* Allow wrapping in table cells */
+}
+th { white-space: nowrap;} /* Keep headers nowrap */
+
+
+.icon-critical {
+    margin-right: 12px;
+    color: #ba0707;
+    font-size: 50px; 
+}
+.icon-high {
+    margin-right: 12px;
+    color: rgb(255, 156, 7);
+    font-size: 50px; 
+}
+.icon-medium {
+    margin-right: 12px;
+    color: #ffee03;
+    font-size: 50px; 
+}
+.icon-low {
+    margin-right: 12px;
+    color: #03ab0c;
+    font-size: 50px; 
+}

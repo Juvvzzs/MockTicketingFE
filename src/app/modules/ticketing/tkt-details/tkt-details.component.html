@@ -1,0 +1,304 @@
+<div class="content-wrapper">
+  <div class="card">
+    <div class="container-xxl container-p-y">
+      <div class="misc-wrapper">
+        <div class="summary-cards">
+          <div class="stat-card">
+            <div class="stat-content">
+              <div class="count">{{ NewOpenCount() }}</div>
+              <div class="label">NEW TICKETS</div>
+            </div>
+            <img src="assets/img/icons/unicons/closedticket.png" alt="Open Tickets" class="stat-icon">
+          </div>
+          <div class="stat-card">
+            <div class="stat-content">
+              <div class="count">{{ InProgressCount() }}</div>
+              <div class="label">IN PROGRESS</div>
+            </div>
+            <img src="assets/img/icons/unicons/inprogress.png" alt="Closed Tickets" class="stat-icon">
+            
+          </div>
+          <div class="stat-card">
+             <div class="stat-content">
+              <div class="count">{{ ResolveCount() }}</div>
+              <div class="label">RESOLVE</div>
+            </div>
+            <img src="assets/img/icons/unicons/closedticket.png" alt="In Progress" class="stat-icon">
+          </div>
+          <div class="stat-card">
+            <div class="stat-content">
+              <div class="count">{{ ClosedTicketCount() }}</div>
+              <div class="label">CLOSED TICKET</div>
+            </div>
+            <img src="assets/img/icons/unicons/openticket.png" alt="Closed Tickets" class="stat-icon">
+          </div>
+        </div>
+   
+        <div class="filter-bar">
+          <div class="filter-group">
+            <label>Status</label>
+            <select>
+              <option value="all">All Status</option>
+              <option value="open">Open</option>
+              <option value="closed">Closed</option>
+              <option value="in-progress">In Progress</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>Date Range</label>
+            <select>
+              <option value="today">Today</option>
+              <option value="week">This Week</option>
+              <option value="month">This Month</option>
+              <option value="custom">Custom Range</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>Category</label>
+            <select>
+              <option value="all">All Categories</option>
+              <option value="hris">HRIS</option>
+              <option value="pasims">PASIMS</option>
+              <option value="cyber">Cybersecurity</option>
+            </select>
+          </div>
+          <button class="filter-btn">
+            <i class="bx bx-filter-alt"></i> Apply Filters
+          </button>
+           <button class="tktcrtincdnrrprt-btn"  (click)="CreateIncReport()">
+              <i class="tf-icons bx bx-error-circle"></i> Create Incident Report
+          </button>
+        </div>
+
+        
+        <div class="ticket-table-container">
+          <table class="ticket-table">
+            <thead>
+              <tr>
+                <th class="compact">TicketID</th>
+                <th class="compact">Client Name</th>
+                <th class="compact">Category</th>
+                <th class="compact">Subject</th>
+                <th class="compact">Status</th>
+                <th class="compact">Created</th>
+                <th class="compact">Updated</th>
+                <th class="compact">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let ticket of tickets"
+                 [class.selected-row]="ticket === selectedRow"
+                 (click)="onRowClick(ticket)">
+
+                <td class="compact">{{ ticket.TicketID }}</td>
+                <td class="compact">{{ ticket.ClientName }}</td>
+                <td class="compact">{{ ticket.CategoryName }}</td>
+                <td class="compact">{{ ticket.Subject }}</td>
+                <td class="compact">
+                    <span class="status-badge {{ ticket.statusClass }}">{{ ticket.Status }}</span>
+                </td>
+                <td class="compact">{{ formatDate(ticket.CreatedDT) }}</td>
+                <td class="compact">{{ formatDate(ticket.LastUpdatedDT) }}</td>
+                <td class="compact actions">
+                  <button class="icon-btn" title="View" (click)="openTicket(ticket.TicketID)">
+                    <i class="bx bx-refresh"></i>
+                  </button>
+                  <button class="icon-btn" title="Edit" (click)="openTicket(ticket.TicketID)">
+                    <i class="bx bx-message"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+              <ng-template #noTickets>
+                <tbody>
+                    <tr>
+                        <td colspan="7" style="text-align: center;">No tickets found.</td>
+                    </tr>
+                </tbody>
+              </ng-template>
+        </div>
+
+        
+        <div class="pagination-controls">
+          <div class="page-info">Showing 1-{{ tickets.length }} of {{ tickets.length }} tickets</div>
+          <div class="page-buttons">
+            <button class="page-btn">
+              <i class="bx bx-chevron-left"></i>
+            </button>
+            <span class="page-number">Page 1 of 1</span>
+            <button class="page-btn">
+              <i class="bx bx-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <button class="close-modal-btn" (click)="closeModal()">
+      <i class='bx bx-x'></i>
+    </button>
+    
+    <div class="ticket-header">
+      <div class="priority-badge {{selectedTicket?.Priority?.toLowerCase() || 'medium'}}">
+        {{selectedTicket?.Priority || 'Medium'}} Priority
+      </div>
+      <div class="ticket-id">Ticket #{{selectedTicket?.TicketID}}</div>
+      <div class="ticket-status">
+        <span class="status-label">Status</span>
+        <div class="status-dropdown {{getStatusDropdownClass(selectedTicket?.Status)}}">
+          <select class="status-select">
+            <option *ngFor="let option of statusOptions" 
+                    [value]="option.value"
+                    [selected]="option.value === selectedTicket?.currentStatus">
+              {{option.label}}
+            </option>
+          </select>
+          <i class='bx bx-chevron-down dropdown-icon'></i>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="ticket-subject">{{selectedTicket?.Subject}}</h2>
+    <h4 class="ticket-description">{{selectedTicket?.Description}}</h4>
+
+    <div class="ticket-meta">
+      <div class="meta-item">
+        <span class="meta-label">Client:</span>
+        <span class="meta-value">{{selectedTicket?.ClientName}}</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Category:</span>
+        <span class="meta-value">{{selectedTicket?.CategoryName}}</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Created:</span>
+        <span class="meta-value">{{formatDate(selectedTicket?.CreatedDT)}}</span>
+      </div>
+    </div>
+
+    <!-- Scrollable Conversation Area -->
+    <div class="conversation-container">
+      <div class="conversation-thread">
+        
+
+        <div class="message-box message-right support-message">
+          <div class="message-header">
+            <div class="message-sender">
+              <span class="name">{{selectedTicket?.ClientName}}</span>
+              <span class="role">Client</span> 
+            </div>
+            <span class="time">10:35 AM</span>
+          </div>
+          <div class="message-body">
+            <p>Hello, I'm having issues with my login credentials.</p>
+          </div>
+        </div>
+        
+        <div class="message-box message-left user-message">
+          <div class="message-header">
+            <div class="message-sender">
+              <span class="name">Support Team</span>
+              <span class="role">Technical Support</span> 
+            </div>
+            <span class="time">10:30 AM</span>
+          </div>
+          <div class="message-body">
+            <p>We're looking into your issue and will get back to you shortly.</p>
+          </div>
+        </div>
+
+        <div class="message-box system-message">
+          <div class="message-header">
+            <div class="message-sender">
+              <span class="name">System</span>
+              <span class="role">System</span> 
+            </div>
+            <span class="time">10:36 AM</span>
+          </div>
+          <div class="message-body">
+            <p>Ticket status changed to "In Progress"</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="response-section">
+      <div class="attachments-preview">
+        <div class="attachment-preview">
+          <span>screenshot.png</span>
+          <button class="remove-attachment">
+            <i class='bx bx-x'></i>
+          </button>
+        </div>
+      </div>
+      
+      <div class="response-input-container">
+        <input type="text" placeholder="Type your response here..." />
+        <div class="response-actions">
+          <label for="fileInput" class="attachment-btn" title="Attach file">
+            <i class='bx bx-paperclip'></i>
+            <input id="fileInput" type="file" multiple style="display: none;">
+          </label>
+          <button class="send-btn">
+            Send <i class='bx bx-send'></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Incident Report Modal (new modal) -->
+<div class="modal-overlay" *ngIf="showTicketModal" (click)="onBackdropClick($event)">
+  <div class="modal-container">
+    
+    <div class="modal-header">
+      Create Incident Report 
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-col">
+          <label>Ticket ID</label>
+          <div class="static-text">{{ selectedRow?.TicketID }}</div>
+          
+        </div>
+        <div class="form-col">
+          <label>Category</label>
+          <div class="static-text">{{ selectedRow?.CategoryName }}</div>
+        </div>
+        <div class="form-col">
+          <label>Reported By</label>
+          <div class="static-text">{{ selectedRow?.ClientName }}</div>
+        </div>
+      </div> 
+      <div class="form-row">
+        <div class="form-col">
+          <label for="severity">Severity</label>
+          <select id="severity" class="form-control" [(ngModel)]="incReportForm.Severity">
+            <option *ngFor="let option of severityOptions" [value]="option.value">{{ option.label }}</option>
+          </select>
+        </div>
+        <div class="form-col">
+          <label for="incidentType">Incident Type</label>
+          <select id="incidentType" class="form-control" [(ngModel)]="incReportForm.IncidentType">
+            <option *ngFor="let option of incidentTypeOptions" [value]="option.value">{{ option.label }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="error" class="alert alert-danger mb-3">
+    {{ error }}
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger" (click)="closeIncidentModal()">Cancel</button>
+      <button class="btn btn-primary" (click)="SubmitIncidentReport()" [disabled]="submitting">
+        {{ submitting ? 'Submitting...' : 'Report Submit' }}</button>
+    </div>
+  </div>
+</div>
+

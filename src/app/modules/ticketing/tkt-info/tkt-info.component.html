@@ -1,0 +1,113 @@
+<ng-container *ngIf="!loading; else loadingTemplate">
+    <header class="page-header">
+        <div>
+            <div class="breadcrumbs"><a routerLink="/incidents">Incident Reports</a> / {{ incident?.IncidentID }}</div>
+            <div class="title-with-pills">
+                <!-- Change all properties to match your interface exactly -->
+                    <h1>Incident: {{ incident?.IncidentType }}</h1>
+                    <span class="info-value">{{ incident?.ReportDateTime | date:'medium' }}</span>
+                <div class="header-pills">
+                    <span class="pill" [ngClass]="getTicketStatusClass(incident?.Status ?? '')">{{ formatTicketStatus(incident?.Status ?? '') }}</span>
+                    <span class="pill" [ngClass]="getSeverityClass(incident?.Severity ?? '')">{{ incident?.Severity }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-secondary"><i class="fas fa-edit"></i> Edit Report Details</button>
+            <button class="btn btn-secondary" title="View Linked Ticket #{{ incident?.ticketCategory }}"><i class="fas fa-ticket-alt"></i> View Ticket</button>
+            <button class="btn btn-secondary"><i class="fas fa-file-export"></i> Export</button>
+        </div>
+    </header>
+  
+    <div class="content-card key-info-card">
+         <div class="info-item">
+             <span class="info-label">Incident ID</span>
+             <span class="info-value">{{ incident?.IncidentID }}</span>
+         </div>
+         <div class="info-item">
+            <span class="info-label">Linked Ticket</span>
+            <span class="info-value"><a href="#" title="View Ticket Details">#{{ incident?.ticketCategory }}</a></span>
+         </div>
+         <div class="info-item">
+            <span class="info-label">Incident Type</span>
+            <span class="info-value">{{ incident?.IncidentType }}</span>
+         </div>
+         <div class="info-item">
+             <span class="info-label">Reported</span>
+             <span class="info-value">{{ incident?.ReportDateTime }}</span>
+         </div>
+         <div class="info-item">
+             <span class="info-label">Reported to Authorities</span>
+             <span class="info-value">{{ incident?.ReportedToAuthorities ? 'Yes' : 'No' }}</span>
+         </div>
+         <div class="info-item">
+             <span class="info-label">Reported By</span>
+             <span class="info-value">{{ incident?.ReportedBy }}</span>
+         </div>
+    </div>
+  
+    <div class="incident-details-grid">
+  <div class="details-column">
+    <section class="content-card" style="margin-bottom: 20px;">
+      <h2><i class="bi bi-bullseye icon-title"></i> Impact</h2>
+      <div class="incident-details-section">
+        <p><strong>Impact Assessment:</strong></p>
+        <p>{{ incident?.ImpactAssessment }}</p>
+      </div>
+    </section>
+
+    <section class="content-card" style="margin-bottom: 20px;">
+      <h2><i class="bi bi-shield-check icon-title"></i> Response & Recovery</h2>
+      <div class="incident-details-section">
+        <p><strong>Containment Actions:</strong></p>
+        <p>{{ incident?.ContainmentActions }}</p>
+        <p><strong>Eradication Steps:</strong></p>
+        <p>{{ incident?.EradicationSteps }}</p>
+        <p><strong>Recovery Process:</strong></p>
+        <p>{{ incident?.RecoveryProcess }}</p>
+      </div>
+    </section>
+
+    <section class="content-card">
+      <h2><i class="bi bi-clipboard icon-title"></i> Post-Incident Review</h2>
+      <div class="incident-details-section">
+        <p><strong>Lessons Learned:</strong></p>
+        <p>{{ incident?.LessonsLearned }}</p>
+      </div>
+    </section>
+  </div>
+
+
+  
+        <div class="timeline-column">
+            <section class="content-card">
+                <h2><i class="bi bi-clock-history icon-title"></i> Incident Timeline</h2>
+                <button class="btn btn-secondary btn-small btn-add-timeline"><i class="fas fa-plus"></i> Add Timeline Entry</button>
+                <div class="timeline">
+                    <div  class="timeline-item">
+                       <div class="timeline-dot"></div>
+                       <div class="timeline-content">
+                           <span class="timeline-time"></span>
+                           <p class="timeline-description"></p>
+                           <span class="timeline-author">Recorded By: </span>
+                           <span class="timeline-recorded-dt">Logged: </span>
+                       </div>
+                   </div>
+                   <div  class="timeline-item">
+                      <p class="timeline-description">No timeline entries recorded.</p>
+                   </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</ng-container>
+  
+<ng-template #noIncident>
+  <p class="error-message">Incident not found or failed to load</p>
+</ng-template>
+
+<ng-template #loadingTemplate>
+  <div class="loading-indicator">
+    <i class="fas fa-spinner fa-spin"></i> Loading...
+  </div>
+</ng-template>

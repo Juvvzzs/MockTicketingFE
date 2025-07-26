@@ -1,0 +1,546 @@
+
+
+/* --- Page Header --- */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 0;
+    border-bottom: none; /* Removed border */
+}
+
+.title-with-pills {
+    display: flex;
+    align-items: center; /* Vertically align title and pills */
+    gap: 15px; /* Space between title and pills */
+}
+
+.page-header h1 {
+    margin-bottom: 0; /* Remove default bottom margin if any */
+}
+
+.header-pills {
+    display: flex;
+    gap: 8px; /* Space between pills */
+}
+
+.breadcrumbs {
+    font-size: 13px;
+    color: #8898aa; /* Lighter breadcrumb color */
+    margin-bottom: 5px;
+}
+.breadcrumbs a {
+    color: #5e72e4;
+}
+
+.header-actions button {
+    margin-left: 10px;
+}
+
+/* --- Buttons --- */
+.btn {
+    padding: 9px 20px; /* Slightly larger padding */
+    border: 1px solid transparent; /* Base border */
+    border-radius: 8px; /* Consistent rounded corners */
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600; /* Bolder buttons */
+    transition: all 0.15s ease-in-out;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    line-height: 1.5; /* Ensure text vertical alignment */
+    box-shadow: 0 1px 3px rgba(50, 50, 93, 0.11), 0 1px 0 rgba(0, 0, 0, 0.02); /* Subtle shadow */
+}
+
+.btn i {
+   font-size: 13px;
+   position: relative; /* Adjust icon position if needed */
+   top: -1px;
+}
+
+.btn-primary {
+    background-color: #5e72e4; /* Primary blue */
+    color: #fff;
+    border-color: #5e72e4;
+    box-shadow: 0 4px 6px rgba(94, 114, 228, 0.11), 0 1px 3px rgba(0,0,0,.08);
+}
+
+.btn-primary:hover {
+    background-color: #4a61d9;
+    border-color: #4a61d9;
+    transform: translateY(-1px); /* Slight lift on hover */
+    box-shadow: 0 7px 14px rgba(94,114,228,.1), 0 3px 6px rgba(0,0,0,.08);
+}
+
+.btn-secondary {
+    background-color: #ffffff; /* White background */
+    color: #5e72e4; /* Blue text */
+    border-color: #dee2e6; /* Light border */
+     box-shadow: none; /* Less prominent shadow */
+}
+
+.btn-secondary:hover {
+    background-color: #f6f9fc;
+    border-color: #dee2e6;
+     color: #4a61d9;
+     box-shadow: 0 4px 6px rgba(50,50,93,.11), 0 1px 3px rgba(0,0,0,.08);
+     transform: translateY(-1px);
+}
+
+.btn-small {
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.btn:disabled {
+    background-color: #e9ecef;
+    color: #8898aa;
+    cursor: not-allowed;
+    border-color: #e9ecef;
+    box-shadow: none;
+     transform: none;
+}
+
+
+/* --- Cards --- */
+.content-card, .summary-card {
+    background-color: #fff;
+    border-radius: 12px; /* More rounded corners */
+    border: none; /* Remove border */
+    box-shadow: 0 0 2rem 0 rgba(136,152,170,.15); /* Softer shadow from reference */
+    margin-bottom: 30px; /* Consistent spacing */
+}
+
+/* Combined Incident/Ticket Cell Style */
+.incident-ticket-cell {
+    line-height: 1.4; /* Adjust line height for two lines */
+    white-space: normal; /* Allow wrapping if needed */
+}
+.incident-ticket-cell .ticket-link {
+    display: block;
+    font-size: 0.85em;
+    color: #8898aa;
+    margin-top: 3px; /* Space between IDs */
+    font-weight: 400;
+}
+.incident-ticket-cell .ticket-link:hover { color: #5e72e4; }
+
+/* Reported Info Cell Style */
+.reported-cell {
+    line-height: 1.4;
+}
+.reported-by-subtext {
+    display: block;
+    font-size: 0.85em;
+    color: #8898aa;
+    margin-top: 3px;
+    font-weight: 400;
+}
+
+/* Authorities Column Style */
+.col-authorities {
+    text-align: center;
+    width: 60px; /* Narrow column */
+}
+.col-authorities i {
+    color: #2dce89; /* Green for 'Yes' */
+    font-size: 16px;
+}
+
+/* Icon Styles for Yes/No */
+.icon-yes {
+    color: #2dce89; /* Green */
+    font-size: 1.1em; /* Slightly larger */
+}
+
+.icon-no {
+    color: #f5365c; /* Red */
+    font-size: 1.1em; /* Slightly larger */
+}
+
+/* Update the color for 'fas fa-times-circle icon-no' to grey */
+.fas.fa-times-circle.icon-no {
+    color: #adb5bd; /* Grey color */
+}
+
+/* --- Pills / Badges --- */
+.pill {
+    display: inline-block;
+    padding: 5px 15px;
+    border-radius: 50px; /* Adjusted to make the pill containers circular */
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: capitalize;
+    color: #fff;
+    line-height: 1.5;
+}
+
+/* --- Pills / Badges --- */
+.pill {
+    display: inline-block;
+    padding: 5px 15px;
+    border-radius: 50px; /* Adjusted to make the pill containers circular */
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: capitalize;
+    color: #fff;
+    line-height: 1.5;
+}
+
+/* MODIFIED: .pill-closed is no longer here */
+.pill-online, .pill-resolved { background-color: #2dce89; } /* Green */
+
+.pill-break, .pill-high, .pill-monitoring { background-color: #fb8c00; } /* Orange/Yellow */
+.pill-on-leave, .pill-critical { background-color: #f5365c; } /* Red */
+.pill-medium { background-color: #ffc107; color:#212529;}
+
+/* MODIFIED: .pill-closed is now here, making it grey */
+.pill-low, .pill-closed { background-color: #8898aa; }
+
+.pill-ongoing, .pill-open, .pill-new { background-color: #5e72e4; } /* Blue */
+.pill-post-mortem { background-color: #adb5bd; }
+.pill-in-progress { background-color: #11cdef; }
+
+
+/* --- Incident Detail Page Specifics --- */
+
+/* Updated Key Info Card Style */
+.key-info-card {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Maintain 3 columns */
+    gap: 15px; /* Slightly reduce gap */
+    margin-bottom: 20px;
+    padding: 15px; /* Keep padding for spacing */
+}
+
+.info-item {
+    display: flex;
+    align-items: center; /* Align label and value horizontally */
+    gap: 10px; /* Space between label and value */
+    padding: 5px; /* Reduce padding for compactness */
+    border-radius: 8px; /* Keep slight rounding */
+  }
+
+.info-label {
+    font-size: 0.85em; /* Slightly smaller label font */
+    color: #666;
+    font-weight: 700; /* Changed to bold */
+    white-space: nowrap; /* Prevent wrapping */
+}
+
+.info-value {
+    font-weight: 500;
+    font-size: 0.95em;
+    color: #7e92b3; /* Darker value color */
+    line-height: 1.2; /* Compact line height */
+    word-break: break-word; /* Prevent overflow */
+}
+
+/* Responsive Adjustments */
+@media (max-width: 767px) {
+    .key-info-card {
+        grid-template-columns: 1fr; /* Stack items in one column on small screens */
+    }
+    .info-item {
+        flex-direction: column; /* Revert to vertical stack for small screens */
+        align-items: flex-start; /* Align items to the start */
+    }
+    .info-label {
+        margin-bottom: 3px; /* Add spacing between label and value */
+    }
+}
+
+/* --- Grid for details below Key Info --- */
+.incident-details-grid {
+    display: grid;
+    grid-template-columns: 2fr 1.2fr;
+    gap: 30px;
+    margin-top: 30px; /* Add space above this grid */
+}
+
+@media (max-width: 1024px) { /* Stack columns on large tablets/small desktops */
+    .incident-details-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Styling for cards within the details grid */
+.details-column .content-card,
+.timeline-column .content-card {
+     border-radius: 12px;
+     margin-bottom: 0; /* Remove margin as grid handles gap */
+}
+/* Add margin back if grid stacks */
+@media (max-width: 1024px) {
+    .details-column .content-card,
+    .timeline-column .content-card {
+        margin-bottom: 30px;
+    }
+    .timeline-column .content-card { margin-bottom: 0; } /* No margin on last item */
+}
+
+
+.details-column .content-card h2,
+.timeline-column .content-card h2 {
+    padding: 20px 25px;
+    margin: 0;
+    font-size: 17px; /* Match general H2 size */
+    border-bottom: 1px solid #e9ecef;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+}
+.details-column .content-card h2 .icon-title,
+.timeline-column .content-card h2 .icon-title {
+    margin-right: 12px;
+    color: #5e72e4;
+    font-size: 30px;
+}
+
+.details-column .content-card p,
+.details-column .content-card ul,
+.details-column .content-card ol {
+    padding: 15px 25px;
+    color: #525f7f;
+}
+/* Remove extra bottom padding */
+.details-column .content-card p:last-of-type,
+.details-column .content-card ul:last-of-type,
+.details-column .content-card ol:last-of-type {
+     padding-bottom: 20px;
+}
+
+.details-column .content-card p strong { color: #344767;}
+.details-column .content-card ul { list-style: disc; padding-left: 45px; }
+
+
+/* Minimal table style */
+.minimal-table table { border: none; }
+.minimal-table th, .minimal-table td { border-bottom: 1px solid #e9ecef; padding: 10px 15px; }
+.minimal-table thead th { background-color: transparent; font-size: 12px; color: #8898aa; border: none; padding-bottom: 5px;}
+.minimal-table tbody tr:hover { background-color: #f6f9fc; }
+.minimal-table tbody tr:last-child td { border-bottom: none;}
+
+/* --- Timeline --- */
+.timeline-column .content-card h2 { border-bottom: 1px solid #e9ecef; }
+.timeline-column .content-card { padding-bottom: 10px; }
+
+.btn-add-timeline { margin: 15px 25px 0px 25px; }
+
+.timeline {
+    position: relative;
+    padding: 20px 25px 10px 45px;
+    margin-top: 10px;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    top: 25px;
+    bottom: 15px;
+    left: 22px;
+    width: 2px;
+    background-color: #e9ecef;
+    border-radius: 1px;
+}
+
+.timeline-item { position: relative; margin-bottom: 30px; }
+.timeline-item:last-child { margin-bottom: 0; }
+
+.timeline-dot {
+    position: absolute;
+    left: -28px; /* Centered on the line (Line at 22px, padding 45px => 22-45 = -23. Dot 12px wide, border 2px => radius 8px? Center offset ~6px -> 22-6 = 16 -> 16-45 = -29px? Visually adjust to -28px */
+    top: 6px;
+    width: 12px;
+    height: 12px;
+    background-color: #fff;
+    border-radius: 50%;
+    border: 2px solid #5e72e4;
+    z-index: 1;
+}
+.timeline-item:first-child .timeline-dot { background-color: #5e72e4; } /* Highlight first dot */
+
+.timeline-time {
+    font-weight: 600;
+    font-size: 13px;
+    color: #344767;
+    margin-bottom: 5px;
+}
+
+.timeline-description {
+    font-size: 14px;
+    color: #525f7f;
+    margin-bottom: 6px;
+    padding: 0;
+    white-space: normal; /* Allow descriptions to wrap */
+}
+
+.timeline-author {
+    font-size: 12px;
+    color: #8898aa;
+    display: block; /* Ensure it takes its own line */
+    margin-bottom: 4px; /* Space before logged time */
+}
+
+/* Added style for RecordedDT */
+.timeline-recorded-dt {
+    display: block;
+    font-size: 11px;
+    color: #adb5bd;
+    font-style: italic;
+}
+
+/* --- Pagination --- */
+.pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    font-size: 13px;
+    color: #8898aa;
+    border-top: 1px solid #e9ecef;
+    background-color: #fff;
+    border-radius: 0 0 12px 12px;
+}
+
+.pagination button { margin-left: 5px; font-weight: 500; }
+
+
+
+
+/* --- Ticket Detail Page Specific Styles --- */
+.ticket-info-card { /* Specific overrides if needed */
+    gap: 20px 30px; /* Fine-tune gap for ticket details */
+}
+
+.edit-icon {
+    font-size: 11px;
+    color: #adb5bd;
+    margin-left: 8px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    vertical-align: middle;
+}
+.edit-icon:hover {
+    color: #5e72e4;
+}
+
+.ticket-details-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* Main content and sidebar ratio */
+    gap: 30px;
+    margin-top: 30px;
+}
+/* Responsive stacking for ticket detail grid */
+@media (max-width: 1024px) {
+    .ticket-details-grid {
+        grid-template-columns: 1fr; /* Stack columns */
+    }
+    .ticket-main-column .content-card,
+    .ticket-sidebar-column .content-card {
+         margin-bottom: 30px; /* Add margin back when stacked */
+    }
+     .ticket-sidebar-column .content-card:last-child {
+         margin-bottom: 0;
+    }
+}
+
+
+.ticket-main-column .content-card,
+.ticket-sidebar-column .content-card {
+     margin-bottom: 0; /* Remove margin when in grid */
+}
+
+/* Linked Incident Indicator */
+.linked-incident-indicator {
+    padding: 15px 20px;
+    margin-top: -15px; /* Pull up slightly below key info */
+    margin-bottom: 30px;
+    background-color: #fffbf0; /* Yellowish background */
+    border: 1px solid #ffecb3; /* Light yellow border */
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #6d5f00; /* Dark yellow text */
+}
+.linked-incident-indicator i {
+    color: #ffcc33; /* Yellow icon */
+    margin-right: 12px;
+    font-size: 16px;
+}
+.linked-incident-indicator a {
+    color: #5e72e4;
+    font-weight: 500;
+    margin-left: 5px;
+}
+
+
+/* Update Thread Styles */
+.update-thread {
+    padding: 0px 25px 20px 25px; /* Padding inside the card */
+}
+.update-item {
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 15px 20px;
+    margin-bottom: 15px;
+    background-color: #fff; /* Default background */
+}
+.update-item:last-child { margin-bottom: 0; }
+
+.update-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed #e9ecef; /* Dashed separator */
+}
+.update-author {
+    font-weight: 600;
+    color: #344767;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.update-author i { color: #8898aa; } /* Default icon color */
+
+.update-timestamp {
+    font-size: 12px;
+    color: #8898aa;
+}
+.update-text {
+    font-size: 14px;
+    color: #525f7f;
+    line-height: 1.7;
+    white-space: pre-wrap; /* Preserve line breaks in updates */
+}
+
+/* Differentiate Staff vs Client Updates (Example) */
+.staff-update {
+    background-color: #f6f9fc; /* Slightly different bg for staff */
+    border-left: 3px solid #5e72e4; /* Blue left border */
+}
+.staff-update .update-author i { color: #5e72e4; } /* Blue icon */
+
+.client-update {
+     border-left: 3px solid #8898aa; /* Grey left border */
+}
+.client-update .update-author i { color: #8898aa; }
+
+/* Add Update Form in Sidebar */
+.ticket-sidebar-column .content-card form {
+     padding: 0px 25px 20px 25px;
+}
+
+/* Update table styles for wrapping */
+td, th {
+    white-space: normal; /* Allow wrapping in table cells */
+}
+th { white-space: nowrap;} /* Keep headers nowrap */
+

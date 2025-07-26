@@ -1,0 +1,5 @@
+.menu-item.active > .menu-link {
+    background-color: rgba(105, 108, 255, 0.16); /* Example highlight color */
+    color: #696cff; /* Example text color */
+    border-left: 3px solid #696cff; /* Optional left border */
+}
