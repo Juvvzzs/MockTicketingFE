@@ -1,5 +1,239 @@
-custom-space-between{
-    display:flex; 
+/* General styles */
+.custom-space-between {
+    display: flex; 
     justify-content: space-between;
     align-items: center;
+}
+
+/* Ticket Stats section */
+.ticket-stats {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: #f4f4f4;
+    padding: 1rem;
+    border-radius: 8px;
+    flex: 1 1 200px;
+}
+
+.stat-card h2 {
+    text-align: center;
+    color: #40415F; /* Changed from #2c2c2c */
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.number {
+    text-align: center;
+    font-size: 2rem;
+    margin: 0.5rem 0;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-weight: 700;
+    color: #40415F; /* Changed from #1a1a1a */
+}
+
+.view-details {
+    color: #5a4dee;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.arrow {
+    margin-left: 4px;
+}
+
+/* Two-column layout for all sections */
+.two-column {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: stretch; 
+}
+
+/* General column styles */
+.column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+    min-height: 1px; 
+}
+
+/* Section headers - unified style */
+.column h2 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #40415F; /* Changed from #2a2a2a */
+    margin-bottom: 0.75rem;
+}
+
+/* Incident Timeline specific styles */
+.column.incident-timeline {
+    flex: 0 0 30%;
+}
+
+/* Ticket Assignment specific styles */
+.column.ticket-assignment {
+    flex: 0 0 65%;
+}
+
+/* Table styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    font-size: 14px;
+    color: #40415F; /* Changed from #333 */
+}
+
+th, td {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+th {
+    background-color: #efefef;
+    font-weight: 600;
+    color: #40415F; /* Added to match new color scheme */
+}
+
+/* Severity indicator styles */
+.severity-critical {
+    color: #d60000;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.severity-high {
+    color: #ff6c00;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.severity-medium {
+    color: #007e33;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+/* Incident Reports header */
+.incident-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.incident-header h2 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #40415F; /* Changed from #2a2a2a */
+    margin-bottom: 0;
+}
+
+.severity-filter select {
+    padding: 8px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: auto;
+    color: #40415F; /* Added to match new color scheme */
+}
+
+/* Categories section styles */
+.category-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem; 
+    padding: 1rem;
+    background: #f4f4f4;
+    border-radius: 8px;
+    flex: 1;
+}
+
+.category {
+    display: flex;
+    flex-direction: column; 
+    align-items: flex-start;
+    padding: 0.25rem 0.5rem; 
+    background: #fff;
+    border-radius: 8px;
+    gap: 0.25rem; 
+}
+
+.category-name {
+    font-weight: 500;
+    font-size: 14px;
+    text-align: left;
+    width: 100%;
+    color: #40415F; /* Changed from #2b2b2b */
+}
+
+.category-bar-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; 
+    width: 100%;
+    gap: 0.75rem; 
+}
+
+.category-bar {
+    flex: 1; 
+    background: #e0e0e0;
+    height: 10px;
+    border-radius: 5px;
+}
+
+.category-bar-fill {
+    height: 100%;
+    background: #5a4dee;
+    border-radius: 5px;
+}
+
+.category-count {
+    font-size: 14px;
+    width: auto;
+    text-align: right;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #40415F; /* Changed from #333 */
+}
+
+.tickets-text {
+    font-size: 12px;
+    color: #666;
+    margin-left: 5px;
+}
+
+/* Button styles */
+.view-details-btn {
+    width: 100%;
+    background-color: #4a4aff;
+    color: white;
+    border: none;
+    padding: 10px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    margin-top: 10px;
+    transition: background 0.2s ease;
+}
+
+.view-details-btn:hover {
+    background-color: #3737cc;
+}
+
+.full-width {
+    width: 100%;
 }

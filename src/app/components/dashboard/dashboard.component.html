@@ -1,25 +1,133 @@
 <!-- Content wrapper -->
 <div class="content-wrapper">
-  <div class="card">
-      <!-- <img src="assets/img/dashboard.png" alt="" width="1000" height="1000"
-              style="display: block; margin: 0 auto" /> -->
-      <!--Under Maintenance -->
-      <div class="container-xxl container-p-y">
-          <div class="misc-wrapper">
-              <h2 class="mb-2 mx-2 d-flex align-items-center justify-content-center">Under Development!</h2>
-              <p class="mb-4 mx-2 d-flex align-items-center justify-content-center">This
-                  feature is currently under development! We apologize for any inconvenience and appreciate your
-                  patience.
-              </p>
-              <div class="mt-4 d-flex align-items-center justify-content-center">
-                  <img src="./assets/img/illustrations/girl-doing-yoga-light.png" alt="girl-doing-yoga-light"
-                      width="500" class="img-fluid" data-app-dark-img="illustrations/girl-doing-yoga-dark.png"
-                      data-app-light-img="illustrations/girl-doing-yoga-light.png" />
+    <div class="card">
+        <div class="container-xxl container-p-y">
+            <div class="misc-wrapper">
+
+              <!-- Ticket Stats -->
+              <div class="ticket-stats">
+                  <div class="stat-card" *ngFor="let stat of ticketStats">
+                      <h2>{{stat.title}}</h2>
+                      <div class="number">{{stat.count}}</div>
+                      <button class="view-details-btn">View Details →</button>
+                  </div>
               </div>
-          </div>
-      </div>
-      <!-- /Under Maintenance -->
-  </div>
+
+              <!-- Incident Reports and Categories -->
+              <div class="two-column">
+                  <div class="column">
+                      <div class="incident-header">
+                          <h2>Incident Reports</h2>
+                          <div class="severity-filter">
+                              <select id="severity-select" [(ngModel)]="selectedSeverity" (change)="filterIncidents()">
+                                  <option value="all">All</option>
+                                  <option value="critical">Critical</option>
+                                  <option value="high">High</option>
+                                  <option value="medium">Medium</option>
+                              </select>
+                          </div>
+                      </div>
+                      
+                      <table id="incident-table">
+                          <thead>
+                              <tr>
+                                  <th>Ticket ID</th>
+                                  <th>Incident</th>
+                                  <th>Severity</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              <tr *ngFor="let incident of filteredIncidents" [attr.data-severity]="incident.severity">
+                                  <td>{{incident.ticketId}}</td>
+                                  <td>{{incident.description}}</td>
+                                  <td [class]="'severity-' + incident.severity">{{incident.severity | uppercase}}</td>
+                              </tr>
+                              <tr *ngIf="filteredIncidents.length === 0">
+                                  <td colspan="3">No incidents to display</td>
+                              </tr>
+                          </tbody>
+                      </table>
+                      
+                      <button class="view-details-btn full-width" routerLink="/incident_report">View All Incidents →</button>
+                  </div>
+
+                  <div class="column">
+                    <h2>Categories</h2>
+                
+                    <div class="category-container">
+                        <div class="category" *ngFor="let category of ticketCategories">
+                            <div class="category-name">{{category.name}}</div>
+                            <div class="category-bar-wrapper">
+                                  <div class="category-bar">
+                                  <div class="category-bar-fill" [style.width]="category.percentage + '%'"></div>
+                                </div>
+        
+                            </div>
+                        </div>
+                    </div>
+                
+                    <button routerLink="/ticket_category" class="view-details-btn full-width">View All Categories →</button>
+                </div>
+              </div>
+
+              <!-- Incident Timeline and Ticket Assignment -->
+              <div class="two-column">
+                  <!-- Incident Timeline -->
+                  <div class="column incident-timeline">
+                      <h2>Incident Timeline</h2>
+
+                      <table class="timeline-table">
+                          <thead>
+                              <tr>
+                                  <th>Ticket ID</th>
+                                  <th>Event Time</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              <tr *ngFor="let timeline of getLimitedTimeline()">
+                                  <td>{{timeline.ticketId}}</td>
+                                  <td>{{timeline.eventTime}}</td>
+                              </tr>
+                              <tr *ngIf="getLimitedTimeline().length === 0">
+                                  <td colspan="2">No timeline events to display</td>
+                              </tr>
+                          </tbody>
+                      </table>
+
+                      <button class="view-details-btn full-width">View Full Timeline →</button>
+                  </div>
+
+                  <!-- Ticket Assignment -->
+                  <div class="column ticket-assignment">
+                      <h2>Ticket Assignment</h2>
+
+                      <table class="assignment-table">
+                          <thead>
+                              <tr>
+                                  <th>Assignment ID</th>
+                                  <th>Ticket ID</th>
+                                  <th>Assigned To</th>
+                                  <th>Assigned Date</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              <tr *ngFor="let assignment of getLimitedAssignments()">
+                                  <td>{{assignment.assignmentId}}</td>
+                                  <td>{{assignment.ticketId}}</td>
+                                  <td>{{assignment.assignedTo}}</td>
+                                  <td>{{assignment.assignedDate}}</td>
+                              </tr>
+                              <tr *ngIf="getLimitedAssignments().length === 0">
+                                  <td colspan="4">No assignments to display</td>
+                              </tr>
+                          </tbody>
+                      </table>
+
+                      <button class="view-details-btn full-width">View All Assignments →</button>
+                  </div>
+              </div>
+
+            </div>
+        </div>
+    </div>
 </div>
-<!-- / Content -->
-<!-- <lib-sign-pad (onSaveImage)="getData($event)"></lib-sign-pad> -->

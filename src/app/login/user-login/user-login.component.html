@@ -20,16 +20,21 @@
               </div>
               <br />
               <!-- /Logo -->
-              <!-- <h4 class="mb-2">Welcome to HRIS! 👋</h4> -->
+              <!-- <h4 class="mb-2">Welcome to HRIS! </h4> -->
               <p class="mb-4">Please login your HRIS account</p>
 
-              <form id="formAuthentication" class="mb-3" action="index.html" method="POST">
+              <form id="formAuthentication" (ngSubmit)="onSubmit()" class="mb-3" action="index.html" method="POST">
                 <div class="mb-3">
-                  <label for="email" class="form-label">Username</label>
+                  <label for="username" class="form-label">Username</label>
                   <div class="input-group input-group-merge">
                     <span class="input-group-text"><i class="bx bxs-user"></i></span>
-                    <input type="text" class="form-control" id="email" name="email-username"
-                      placeholder="Enter your username" autofocus />
+                    <input type="text"
+                          class="form-control"
+                          id="username"
+                          name="username"
+                          [(ngModel)]="username"
+                          placeholder="Enter your username"
+                          autofocus />
                   </div>
                 </div>
                 <div class="mb-3 form-password-toggle">
@@ -37,11 +42,14 @@
                     <label class="form-label" for="password">Password</label>
                   </div>
                   <div class="input-group input-group-merge">
-                    <span class="input-group-text"><i class="bx bxs-key"></i>
-                    </span>
-                    <input type="password" id="password" class="form-control" name="password"
-                      placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                      aria-describedby="password" />
+                    <span class="input-group-text"><i class="bx bxs-key"></i></span>
+                    <input type="password"
+                          id="password"
+                          class="form-control"
+                          name="password"
+                          [(ngModel)]="password"
+                          placeholder="••••••••••••"
+                          aria-describedby="password" />
                   </div>
                 </div>
                 <div class="mb-3">

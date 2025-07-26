@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { AuthService } from 'src/app/service/auth.service';
+import { AuthService } from 'src/app/modules/ticketing/service/auth.service';
 import { UtilsService } from 'src/app/service/utils.service';
 
 @Component({
@@ -39,6 +39,6 @@ export class HeaderComponent implements OnInit {
   }
 
   Logout() {
-    //this.Auth.signout();
+    this.Auth.logout();
   }
 }

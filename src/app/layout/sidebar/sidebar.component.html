@@ -1,4 +1,3 @@
-<!-- Menu -->
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme" style="height: 100%;">
     <div class="app-brand demo">
         <a href="index.html" class="app-brand-link">
@@ -15,35 +14,51 @@
     <ul class="menu-inner py-1">
         <!-- Dashboard -->
         <li class="menu-item" routerLinkActive="active">
-            <a routerLink="dashboard" class="menu-link">
+            <a routerLink="/dashboard" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-home-circle"></i>
                 <div data-i18n="Analytics">Dashboard</div>
             </a>
         </li>
-        <li class="menu-header  text-uppercase cursor-pointer">
-            <span class="menu-header-text ">TICKETING</span>
-        </li>
-        <!-- HRIS MENU -->
-        <li class="menu-item">
-            <a href="" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-collection"></i>
-                <div data-i18n="Basic">Cards</div>
+        <li class="menu-item" routerLinkActive="active">
+            <a routerLink="/ticket_details" class="menu-link">
+                <i class="menu-icon tf-icons bi bi-ticket-detailed"></i>
+                <div data-i18n="Analytics">Tickets</div>
             </a>
         </li>
-        <li class="menu-item open">
-            <a href="javascript:void(0)" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-box"></i>
-                <div data-i18n="User interface">User interface</div>
+        <li class="menu-item" routerLinkActive="active">
+            <a routerLink="/ticket_crew" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-group"></i>
+                <div data-i18n="Analytics">Team</div>
+            </a>
+        </li>
+        <li class="menu-item" routerLinkActive="active">
+            <a routerLink="/incident_report" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-error-circle"></i>
+                <div data-i18n="Analytics">Incident Report</div>
+            </a>
+        </li>
+        
+       
+        <!-- Utilities Dropdown -->
+        <li class="menu-header text-uppercase cursor-pointer">
+            <span class="menu-header-text">TICKETING</span>
+        </li>
+        <li class="menu-item open" routerLinkActive="active">
+            <a class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-cog"></i>
+                <div data-i18n="Utilities">Utilities</div>
             </a>
             <ul class="menu-sub">
-                <li class="menu-item active">
-                    <a href="" class="menu-link">
-                        <div data-i18n="Accordion">Accordion</div>
+                <li class="menu-item" routerLinkActive="active">
+                    <a routerLink="/client_ticket" class="menu-link">
+                        <i class="menu-icon tf-icons bx bx-message"></i>
+                        <div data-i18n="Analytics">Client Ticket</div>
                     </a>
-                </li>
-                <li class="menu-item">
-                    <a href="" class="menu-link">
-                        <div data-i18n="Alerts">Alerts</div>
+                 </li>
+                <li class="menu-item" routerLinkActive="active">
+                    <a routerLink="/ticket_category" class="menu-link">
+                        <i class="menu-icon tf-icons bx bx-bell"></i>
+                        <div data-i18n="Category">Ticket Category</div>
                     </a>
                 </li>
             </ul>

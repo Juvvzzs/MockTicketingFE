@@ -10,12 +10,18 @@ import { MainlayoutComponent } from './layout/mainlayout/mainlayout.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { UserLoginComponent } from './login/user-login/user-login.component';
+import { LoginComponent } from './login/user-login/user-login.component';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { TokenInterceptor } from 'src/token.interceptor';
 import { DatePipe } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { TktCategoryComponent } from './modules/ticketing/tkt-category/tkt-category.component';
+import { TktDetailsComponent } from './modules/ticketing/tkt-details/tkt-details.component';
+import { TktCrewComponent } from './modules/ticketing/tkt-crew/tkt-crew.component';
+import { TktIncidentreportComponent } from './modules/ticketing/tkt-incidentreport/tkt-incidentreport.component';
+import { TktClienticketComponent } from './modules/ticketing/tkt-clienticket/tkt-clienticket.component';
+import { TktInfoComponent } from './modules/ticketing/tkt-info/tkt-info.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +31,15 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     SidebarComponent,
     FooterComponent,
     MainlayoutComponent,
-    UserLoginComponent,
+    LoginComponent,
+    TktCategoryComponent,
+    TktDetailsComponent,
+    TktCategoryComponent,
+    TktDetailsComponent,
+    TktCrewComponent,
+    TktIncidentreportComponent,
+    TktClienticketComponent,
+    TktInfoComponent, 
   ],
   imports: [
     BrowserModule,

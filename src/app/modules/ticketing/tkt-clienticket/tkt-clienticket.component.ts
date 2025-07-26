@@ -1,0 +1,395 @@
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { TktCategory } from '../models/tkt-category';
+import { TktCategoryService } from '../service/tkt-category.service';
+import { TktCreatedService } from '../service/tkt-created.service';
+import Swal from 'sweetalert2';
+
+import {  Ticket } from '../models/tkt-created';
+
+interface Message {
+  messageId: number;
+  sender: string;
+  role: string;
+  content: string;
+  time: string;
+  attachments: { name: string; type: string; url?: string }[];
+  type: string;
+}
+
+interface StatusOption {
+  value: string;
+  label: string;
+  selected?: boolean;
+}
+interface Status {
+  value: string;
+} 
+
+@Component({
+  selector: 'app-tkt-clienticket',
+  templateUrl: './tkt-clienticket.component.html',
+  styleUrls: ['./tkt-clienticket.component.css']
+})
+export class TktClienticketComponent implements OnInit {
+ 
+  showTicketModal = false;
+  showMessageModal = false;
+  currentTicketId: string | null = null;
+
+  ticketForm = {
+    subject: '',
+    description: '',
+    category: '',
+    catId: '', 
+    tktCategory: '',
+    tktId: ''
+  };
+
+  categories: TktCategory[] = [];
+  tickets: Ticket[] = [];
+
+  ticket: Ticket = {
+    tktId: '',
+    subject: '',
+    priority: 'low',
+    status: 'NEW',
+    created: new Date().toLocaleString(),
+    updated: new Date().toLocaleString(),
+    category: '',
+    tktCategory: '',
+    description: '',
+    client: {
+      ClientID: 'EMP-0001',
+      ClientName: 'Azaleah Lenihan',
+      Role: 'Client'
+    }
+  };
+
+  messages: Message[] = [];
+  newMessage = '';
+  attachments: File[] = [];
+  isChatDisabled = false;
+
+  statusOptions: StatusOption[] = [
+    { value: 'new', label: 'New' },
+    { value: 'paused', label: 'In Progress', selected: true },
+    { value: 'resolved', label: 'Resolved' },
+    { value: 'closed', label: 'Closed' }
+  ];
+
+  status: Status [] = [
+    { value: 'NEW'},
+    { value: 'IN PROGRESS'},
+    { value: 'RESOLVED'},
+    { value: 'CLOSED'}
+  ];
+  error: string | undefined;
+  submitting: boolean | undefined;
+  successMessage: string | undefined;
+
+  constructor(
+    private tktCategoryService: TktCategoryService,
+    private tktCreatedService: TktCreatedService
+  ) {}
+
+  ngOnInit(): void {
+    this.loadCategories();
+    this.loadTickets();
+  }
+
+  showModal = false;
+  selectedTicket: any = null;
+
+  loadCategories(): void {
+    this.tktCategoryService.getTicketCategory().subscribe({
+      next: (data: TktCategory[]) => {
+        this.categories = data.filter(cat => cat.Status === 'Enabled');
+      },
+      error: err => {
+        console.error('Failed to load categories', err);
+      }
+    });
+  }
+
+loadTickets(): void {
+ this.tktCreatedService.getTickets().subscribe({
+    next: (data) => {
+      console.log('Tickets from API:', data);
+      this.tickets = data.map((ticket: any) => ({
+        tktId: ticket.TicketID || '',
+        subject: ticket.Subject || '',
+        priority: ticket.Priority || 'low',
+        status: ticket.Status || 'NEW',
+        created: ticket.CreatedDT || new Date().toISOString(),
+        updated: ticket.LastUpdatedDT || new Date().toISOString(),
+        category: ticket.CategoryName || ticket.CategoryID || '',
+        tktCategory: ticket.CategoryName || '',
+        description: ticket.Description || '',
+        client: {
+          ClientID: ticket.ClientEIC || 'EMP-0001',
+          ClientName: ticket.ClientName || 'Azaleah Lenihan',
+          Role: 'Client'
+        },
+        statusClass: this.normalizeStatusClass(ticket.Status),
+        priorityClass: ticket.Priority ? ticket.Priority.toLowerCase() : 'low'
+      })).sort((a, b) => 
+        new Date(b.created).getTime() - new Date(a.created).getTime()
+      );
+    },
+    error: err => {
+      console.error('Failed to load tickets from API', err);
+      this.tickets = [];
+    }
+  });
+}
+
+
+// Add this method to normalize status classes
+private normalizeStatusClass(status: string): string {
+  if (!status) return 'new';
+  
+  const statusLower = status.toLowerCase().trim();
+  
+  // Handle different status variations
+  if (statusLower.includes('progress') || statusLower.includes('paused')) {
+    return 'in-progress';
+  }
+  if (statusLower.includes('resolve')) {
+    return 'resolved';
+  }
+  if (statusLower.includes('close')) {
+    return 'closed';
+  }
+  return statusLower; // default to lowercase version
+}
+  openCreateTicketModal(): void {
+    this.showTicketModal = true;
+  }
+
+  openMessageModal(ticketId: string): void {
+    this.currentTicketId = ticketId;
+    this.showMessageModal = true;
+  }
+
+  // Add this method to handle category selection
+onCategoryChange(event: any): void {
+  const selectedCatId = event.target.value;
+  const selectedCategory = this.categories.find(cat => cat.CatId === selectedCatId);
+  if (selectedCategory) {
+    this.ticketForm.category = selectedCategory.Category;
+    this.ticketForm.catId = selectedCatId;
+  }
+}
+
+createTicket(): void {
+  if (!this.ticketForm.subject || !this.ticketForm.category || !this.ticketForm.description || !this.ticketForm.catId) {
+    this.error = 'Please fill in all required fields.';
+    return;
+  }
+
+  this.submitting = true;
+  this.error = '';
+  this.successMessage = '';
+
+  this.tktCreatedService.getTickets().subscribe({
+    next: (tickets) => {
+      const maxIdNum = tickets.reduce((max, ticket) => {
+        const match = ticket.TicketID.match(/^TKT-(\d{3})$/);
+        const num = match ? parseInt(match[1], 10) : 0;
+        return Math.max(max, num);
+      }, 0);
+
+      const nextIdNum = maxIdNum + 1;
+      const paddedNum = nextIdNum.toString().padStart(3, '0');
+      const nextId = `TKT-${paddedNum}`;
+
+      const newTicket = {
+        TicketID: nextId,
+        ClientEIC: this.ticket.client.ClientID,
+        ClientName: this.ticket.client.ClientName,
+        CatId: this.ticketForm.catId,
+        CategoryName: this.ticketForm.category,
+        Subject: this.ticketForm.subject,
+        Description: this.ticketForm.description,
+        Status: 'NEW',
+        CreatedDT: new Date().toISOString(),
+        LastUpdatedDT: new Date().toISOString(),
+        Priority: 'low'
+      };
+
+      this.tktCreatedService.createTicket(newTicket).subscribe({
+        next: () => {
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: 'Ticket created successfully!',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', Swal.stopTimer);
+              toast.addEventListener('mouseleave', Swal.resumeTimer);
+            }
+          });
+
+          this.successMessage = 'Ticket created successfully!';
+          this.resetForm();
+          this.showTicketModal = false;
+          this.loadTickets();
+          this.openMessageModal(nextId);
+        },
+        error: (error) => {
+          this.submitting = false;
+          this.error = 'Failed to save ticket. Please try again.';
+          console.error(error);
+        }
+      });
+    },
+    error: (err) => {
+      this.submitting = false;
+      this.error = 'Failed to fetch existing tickets.';
+      console.error(err);
+    }
+  });
+}
+
+resetForm(): void {
+  this.ticketForm = {
+    subject: '',
+    description: '',
+    category: '',
+    catId: '',
+    tktCategory: '',
+    tktId: ''
+  };
+  this.submitting = false;
+}
+
+  onStatusChange(newStatus: string): void {
+    this.ticket.status = newStatus;
+    this.ticket.updated = new Date().toLocaleString();
+    this.isChatDisabled = ['resolved', 'closed'].includes(newStatus);
+
+    if (this.isChatDisabled) {
+      this.messages.push({
+        messageId: this.messages.length + 1,
+        sender: 'System',
+        role: 'System',
+        content: `Ticket has been marked as ${newStatus}. This conversation is now closed.`,
+        time: 'just now',
+        attachments: [],
+        type: 'system'
+      });
+    }
+  }
+  
+  //--------------------------------------------------------------//
+// Add this method to handle status class conversion
+getStatusClass(status: string): string {
+  if (!status) return 'new';
+  
+  const statusMap: {[key: string]: string} = {
+    'new': 'new',
+    'in progress': 'in-progress',
+    'paused': 'in-progress',
+    'resolve': 'resolved',
+    'closed': 'closed'
+  };
+
+  const statusLower = status.toLowerCase().trim();
+  
+  // Find first matching key
+  for (const [key, value] of Object.entries(statusMap)) {
+    if (statusLower.includes(key)) {
+      return value;
+    }
+  }
+  
+  return statusLower; 
+}
+  
+  formatDate(dateString: string): string {
+    const options: Intl.DateTimeFormatOptions = { 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  }
+
+  onFileSelected(event: Event): void {
+    if (this.isChatDisabled) return;
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.attachments = Array.from(input.files);
+    }
+  }
+
+
+  viewTicket(ticketId: string) {
+      this.selectedTicket = this.tickets.find(t => t.tktId === ticketId);
+      
+      // Set the current status using your existing getStatusClass method
+      if (this.selectedTicket) {
+        const statusClass = this.getStatusClass(this.selectedTicket.status);
+        // Map the status class to our dropdown values
+        this.selectedTicket.currentStatus = statusClass === 'paused' ? 'in-progress' : statusClass;
+      }
+      
+      this.showModal = true;
+    }
+
+// Add this method to get the status dropdown class
+    getStatusDropdownClass(status: string): string {
+      const statusClass = this.getStatusClass(status);
+      return statusClass === 'paused' ? 'in-progress' : statusClass;
+    }
+ // Add this method to close the modal
+  closeModal() {
+    this.showModal = false;
+    this.selectedTicket = null;
+  }
+
+  removeAttachment(index: number): void {
+    if (this.isChatDisabled) return;
+    this.attachments.splice(index, 1);
+  }
+
+  //update status of the selected ticket
+
+  updateTicketStatus(ticket: any) {
+    if(ticket.Status == 'CLOSED'){
+
+    }
+  if (!ticket || !ticket.tktId) return;
+
+  this.tktCreatedService.updateTicketStatus(ticket.tktId, ticket.Status)
+    .subscribe({
+      next: (res) => {
+        console.log('Status updated successfully!');
+        // Optional: Add toast or temporary message here
+      },
+      error: (err) => {
+        console.error('Error updating status:', err);
+      }
+    });
+}
+
+  NewOpenCount(): number {
+    return this.tickets.filter(ticket => ticket.status === 'NEW').length;
+  }
+  InProgressCount(): number {
+    return this.tickets.filter(ticket => ticket.status === 'IN PROGRESS').length;
+  }
+  ResolveCount(): number {
+    return this.tickets.filter(ticket => ticket.status === 'RESOLVED').length;
+  }
+  ClosedTicketCount(): number {
+    return this.tickets.filter(ticket => ticket.status === 'CLOSED').length;
+  }
+ 
+}
