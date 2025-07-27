@@ -35,40 +35,41 @@
         </div>
    
         <div class="filter-bar">
-          <div class="filter-group">
-            <label>Status</label>
-            <select>
-              <option value="all">All Status</option>
-              <option value="open">Open</option>
-              <option value="closed">Closed</option>
-              <option value="in-progress">In Progress</option>
-            </select>
-          </div>
-          <div class="filter-group">
-            <label>Date Range</label>
-            <select>
-              <option value="today">Today</option>
-              <option value="week">This Week</option>
-              <option value="month">This Month</option>
-              <option value="custom">Custom Range</option>
-            </select>
-          </div>
-          <div class="filter-group">
-            <label>Category</label>
-            <select>
-              <option value="all">All Categories</option>
-              <option value="hris">HRIS</option>
-              <option value="pasims">PASIMS</option>
-              <option value="cyber">Cybersecurity</option>
-            </select>
-          </div>
-          <button class="filter-btn">
-            <i class="bx bx-filter-alt"></i> Apply Filters
-          </button>
-           <button class="tktcrtincdnrrprt-btn"  (click)="CreateIncReport()">
-              <i class="tf-icons bx bx-error-circle"></i> Create Incident Report
-          </button>
+        <div class="filter-group">
+          <label>Status</label>
+          <select [(ngModel)]="selectedStatus" (change)="applyFilters()">
+            <option value="all">All Status</option>
+            <option *ngFor="let statuses of status" [value]="statuses.value">
+              {{statuses.value}}
+            </option>
+          </select>
         </div>
+        <div class="filter-group">
+          <label>Date Range</label>
+          <select [(ngModel)]="selectedDateRange" (change)="applyFilters()">
+            <option value="all">All Dates</option>
+            <option value="today">Today</option>
+            <option value="week">This Week</option>
+            <option value="month">This Month</option>
+            <option value="custom">Custom Range</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Category</label>
+          <select [(ngModel)]="selectedCategory" (change)="applyFilters()">
+            <option value="all">All Categories</option>
+            <option *ngFor="let category of categories" [value]="category.Category">
+              {{category.Category}}
+            </option>
+          </select>
+        </div>
+        <button class="filter-btn" (click)="applyFilters()">
+          <i class="bx bx-filter-alt"></i> Apply Filters
+        </button>
+        <button class="tktcrtincdnrrprt-btn" (click)="CreateIncReport()">
+          <i class="tf-icons bx bx-error-circle"></i> Create Incident Report
+        </button>
+      </div>
 
         
         <div class="ticket-table-container">
@@ -86,7 +87,8 @@
               </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let ticket of tickets"
+                <tr *ngFor="let ticket of paginatedTickets"
+
                  [class.selected-row]="ticket === selectedRow"
                  (click)="onRowClick(ticket)">
 
@@ -121,13 +123,15 @@
 
         
         <div class="pagination-controls">
-          <div class="page-info">Showing 1-{{ tickets.length }} of {{ tickets.length }} tickets</div>
+          <div class="page-info">
+            Showing {{ startIndex + 1 }}–{{ endIndex }} of {{ tickets.length }} tickets
+          </div>
           <div class="page-buttons">
-            <button class="page-btn">
+            <button class="page-btn" [disabled]="currentPage === 1" (click)="previousPage()">
               <i class="bx bx-chevron-left"></i>
             </button>
-            <span class="page-number">Page 1 of 1</span>
-            <button class="page-btn">
+            <span class="page-number">Page {{ currentPage }} of {{ totalPages }}</span>
+            <button class="page-btn" [disabled]="currentPage === totalPages" (click)="nextPage()">
               <i class="bx bx-chevron-right"></i>
             </button>
           </div>

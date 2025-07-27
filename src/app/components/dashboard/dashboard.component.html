@@ -3,16 +3,32 @@
     <div class="card">
         <div class="container-xxl container-p-y">
             <div class="misc-wrapper">
+        <div *ngIf="loading" class="loading-overlay">
+        <div class="spinner"></div>
+        </div>
 
-              <!-- Ticket Stats -->
-              <div class="ticket-stats">
-                  <div class="stat-card" *ngFor="let stat of ticketStats">
-                      <h2>{{stat.title}}</h2>
-                      <div class="number">{{stat.count}}</div>
-                      <button class="view-details-btn">View Details →</button>
-                  </div>
-              </div>
+        <div [class.blur]="loading">
+          <div class="stats-container">
+  <div class="stats-section">
+    <div class="ticket-stats">
+      <div class="stat-card" *ngFor="let stat of ticketOverAll">
+        <h2>{{stat.title}}</h2>
+        <div class="number">{{stat.count}}</div>
+        <button class="view-details-btn" routerLink="/incident_report">View Incident Reports →</button>
+      </div>
+    </div>
+  </div>
 
+  <div class="stats-section">
+    <div class="ticket-stats">
+      <div class="stat-card" *ngFor="let stat of ticketStats">
+        <h2>{{stat.title}}</h2>
+        <div class="number">{{stat.count}}</div>
+        <button class="view-details-btn" routerLink="/ticket_details">View Tickets →</button>
+      </div>
+    </div>
+  </div>
+</div>
               <!-- Incident Reports and Categories -->
               <div class="two-column">
                   <div class="column">
@@ -38,8 +54,8 @@
                           </thead>
                           <tbody>
                               <tr *ngFor="let incident of filteredIncidents" [attr.data-severity]="incident.severity">
-                                  <td>{{incident.ticketId}}</td>
-                                  <td>{{incident.description}}</td>
+                                  <td>{{incident.IncID}}</td>
+                                  <td>{{incident.incidentType}}</td>
                                   <td [class]="'severity-' + incident.severity">{{incident.severity | uppercase}}</td>
                               </tr>
                               <tr *ngIf="filteredIncidents.length === 0">
@@ -128,6 +144,7 @@
               </div>
 
             </div>
+        </div>
         </div>
     </div>
 </div>

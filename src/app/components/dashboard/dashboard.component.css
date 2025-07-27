@@ -5,19 +5,46 @@
     align-items: center;
 }
 
-/* Ticket Stats section */
+.stats-container {
+  display: flex;
+  gap: 20px; /* Adds space between the two sections */
+  margin: 20px 0;
+}
+
+.stats-section {
+  flex: 1;
+}
+
 .ticket-stats {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-    margin-bottom: 2rem;
+  display: flex;
+  gap: 15px; /* Adds space between cards */
+  overflow-x: auto; /* Allows horizontal scrolling if cards don't fit */
+  padding: 10px 0;
 }
 
 .stat-card {
-    background: #f4f4f4;
-    padding: 1rem;
-    border-radius: 8px;
-    flex: 1 1 200px;
+  min-width: 550px; /* Adjust as needed */
+  padding: 15px;
+  border-radius: 8px;
+  background: #f6f6f6;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.view-details-btn {
+  margin-top: auto;
+  padding: 8px 15px;
+  background-color: #3f51b5;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.view-details-btn:hover {
+  background-color: #303f9f;
 }
 
 .stat-card h2 {
@@ -236,4 +263,39 @@ th {
 
 .full-width {
     width: 100%;
+}
+/* Blur effect when loading */
+.blur {
+  filter: blur(4px);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Fullscreen loading overlay */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.6);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Simple spinner */
+.spinner {
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #007bff;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

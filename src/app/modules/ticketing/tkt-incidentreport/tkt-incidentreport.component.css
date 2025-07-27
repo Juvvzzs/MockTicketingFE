@@ -23,21 +23,7 @@ tbody td:last-child {
   opacity: 1;
 }
 
-/* --- Page Header --- */
-.page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
-    padding-bottom: 0;
-    border-bottom: none; /* Removed border */
-}
 
-.title-with-pills {
-    display: flex;
-    align-items: center; /* Vertically align title and pills */
-    gap: 15px; /* Space between title and pills */
-}
 
 .page-header h1 {
     margin-bottom: 0; /* Remove default bottom margin if any */
@@ -302,35 +288,14 @@ tbody tr:last-child td { border-bottom: none; }
 /* Authorities Column Style */
 .col-authorities {
     text-align: center;
-    width: 60px; /* Narrow column */
+    width: 40px; /* Narrow column */
 }
-.col-authorities i {
-    color: #2dce89; /* Green for 'Yes' */
-    font-size: 16px;
-}
-
-/* Icon Styles for Yes/No */
-.icon-yes {
-    color: #2dce89; /* Green */
-    font-size: 1.1em; /* Slightly larger */
+.col-authorities {
+    color: #000000; /* Green for 'Yes' */
+    font-size: 25px;
 }
 
-.icon-no {
-    color: #f5365c; /* Red */
-    font-size: 1.1em; /* Slightly larger */
-}
 
-/* Update the color for 'fas fa-times-circle icon-no' to grey */
-.fas.fa-times-circle.icon-no {
-    color: #adb5bd; /* Grey color */
-}
-
-/* Avatar style */
-.avatar { width: 36px; height: 36px; border-radius: 50%; margin-right: 15px; vertical-align: middle; }
-td .user-info { display: flex; align-items: center; }
-
-.action-icon { color: #8898aa; margin: 0 6px; font-size: 16px; transition: color 0.2s ease; }
-.action-icon:hover { color: #5e72e4; text-decoration: none; }
 
 /* --- Pills / Badges --- */
 .pill {
@@ -368,55 +333,6 @@ td .user-info { display: flex; align-items: center; }
 .pill-ongoing, .pill-open, .pill-new { background-color: #5e72e4; } /* Blue */
 .pill-post-mortem { background-color: #adb5bd; }
 .pill-in-progress { background-color: #11cdef; }
-
-
-/* --- Incident Detail Page Specifics --- */
-
-/* Updated Key Info Card Style */
-.key-info-card {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Maintain 3 columns */
-    gap: 15px; /* Slightly reduce gap */
-    margin-bottom: 20px;
-    padding: 15px; /* Keep padding for spacing */
-}
-
-.info-item {
-    display: flex;
-    align-items: center; /* Align label and value horizontally */
-    gap: 10px; /* Space between label and value */
-    padding: 5px; /* Reduce padding for compactness */
-    border-radius: 8px; /* Keep slight rounding */
-  }
-
-.info-label {
-    font-size: 0.85em; /* Slightly smaller label font */
-    color: #666;
-    font-weight: 700; /* Changed to bold */
-    white-space: nowrap; /* Prevent wrapping */
-}
-
-.info-value {
-    font-weight: 500;
-    font-size: 0.95em;
-    color: #7e92b3; /* Darker value color */
-    line-height: 1.2; /* Compact line height */
-    word-break: break-word; /* Prevent overflow */
-}
-
-/* Responsive Adjustments */
-@media (max-width: 767px) {
-    .key-info-card {
-        grid-template-columns: 1fr; /* Stack items in one column on small screens */
-    }
-    .info-item {
-        flex-direction: column; /* Revert to vertical stack for small screens */
-        align-items: flex-start; /* Align items to the start */
-    }
-    .info-label {
-        margin-bottom: 3px; /* Add spacing between label and value */
-    }
-}
 
 
 
@@ -488,4 +404,9 @@ th { white-space: nowrap;} /* Keep headers nowrap */
     margin-right: 12px;
     color: #03ab0c;
     font-size: 50px; 
+}
+.icon-right {
+    margin-right: 12px;
+    color: #126401;
+    font-size: 30px; 
 }
