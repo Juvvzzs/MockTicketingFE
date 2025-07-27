@@ -34,33 +34,23 @@
 </div>
 
 <div class="filters-bar">
-     <input type="search" placeholder="Search by ID, Ticket ID...">
-     <select>
-         <option value="">Filter by Severity</option>
-         <option value="critical">Critical</option>
-         <option value="high">High</option>
-         <option value="medium">Medium</option>
-         <option value="low">Low</option>
-     </select>
-      <select>
-         <option value="">Filter by Incident Type</option>
-         <option value="malware">Malware</option>
-         <option value="phishing">Phishing</option>
-         <option value="auth">Authentication Failure</option>
-         <option value="network">Network Outage</option>
-         <option value="data_breach">Data Breach</option>
-         <option value="other">Other</option>
-     </select>
-     <select>
-         <option value="">Filter by Status (Ticket)</option>
-         <option value="1 New">New</option>
-         <option value="2 In Progress">In Progress</option>
-         <option value="3 Resolved">Resolved</option>
-         <option value="4 Closed">Closed</option>
-     </select>
-     <input type="date" title="Report Start Date">
-     <input type="date" title="Report End Date">
-     <button class="btn btn-secondary">Filter</button>
+     <input type="search" [(ngModel)]="searchTerm" (input)="applyFilters()" placeholder="Search by ID, Ticket ID...">
+      <select [(ngModel)]="selectedSeverity" (change)="applyFilters()">
+        <option value="">Filter by Severity</option>
+        <option *ngFor="let option of severityOptions" [value]="option.value">
+      {{ option.label }}
+    </option>
+  </select>
+       <select [(ngModel)]="selectedType" (change)="applyFilters()">
+    <option value="">Filter by Incident Type</option>
+    <option *ngFor="let option of incidentTypeOptions" [value]="option.value">
+      {{ option.label }}
+    </option>
+  </select>
+
+  <label for="startDate">Reported Date</label>
+  <input type="date" id="startDate" [(ngModel)]="startDate" (change)="applyFilters()" />
+     <button class="btn btn-secondary">Reset Filter</button>
 </div>
 
 <div class="table-title-bar content-card" style="border-radius: 12px 12px 0 0; margin-bottom: 0; box-shadow: none; border-bottom: 1px solid #e9ecef;">
@@ -76,7 +66,7 @@
             <th>Severity</th>
             <th>Incident Type</th>
             <th>Reported Info</th>
-            <th title="Reported to Authorities?" class="col-authorities"><i class="fas fa-shield-alt"></i></th>
+            <th class="col-authorities"><i class="fas fa-shield-alt"></i>Reported to Authority</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -89,7 +79,7 @@
         </tr>
 
         <!-- Data rows -->
-        <tr *ngFor="let incident of incidentList" (click)="viewDetails(incident.IncID)">
+        <tr *ngFor="let incident of paginatedIncidentList" (click)="viewDetails(incident.IncID)">
             <td class="incident-ticket-cell">
                 {{ incident.IncID }}
                 <a *ngIf="incident.TktID" class="ticket-link" title="View Linked Ticket">
@@ -109,12 +99,12 @@
                 <small class="reported-by-subtext">by {{ incident.reportedBy }}</small>
             </td>
           
-            <td class="col-authorities">
-                <i *ngIf="incident.reportedToAuthorities" class="fas fa-check-circle icon-yes" title="Yes"></i>
-                <i *ngIf="!incident.reportedToAuthorities" class="fas fa-times-circle icon-no" title="No"></i>
+            <td class=" ">
+                <i *ngIf="incident.reportedToAuthorities" class="bi bi-check2-circle " title="Yes">Yes</i>
+                <i *ngIf="!incident.reportedToAuthorities" class="bi bi-x-circle " title="No">No</i>
             </td>
             <td>
-                <i class="bx bx-chevron-right action-icon" title="View Details"></i>
+                <i class="bi bi-chevron-right icon-right" title="View Details"></i>
             </td>
         </tr>
 
@@ -128,10 +118,10 @@
 </table>
     </div>
      <div class="pagination">
-        <span>Showing 1-4 of 15 Results</span>
+        <span>Showing {{ getFirstItemOnPage() }}-{{ getLastItemOnPage() }} of {{ incidentList.length }} Results</span>
         <div>
-            <button class="btn btn-secondary" disabled>< Prev</button>
-            <button class="btn btn-secondary">Next ></button>
+            <button class="btn btn-secondary" [disabled]="currentPage === 1" (click)="previousPage()">< Prev</button>
+            <button class="btn btn-secondary" [disabled]="currentPage === getTotalPages()" (click)="nextPage()">Next ></button>
         </div>
     </div>
 </div>

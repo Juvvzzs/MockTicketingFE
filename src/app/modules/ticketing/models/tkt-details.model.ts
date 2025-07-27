@@ -4,6 +4,7 @@ export interface TktDetailsModel {
 export interface Ticket {
   TicketID: string;
   ClientName: string;
+  CategoryID: string;
   CategoryName: string;
   Subject: string;
   Status: string;
@@ -70,7 +71,7 @@ export interface IncidentList {
   reportedToAuthorities: string; // 'Yes', 'No'
   reportDateTime: Date; // Date object
   reportedBy: string; // EIC of the user who reported the incident
-  Status: string; // '1 New', '2 In Progress', '3 Resolved', etc.
+  status:  string; // '1 New', '2 In Progress', '3 Resolved', etc.
   ReportDateTime?: Date; // Date object for the report date and time
   IncidentType?: string; // 'General' or specific type if available
   

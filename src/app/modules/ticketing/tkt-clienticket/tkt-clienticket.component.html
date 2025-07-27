@@ -3,43 +3,44 @@
     <div class="container-xxl container-p-y">
       <div class="misc-wrapper"> 
      <div class="filter-bar">
-          <div class="filter-group">
-            <label>Status</label>
-            <select>
-              <option value="all">All Status</option>
-              <option value="open">Open</option>
-              <option value="closed">Closed</option>
-              <option value="in-progress">In Progress</option>
-            </select>
-          </div>
-          <div class="filter-group">
-            <label>Date Range</label>
-            <select>
-              <option value="today">Today</option>
-              <option value="week">This Week</option>
-              <option value="month">This Month</option>
-              <option value="custom">Custom Range</option>
-            </select>
-          </div>
-          <div class="filter-group">
-            <label>Category</label>
-            <select>
-              <option value="all">All Categories</option>
-              <option value="hris">HRIS</option>
-              <option value="pasims">PASIMS</option>
-              <option value="cyber">Cybersecurity</option>
-            </select>
-          </div>
-          <button class="filter-btn">
-            <i class="bx bx-filter-alt"></i> Apply Filters
-          </button>
+        <div class="filter-group">
+          <label>Status</label>
+          <select [(ngModel)]="selectedStatus" (change)="applyFilters()">
+            <option value="all">All Status</option>
+            <option *ngFor="let statuses of status" [value]="statuses.value">
+              {{statuses.value}}
+            </option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Date Range</label>
+          <select [(ngModel)]="selectedDateRange" (change)="applyFilters()">
+            <option value="all">All Dates</option>
+            <option value="today">Today</option>
+            <option value="week">This Week</option>
+            <option value="month">This Month</option>
+            <option value="custom">Custom Range</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Category</label>
+          <select [(ngModel)]="selectedCategory" (change)="applyFilters()">
+            <option value="all">All Categories</option>
+            <option *ngFor="let category of categories" [value]="category.Category">
+              {{category.Category}}
+            </option>
+          </select>
+        </div>
+        <button class="filter-btn" (click)="applyFilters()">
+          <i class="bx bx-filter-alt"></i> Apply Filters
+        </button>
           <button class="tktcreate-btn" (click)="openCreateTicketModal()">
             <i class="bx bx-plus"></i> Create Ticket
           </button>
         </div>
 
         
-         <div class="ticket-table-container">
+<div class="ticket-table-container">
   <table class="ticket-table">
     <thead>
       <tr>
@@ -52,8 +53,8 @@
         <th class="compact">Actions</th>
       </tr>
     </thead>
-    <tbody *ngIf="tickets.length > 0; else noTickets">
-      <tr *ngFor="let ticket of tickets">
+    <tbody *ngIf="paginatedTickets.length > 0; else noTickets">
+      <tr *ngFor="let ticket of paginatedTickets">
         <td class="compact">{{ ticket.tktId }}</td>
         <td class="compact">{{ ticket.category }}</td>
         <td class="compact">{{ ticket.subject }}</td>
@@ -83,18 +84,18 @@
   </ng-template>
 </div>
 
-        <div class="pagination-controls">
-          <div class="page-info">Showing 1-{{ tickets.length }} of {{ tickets.length }} tickets</div>
-          <div class="page-buttons">
-            <button class="page-btn">
-              <i class="bx bx-chevron-left"></i>
-            </button>
-            <span class="page-number">Page 1 of 1</span>
-            <button class="page-btn">
-              <i class="bx bx-chevron-right"></i>
-            </button>
-          </div>
-        </div>
+<div class="pagination-controls">
+  <div class="page-info">Showing {{ getFirstItemOnPage() }}-{{ getLastItemOnPage() }} of {{ tickets.length }} tickets</div>
+  <div class="page-buttons">
+    <button class="page-btn" [disabled]="currentPage === 1" (click)="previousPage()">
+      <i class="bx bx-chevron-left"></i>
+    </button>
+    <span class="page-number">Page {{ currentPage }} of {{ getTotalPages() }}</span>
+    <button class="page-btn" [disabled]="currentPage === getTotalPages()" (click)="nextPage()">
+      <i class="bx bx-chevron-right"></i>
+    </button>
+  </div>
+</div>
       </div>
     </div>
   </div>

@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { TktCategory } from '../models/tkt-category';
 import { TktCategoryService } from '../service/tkt-category.service';
 import { TktCreatedService } from '../service/tkt-created.service';
@@ -70,7 +69,20 @@ export class TktClienticketComponent implements OnInit {
   newMessage = '';
   attachments: File[] = [];
   isChatDisabled = false;
+  paginatedTickets: Ticket[] = [];
+  currentPage: number = 1;
+  itemsPerPage: number = 7;
 
+      filteredTickets: Ticket[] = [];
+      selectedStatus: string = 'all';
+      selectedDateRange: string = 'all';
+      selectedCategory: string = 'all';
+
+      totalPages: number = 0;
+      startIndex: number = 0;
+      endIndex: number = 0;
+
+  
   statusOptions: StatusOption[] = [
     { value: 'new', label: 'New' },
     { value: 'paused', label: 'In Progress', selected: true },
@@ -135,15 +147,66 @@ loadTickets(): void {
         priorityClass: ticket.Priority ? ticket.Priority.toLowerCase() : 'low'
       })).sort((a, b) => 
         new Date(b.created).getTime() - new Date(a.created).getTime()
-      );
+      ); 
+        this.filteredTickets = [...this.tickets];
+        this.updatePagination();
     },
     error: err => {
       console.error('Failed to load tickets from API', err);
       this.tickets = [];
+      this.filteredTickets = [];
+      this.updatePagination();
     }
   });
 }
 
+ applyFilters(): void {
+  this.filteredTickets = this.tickets.filter(ticket => {
+    // Status filter
+    const statusMatch = this.selectedStatus === 'all' || 
+                       ticket.status.toLowerCase() === this.selectedStatus.toLowerCase();
+    
+    // Category filter
+    const categoryMatch = this.selectedCategory === 'all' || 
+                         ticket.category === this.selectedCategory;
+    
+    // Date range filter
+    let dateMatch = true;
+    if (this.selectedDateRange !== 'all') {
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const ticketDate = new Date(ticket.created);
+      
+      switch (this.selectedDateRange) {
+        case 'today':
+          dateMatch = ticketDate >= today;
+          break;
+        case 'week':
+          const weekAgo = new Date(today);
+          weekAgo.setDate(weekAgo.getDate() - 7);
+          dateMatch = ticketDate >= weekAgo;
+          break;
+        case 'month':
+          const monthAgo = new Date(today);
+          monthAgo.setMonth(monthAgo.getMonth() - 1);
+          dateMatch = ticketDate >= monthAgo;
+          break;
+      }
+    }
+    
+    return statusMatch && categoryMatch && dateMatch;
+  });
+
+  this.currentPage = 1;
+  this.updatePagination();
+}
+
+  updatePagination(): void {
+    this.totalPages = Math.ceil(this.filteredTickets.length / this.itemsPerPage);
+    this.startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    this.endIndex = Math.min(this.startIndex + this.itemsPerPage, this.filteredTickets.length);
+    this.paginatedTickets = this.filteredTickets.slice(this.startIndex, this.endIndex);
+  }
 
 // Add this method to normalize status classes
 private normalizeStatusClass(status: string): string {
@@ -379,17 +442,45 @@ getStatusClass(status: string): string {
     });
 }
 
-  NewOpenCount(): number {
-    return this.tickets.filter(ticket => ticket.status === 'NEW').length;
+      NewOpenCount(): number {
+        return this.filteredTickets.filter(ticket => ticket.status === 'NEW').length;
+      }
+
+      InProgressCount(): number {
+        return this.filteredTickets.filter(ticket => ticket.status === 'IN PROGRESS').length;
+      }
+
+      ResolveCount(): number {
+        return this.filteredTickets.filter(ticket => ticket.status === 'RESOLVED').length;
+      }
+
+      ClosedTicketCount(): number {
+        return this.filteredTickets.filter(ticket => ticket.status === 'CLOSED').length;
+      }
+   getTotalPages(): number {
+    return Math.ceil(this.tickets.length / this.itemsPerPage);
+    }
+
+nextPage(): void {
+  if (this.currentPage < this.getTotalPages()) {
+    this.currentPage++;
+    this.updatePagination();
   }
-  InProgressCount(): number {
-    return this.tickets.filter(ticket => ticket.status === 'IN PROGRESS').length;
+}
+
+previousPage(): void {
+  if (this.currentPage > 1) {
+    this.currentPage--;
+    this.updatePagination();
   }
-  ResolveCount(): number {
-    return this.tickets.filter(ticket => ticket.status === 'RESOLVED').length;
-  }
-  ClosedTicketCount(): number {
-    return this.tickets.filter(ticket => ticket.status === 'CLOSED').length;
-  }
- 
+}
+
+getFirstItemOnPage(): number {
+  return (this.currentPage - 1) * this.itemsPerPage + 1;
+}
+
+getLastItemOnPage(): number {
+  const lastItem = this.currentPage * this.itemsPerPage;
+  return lastItem > this.tickets.length ? this.tickets.length : lastItem;
+}
 }
