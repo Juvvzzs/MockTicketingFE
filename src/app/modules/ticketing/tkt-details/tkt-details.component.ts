@@ -1,5 +1,5 @@
   import { Component } from '@angular/core';
-  import { Router } from '@angular/router';
+  import { ActivatedRoute, Router } from '@angular/router';
   import { TktAdminviewService } from '../service/tkt-adminview.service';
   import { Ticket, StatusOption, IncidentReport } from '../models/tkt-details.model';
   import { TktCrtincReportService } from '../service/tkt-crtinc-report.service';
@@ -22,6 +22,7 @@
     value: string;
   } 
   import Swal from 'sweetalert2';
+import { tap, switchMap } from 'rxjs';
   @Component({
     selector: 'app-tkt-details',
     templateUrl: './tkt-details.component.html',
@@ -69,6 +70,7 @@
 
     incReportForm = {
       IncidentID: '',
+      TicketID:'',
       ticketCategory: '',
       Severity: '',
       IncidentType: '',
@@ -116,18 +118,50 @@
       private tktCrtincReportService: TktCrtincReportService,
       private tktCategoryService: TktCategoryService,
       private chatService: TktDemochatService,
-      private router : Router
+      private router : Router,
+       private route: ActivatedRoute
     ) {}
 
-    ngOnInit(): void {
-      this.selectedStatus = 'all';
-      this.selectedDateRange = 'all';
-      this.selectedCategory = 'all';
-      this.loadCategories();
-      this.loadTickets();
-    
+   ngOnInit(): void {
+  this.selectedStatus = 'all';
+  this.selectedDateRange = 'all';
+  this.selectedCategory = 'all';
+  this.loadCategories();
+  
+  // Chain the operations properly
+  this.tktAdminviewService.getTickets().pipe(
+    tap(data => {
+      this.processTicketData(data);
+    }),
+    switchMap(() => this.route.queryParamMap)
+  ).subscribe(params => {
+    const ticketId = params.get('id');
+    const openTicket = params.get('openTicket');
+
+    if (ticketId && openTicket === 'true') {
+      this.openTicket(ticketId); 
+    }
+  });
 }
 
+private processTicketData(data: any): void {
+  this.tickets = data.map((ticket: any) => ({
+    TicketID: ticket.TicketID || '',
+    ClientName: ticket.ClientName || 'Unknown',
+    CategoryName: ticket.CategoryName || ticket.CategoryID || '',
+    CategoryID: ticket.CategoryID || '',
+    Subject: ticket.Subject || '',
+    Description: ticket.Description || '',
+    Status: ticket.Status || 'NEW',
+    CreatedDT: ticket.CreatedDT || new Date().toISOString(),
+    LastUpdatedDT: ticket.LastUpdatedDT || new Date().toISOString(),
+    statusClass: this.getStatusClass(ticket.Status)
+  })
+  );
+  
+  this.filteredTickets = [...this.tickets];
+  this.updatePagination();
+}
 
     loadCategories(): void {
       this.tktCategoryService.getTicketCategory().subscribe({
@@ -267,6 +301,19 @@
     }
 
    openTicket(ticketId: string) {
+
+      let ticket = this.tickets.find(t => t.TicketID === ticketId);
+  
+  // If not found, try filtered tickets
+  if (!ticket) {
+    ticket = this.filteredTickets.find(t => t.TicketID === ticketId);
+  }
+  
+  // If still not found, show error
+  if (!ticket) {
+    console.error(`Ticket with ID ${ticketId} not found`);
+    return;
+  }
       this.selectedTicket = this.tickets.find(t => t.TicketID === ticketId);
       this.currentTicketId = ticketId; // ← Add this line
       this.loadMessages(ticketId);
@@ -330,6 +377,7 @@
     // Initialize form with selected row data
     this.incReportForm = {
       IncidentID: '',
+      TicketID: this.selectedRow.TicketID,
       ticketCategory: this.selectedRow.CategoryName || '',
       Severity: '',
       IncidentType: '',
@@ -381,6 +429,7 @@
         const newIncidentReport: IncidentReport = {
           IncidentID: nextId,
           ticketCategory: this.selectedRow.CategoryName || '',
+          ticketID:this.selectedRow.TicketID || '',
           Severity: this.incReportForm.Severity as 'Critical' | 'High' | 'Medium' | 'Low',
           IncidentType: this.incReportForm.IncidentType,
           ImpactAssessment: 'Write Something......',
@@ -451,6 +500,7 @@
       // Initialize form with selected ticket data
       this.incReportForm = {
         IncidentID: '',
+        TicketID:this.selectedRow?.TicketID || '',
         ticketCategory: this.selectedRow?.CategoryName || '',
         Severity: '',
         IncidentType: '',

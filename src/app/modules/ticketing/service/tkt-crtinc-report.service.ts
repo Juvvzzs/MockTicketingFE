@@ -11,7 +11,7 @@ import { JsonBinResponse } from '../models/tkt-details.model';
 })
 export class TktCrtincReportService {
 
-  private binId = '687fc10fae596e708fb9ed7d'; 
+  private binId = '688a3c76ae596e708fbe54d3'; 
   private apiUrl = `https://api.jsonbin.io/v3/b/${this.binId}`;  //https://api.jsonbin.io/v3/b/
 
   constructor( private http: HttpClient) { }

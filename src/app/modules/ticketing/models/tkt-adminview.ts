@@ -1,7 +1,8 @@
 export interface TktAdminview {
     TicketID: string;
     ClientEIC: string;
-    CategoryID: string;
+    ClientName:string;
+    CatID: string;
     CategoryName: string;
     Subject: string;
     Description: string;

@@ -16,6 +16,7 @@ interface Message {
   time: string;
   attachments: { name: string; type: string; url?: string }[];
   type: string;
+  isStatusChange?: boolean;
 }
 
  interface Attachment {
@@ -41,7 +42,7 @@ interface Status {
 })
 export class TktClienticketComponent implements OnInit {
  
-  
+  private previousStatus: string = '';
   ticketForm = {
     subject: '',
     description: '',
@@ -178,11 +179,9 @@ loadTickets(): void {
     // Status filter
     const statusMatch = this.selectedStatus === 'all' || 
                        ticket.status.toLowerCase() === this.selectedStatus.toLowerCase();
-    
     // Category filter
     const categoryMatch = this.selectedCategory === 'all' || 
                          ticket.category === this.selectedCategory;
-    
     // Date range filter
     let dateMatch = true;
     if (this.selectedDateRange !== 'all') {
@@ -221,13 +220,12 @@ loadTickets(): void {
     this.paginatedTickets = this.filteredTickets.slice(this.startIndex, this.endIndex);
   }
 
-// Add this method to normalize status classes
+
 private normalizeStatusClass(status: string): string {
   if (!status) return 'new';
   
   const statusLower = status.toLowerCase().trim();
   
-  // Handle different status variations
   if (statusLower.includes('progress') || statusLower.includes('paused')) {
     return 'in-progress';
   }
@@ -237,7 +235,7 @@ private normalizeStatusClass(status: string): string {
   if (statusLower.includes('close')) {
     return 'closed';
   }
-  return statusLower; // default to lowercase version
+  return statusLower; 
 }
   openCreateTicketModal(): void {
     this.showTicketModal = true;
@@ -247,18 +245,19 @@ private normalizeStatusClass(status: string): string {
   this.currentTicketId = ticketId;
   this.messages = this.chatService.getMessages(ticketId);
   this.showMessageModal = true;
-  this.isChatDisabled = ['RESOLVED', 'CLOSED'].includes(
+  this.isChatDisabled = ['CLOSED'].includes(
     this.tickets.find(t => t.tktId === ticketId)?.status || ''
   );
 }
 
 //send message add here
 sendMessage(): void {
-  if (!this.newMessage.trim() || !this.currentTicketId || this.isChatDisabled){ 
-    alert('Please fill in all required fileds');
+  if (!this.newMessage.trim() || !this.currentTicketId || this.isChatDisabled) { 
+    alert('Please fill in all required fields');
     return;
-  } 
+  }
 
+  // Create the new message object
   const newMsg: Message = {
     messageId: Date.now(),
     sender: 'Azaleah Lenihan',
@@ -273,20 +272,48 @@ sendMessage(): void {
     type: 'text'
   };
 
-  this.chatService. sendMessage(this.currentTicketId, newMsg);
-  this.messages.push(newMsg);
+  
+  this.messages = [...this.messages, newMsg]; 
   this.newMessage = '';
   this.attachments = [];
   this.scrollToBottom();
+
+ 
+  this.chatService.sendMessage(this.currentTicketId, newMsg);
 }
 
 private scrollToBottom() {
   setTimeout(() => {
     const thread = document.querySelector('.conversation-thread');
-    if (thread) thread.scrollTop = thread.scrollHeight;
-  }, 100);
+    if (thread) {
+      // Cast to HTMLElement to access offsetHeight
+      const htmlElement = thread as HTMLElement;
+      htmlElement.scrollTop = htmlElement.scrollHeight;
+      
+      // Force reflow if needed (now properly typed)
+      void htmlElement.offsetHeight;
+    }
+  }, 0);
 }
 
+addStatusChangeMessage(ticketId: string, newStatus: string): void {
+  const statusMessage = `Ticket status changed to ${newStatus}`;
+  
+  const systemMsg: Message = {
+    messageId: Date.now(),
+    sender: 'System',
+    role: 'System',
+    content: statusMessage,
+    time: new Date().toLocaleTimeString(),
+    attachments: [],
+    type: 'system',
+    isStatusChange: true
+  };
+
+  this.chatService.sendMessage(ticketId, systemMsg);
+  this.messages.push(systemMsg);
+  this.scrollToBottom();
+}
 
   // Add this method to handle category selection
 onCategoryChange(event: any): void {
@@ -383,26 +410,23 @@ resetForm(): void {
   this.submitting = false;
 }
 
-  onStatusChange(newStatus: string): void {
-    this.ticket.status = newStatus;
-    this.ticket.updated = new Date().toLocaleString();
-    this.isChatDisabled = ['resolved', 'closed'].includes(newStatus);
+onStatusChange(newStatus: string): void {
+  if (!this.currentTicketId || !this.selectedTicket) return;
 
-    if (this.isChatDisabled) {
-      this.messages.push({
-        messageId: this.messages.length + 1,
-        sender: 'System',
-        role: 'System',
-        content: `Ticket has been marked as ${newStatus}. This conversation is now closed.`,
-        time: 'just now',
-        attachments: [],
-        type: 'system'
-      });
-    }
-  }
+  // Store the current status before changing it
+  this.previousStatus = this.selectedTicket.status;
+  
+  this.selectedTicket.status = newStatus;
+  this.selectedTicket.updated = new Date().toLocaleString();
+  this.isChatDisabled = ['CLOSED'].includes(newStatus);
+
+  this.addStatusChangeMessage(this.currentTicketId, newStatus);
+
+
+  this.updateTicketStatus(this.selectedTicket);
+}
   
   //--------------------------------------------------------------//
-// Add this method to handle status class conversion
 getStatusClass(status: string): string {
   if (!status) return 'new';
   
@@ -451,43 +475,45 @@ getStatusClass(status: string): string {
     }
   }
 
-   openTicket(ticketId: string) {
-      this.selectedTicket = this.tickets.find(t => t.tktId === ticketId);
-      this.currentTicketId = ticketId; // ← Add this line
-      this.loadMessages(ticketId);
-      this.messages = this.chatService.getMessages(ticketId);
-      this.newMessage = '';
+openTicket(ticketId: string) {
+  this.selectedTicket = this.tickets.find(t => t.tktId === ticketId);
+  this.currentTicketId = ticketId;
+  this.loadMessages(ticketId);
+  this.messages = this.chatService.getMessages(ticketId);
+  this.newMessage = '';
 
-      if (this.selectedTicket) {
-        const statusClass = this.getStatusClass(this.selectedTicket.Status);
-        this.selectedTicket.statusClass = statusClass;
-        this.isChatDisabled = ['RESOLVED', 'CLOSED'].includes(
-          this.tickets.find(t => t.tktId === ticketId)?.status || ''
-        );
-      }
+  if (this.selectedTicket) {
+    const statusClass = this.getStatusClass(this.selectedTicket.status);
+    this.selectedTicket.statusClass = statusClass;
+    this.isChatDisabled = ['CLOSED'].includes(this.selectedTicket.status || '');
 
-      this.showModal = true;
+    // Add initial status message if this is the first time opening
+    if (this.messages.filter(m => m.isStatusChange).length === 0) {
+      this.addStatusChangeMessage(ticketId, `Ticket opened with status: ${this.selectedTicket.status}`);
     }
+  }
 
+  this.showModal = true;
+}
   viewTicket(ticketId: string) {
       this.currentTicketId = this.tickets.find(t => t.tktId === ticketId);
       
-      // Set the current status using your existing getStatusClass method
+     
       if (this.currentTicketId) {
         const statusClass = this.getStatusClass(this.currentTicketId.status);
-        // Map the status class to our dropdown values
+ 
         this.currentTicketId.currentStatus = statusClass === 'paused' ? 'in-progress' : statusClass;
       }
       
       this.showModal = true;
     }
 
-// Add this method to get the status dropdown class
+
     getStatusDropdownClass(status: string): string {
       const statusClass = this.getStatusClass(status);
       return statusClass === 'paused' ? 'in-progress' : statusClass;
     }
- // Add this method to close the modal
+
   closeModal() {
     this.showModal = false;
     this.selectedTicket = null;
@@ -500,22 +526,24 @@ getStatusClass(status: string): string {
  loadMessages(ticketId: string): void {
   this.messages = this.chatService.getMessages(ticketId);
 }
-  //update status of the selected ticket
 
-  updateTicketStatus(ticket: any) {
-    if(ticket.Status == 'CLOSED'){
 
-    }
+updateTicketStatus(ticket: any) {
   if (!ticket || !ticket.tktId) return;
 
-  this.tktCreatedService.updateTicketStatus(ticket.tktId, ticket.Status)
+  this.tktCreatedService.updateTicketStatus(ticket.tktId, ticket.status)
     .subscribe({
       next: (res) => {
         console.log('Status updated successfully!');
-        // Optional: Add toast or temporary message here
+  
+        this.addStatusChangeMessage(ticket.tktId, `Status confirmed as ${ticket.status}`);
       },
       error: (err) => {
         console.error('Error updating status:', err);
+
+        this.selectedTicket.status = this.previousStatus;
+        this.addStatusChangeMessage(ticket.tktId, 
+          `Failed to update status to ${ticket.status}. Reverted to ${this.previousStatus}`);
       }
     });
 }

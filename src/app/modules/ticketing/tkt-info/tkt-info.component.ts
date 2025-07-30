@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { IncidentserviceService } from '../service/incidents.service';
 import { IncidentReport } from '../models/tkt-details.model';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-tkt-info',
@@ -10,11 +11,15 @@ import { IncidentReport } from '../models/tkt-details.model';
 })
 export class TktInfoComponent implements OnInit {
   incident: IncidentReport | null = null;
+  editableIncident: IncidentReport | null = null;
   loading = true;
+  isEditMode = false;
+  isSaving = false;
 
   constructor(
     private route: ActivatedRoute,
-    private incidentService: IncidentserviceService
+    private incidentService: IncidentserviceService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -22,28 +27,78 @@ export class TktInfoComponent implements OnInit {
   }
 
   loadIncidentReportById(): void {
-  const id = this.route.snapshot.paramMap.get('id');
-  console.log('Route ID:', id); // Check if ID exists
-  
-  if (!id) {
-    console.error('No incident ID in route');
-    this.loading = false;
+    const id = this.route.snapshot.paramMap.get('id');
+    if (!id) {
+      console.error('No incident ID in route');
+      this.loading = false;
+      return;
+    }
+
+    this.incidentService.getIncidentById(id).subscribe({
+      next: (incident) => {
+        this.incident = incident;
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error loading incident:', err);
+        this.loading = false;
+      }
+    });
+  }
+
+  viewTicketDetails(): void {
+    if (!this.incident?.ticketID) {
+    console.error('TicketID not found.');
     return;
   }
 
-  this.incidentService.getIncidentById(id).subscribe({
-    next: (incident) => {
-      console.log('API Response:', incident); // Check the received data
-      this.incident = incident;
-      this.loading = false;
-    },
-    error: (err) => {
-      console.error('Error loading incident:', err);
-      this.loading = false;
-    },
-    complete: () => console.log('Request completed') // Verify completion
+  this.router.navigate(['/ticket_details'], {
+    queryParams: {
+      id: this.incident.ticketID,
+      openTicket: 'true'
+    }
   });
 }
+
+  toggleEditMode(): void {
+    if (!this.isEditMode) {
+      this.editableIncident = { ...this.incident } as IncidentReport;
+      this.isEditMode = true;
+    } else {
+      this.saveEditedIncident();
+    }
+  }
+
+  saveEditedIncident(): void {
+    if (!this.editableIncident || !this.incident?.IncidentID) return;
+
+    this.isSaving = true;
+
+    this.incidentService.updateIncident(this.incident.IncidentID, this.editableIncident).subscribe({
+      next: (updated) => {
+        this.incident = { ...updated };
+        this.isEditMode = false;
+        this.editableIncident = null;
+        this.isSaving = false;
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: 'Incident updated successfully.',
+          confirmButtonColor: '#3085d6'
+        });
+      },
+      error: (err) => {
+        this.isSaving = false;
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Failed to update incident. Please try again.',
+          confirmButtonColor: '#d33'
+        });
+      }
+    });
+  }
 
   getSeverityClass(severity: string): string {
     switch (severity?.toLowerCase()) {

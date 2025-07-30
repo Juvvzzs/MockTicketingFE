@@ -1,3 +1,8 @@
+<!-- Spinner Overlay -->
+<div *ngIf="isSaving" class="overlay-blur">
+  <div class="spinner"></div>
+</div>
+
 <ng-container *ngIf="!loading; else loadingTemplate">
     <header class="page-header">
         <div>
@@ -13,8 +18,14 @@
             </div>
         </div>
         <div class="header-actions">
-            <button class="btn btn-secondary"><i class="fas fa-edit"></i> Edit Report Details</button>
-            <button class="btn btn-secondary" title="View Linked Ticket #{{ incident?.ticketCategory }}"><i class="fas fa-ticket-alt"></i> View Ticket</button>
+           <button class="btn btn-secondary" (click)="toggleEditMode()">
+            <i class="fas" [ngClass]="isEditMode ? 'fa-save' : 'fa-edit'"></i>
+            {{ isEditMode ? 'Save Changes' : 'Edit Report Details' }}
+          </button>
+
+
+
+            <button class="btn btn-secondary" (click)="viewTicketDetails()" ><i class="fas fa-ticket-alt"></i> View Ticket</button>
             <button class="btn btn-secondary"><i class="fas fa-file-export"></i> Export</button>
         </div>
     </header>
@@ -47,35 +58,67 @@
     </div>
   
     <div class="incident-details-grid">
-  <div class="details-column">
-    <section class="content-card" style="margin-bottom: 20px;">
-      <h2><i class="bi bi-bullseye icon-title"></i> Impact</h2>
-      <div class="incident-details-section">
-        <p><strong>Impact Assessment:</strong></p>
+ <div class="details-column">
+  <!-- Impact Section -->
+  <section class="content-card" style="margin-bottom: 20px;">
+    <h2><i class="bi bi-bullseye icon-title"></i> Impact</h2>
+    <div class="incident-details-section">
+      <p><strong>Impact Assessment:</strong></p>
+      <ng-container *ngIf="!isEditMode">
         <p>{{ incident?.ImpactAssessment }}</p>
-      </div>
-    </section>
+      </ng-container>
+      <ng-container *ngIf="isEditMode && editableIncident">
+        <textarea [(ngModel)]="editableIncident.ImpactAssessment" class="form-control" rows="3"></textarea>
+      </ng-container>
+    </div>
+  </section>
 
-    <section class="content-card" style="margin-bottom: 20px;">
-      <h2><i class="bi bi-shield-check icon-title"></i> Response & Recovery</h2>
-      <div class="incident-details-section">
-        <p><strong>Containment Actions:</strong></p>
+  <!-- Response & Recovery Section -->
+  <section class="content-card" style="margin-bottom: 20px;">
+    <h2><i class="bi bi-shield-check icon-title"></i> Response & Recovery</h2>
+    <div class="incident-details-section">
+      <p><strong>Containment Actions:</strong></p>
+      <ng-container *ngIf="!isEditMode">
         <p>{{ incident?.ContainmentActions }}</p>
-        <p><strong>Eradication Steps:</strong></p>
-        <p>{{ incident?.EradicationSteps }}</p>
-        <p><strong>Recovery Process:</strong></p>
-        <p>{{ incident?.RecoveryProcess }}</p>
-      </div>
-    </section>
+      </ng-container>
+      <ng-container *ngIf="isEditMode && editableIncident">
+        <textarea [(ngModel)]="editableIncident.ContainmentActions" class="form-control" rows="2"></textarea>
+      </ng-container>
 
-    <section class="content-card">
-      <h2><i class="bi bi-clipboard icon-title"></i> Post-Incident Review</h2>
-      <div class="incident-details-section">
-        <p><strong>Lessons Learned:</strong></p>
+      <p><strong>Eradication Steps:</strong></p>
+      <ng-container *ngIf="!isEditMode">
+        <p>{{ incident?.EradicationSteps }}</p>
+      </ng-container>
+      <ng-container *ngIf="isEditMode && editableIncident">
+        <textarea [(ngModel)]="editableIncident.EradicationSteps" class="form-control" rows="2"></textarea>
+      </ng-container>
+
+      <p><strong>Recovery Process:</strong></p>
+      <ng-container *ngIf="!isEditMode">
+        <p>{{ incident?.RecoveryProcess }}</p>
+      </ng-container>
+      <ng-container *ngIf="isEditMode && editableIncident">
+        <textarea [(ngModel)]="editableIncident.RecoveryProcess" class="form-control" rows="2"></textarea>
+      </ng-container>
+    </div>
+  </section>
+
+  <!-- Post-Incident Review Section -->
+  <section class="content-card">
+    <h2><i class="bi bi-clipboard icon-title"></i> Post-Incident Review</h2>
+    <div class="incident-details-section">
+      <p><strong>Lessons Learned:</strong></p>
+      <ng-container *ngIf="!isEditMode">
         <p>{{ incident?.LessonsLearned }}</p>
-      </div>
-    </section>
-  </div>
+      </ng-container>
+      <ng-container *ngIf="isEditMode && editableIncident">
+        <textarea [(ngModel)]="editableIncident.LessonsLearned" class="form-control" rows="2"></textarea>
+      </ng-container>
+    </div>
+  </section>
+</div>
+
+
 
 
   

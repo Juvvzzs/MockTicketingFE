@@ -9,24 +9,53 @@ import { IncidentReport, IncidentList, JsonBinResponse2,} from '../models/tkt-de
   providedIn: 'root'
 })
 export class IncidentserviceService {
+  private binId = '688a3c76ae596e708fbe54d3';
+  private apiUrl = `https://api.jsonbin.io/v3/b/${this.binId}`;
 
-  private binId = '687fc10fae596e708fb9ed7d'; 
-  private apiUrl = `https://api.jsonbin.io/v3/b/${this.binId}`;  //https://api.jsonbin.io/v3/b/
+  // Add these standard headers
+  private headers = {
+    'Content-Type': 'application/json',
+    'X-Bin-Versioning': 'false' // Disable versioning to prevent history buildup
+  };
 
-  constructor( private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
+  getIncidentReports(): Observable<IncidentList[]> {
+    return this.http.get<JsonBinResponse>(`${this.apiUrl}/latest`).pipe(
+      tap(response => console.log('GET Response:', response)),
+      map(res => [...(res.record?.incident_reports || [])].reverse()),
+      catchError(this.handleError)
+    );
+  }
 
-   getIncidentReports(): Observable<IncidentList[]> {
-  return this.http.get<JsonBinResponse>(`${this.apiUrl}/latest`).pipe(
-    tap(response => console.log('Raw API response:', response)),
-    map(res => {
-      const reports = res.record?.incident_reports || [];
-       return [...reports].reverse();
+  updateIncident(id: string, updatedData: IncidentReport): Observable<IncidentReport> {
+  const headers = {
+    'Content-Type': 'application/json'
+  };
+
+  return this.http.get<JsonBinResponse2>(`${this.apiUrl}/latest`).pipe(
+    map(response => {
+      const currentData = response.record;
+      const incidents: IncidentReport[] = currentData.incident_reports || [];
+
+      const index = incidents.findIndex((item: IncidentReport) => item.IncidentID === id);
+      
+      if (index !== -1) {
+        incidents[index] = { ...incidents[index], ...updatedData };
+      } else {
+        throw new Error('Incident not found');
+      }
+
+      return { ...currentData, incident_reports: incidents };
     }),
+    switchMap(updatedRecord =>
+      this.http.put<JsonBinResponse2>(`${this.apiUrl}`, updatedRecord, { headers })
+    ),
+    map(() => updatedData),
     catchError(this.handleError)
   );
-} 
- 
+}
+
    getIncidentById(reportId: string): Observable<IncidentReport | null> {
     return this.http.get<JsonBinResponse2>(`${this.apiUrl}/latest`).pipe(
     tap(response => console.log('Raw API Response:', response)), // Add this line
@@ -45,11 +74,14 @@ export class IncidentserviceService {
     );
   }
 
+  
+
   private mapIncidentData(apiIncident: any): IncidentReport {
      console.log('Mapping incident:', apiIncident); 
     return {
       IncidentID: apiIncident.IncidentID,
-      ticketCategory: apiIncident.TktID || apiIncident.ticketCategory,
+      ticketCategory: apiIncident.ticketCategory,
+      ticketID:apiIncident.ticketID,
       Severity: this.normalizeSeverity(apiIncident.Severity || apiIncident.severity),
       IncidentType: apiIncident.incidentType || apiIncident.IncidentType,
       ImpactAssessment: apiIncident.impactAssessment || apiIncident.ImpactAssessment || '',
