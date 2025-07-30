@@ -5,6 +5,19 @@
   import { TktCrtincReportService } from '../service/tkt-crtinc-report.service';
   import { TktCategoryService } from '../service/tkt-category.service';
   import { TktCategory } from '../models/tkt-category';
+  import { TktDemochatService } from '../service/tkt-demochat.service';
+
+  interface Message {
+  messageId: number;
+  sender: string;
+  role: string;
+  content: string;
+  time: string;
+  attachments: { name: string; type: string; url?: string }[];
+  type: string;
+}
+
+
   interface Status {
     value: string;
   } 
@@ -14,6 +27,7 @@
     templateUrl: './tkt-details.component.html',
     styleUrls: ['./tkt-details.component.css']
   })
+
   export class TktDetailsComponent {
     categories: TktCategory[] = [];
     tickets: Ticket[] = [];
@@ -38,6 +52,13 @@
     selectedDateRange: string = 'all';
     selectedCategory: string = 'all';
 
+  isChatDisabled = false;
+  showMessageModal = false;
+  currentTicketId: string = '';
+  messages: Message[] = [];
+  newMessage = '';
+  initialAttachments: File[] = [];
+  attachments: File[] = [];
 
     status: Status [] = [
       { value: 'NEW'},
@@ -94,6 +115,7 @@
       private tktAdminviewService: TktAdminviewService,
       private tktCrtincReportService: TktCrtincReportService,
       private tktCategoryService: TktCategoryService,
+      private chatService: TktDemochatService,
       private router : Router
     ) {}
 
@@ -103,7 +125,10 @@
       this.selectedCategory = 'all';
       this.loadCategories();
       this.loadTickets();
+    
 }
+
+
     loadCategories(): void {
       this.tktCategoryService.getTicketCategory().subscribe({
         next: (data: TktCategory[]) => {
@@ -241,14 +266,21 @@
       return new Date(dateString).toLocaleDateString(undefined, options);
     }
 
-    openTicket(ticketId: string) {
+   openTicket(ticketId: string) {
       this.selectedTicket = this.tickets.find(t => t.TicketID === ticketId);
-      
+      this.currentTicketId = ticketId; // ← Add this line
+      this.loadMessages(ticketId);
+      this.messages = this.chatService.getMessages(ticketId);
+      this.newMessage = '';
+
       if (this.selectedTicket) {
         const statusClass = this.getStatusClass(this.selectedTicket.Status);
         this.selectedTicket.statusClass = statusClass;
-        this.selectedTicket.currentStatus = statusClass === 'paused' ? 'in-progress' : statusClass;
+        this.isChatDisabled = ['RESOLVED', 'CLOSED'].includes(
+          this.tickets.find(t => t.TicketID === ticketId)?.Status || ''
+        );
       }
+
       this.showModal = true;
     }
 
@@ -428,6 +460,58 @@
       };
     }
   }
+  onFileSelected(event: any) {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      this.attachments = Array.from(files);
+    }
+  }
 
+  onInitialFileSelected(event: any) {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      this.initialAttachments = Array.from(files);
+    }
+  }
+  removeAttachment(index: number): void {
+    if (this.isChatDisabled) return;
+    this.attachments.splice(index, 1);
+  }
+
+loadMessages(ticketId: string): void {
+  this.messages = this.chatService.getMessages(ticketId);
+}
+
+
+sendMessage(): void {
+  if (!this.newMessage.trim() || !this.currentTicketId || this.isChatDisabled) return;
+
+  const newMsg: Message = {
+    messageId: Date.now(),
+    sender: 'Technical Support',
+    role: 'Admin',
+    content: this.newMessage,
+    time: new Date().toLocaleTimeString(),
+    attachments: this.attachments.map(file => ({
+      name: file.name,
+      type: file.type.split('/')[0] || 'file',
+      url: URL.createObjectURL(file) 
+    })),
+    type: 'text'
+  };
+ 
+  this.chatService.sendMessage(this.currentTicketId, newMsg);
+  this.messages.push(newMsg);
+  this.newMessage = '';
+  this.attachments = [];
+  this.scrollToBottom();
+}
+
+private scrollToBottom() {
+  setTimeout(() => {
+    const thread = document.querySelector('.conversation-thread');
+    if (thread) thread.scrollTop = thread.scrollHeight;
+  }, 100);
+}
 
   }
