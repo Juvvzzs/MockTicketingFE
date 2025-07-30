@@ -34,14 +34,6 @@
                   <div class="column">
                       <div class="incident-header">
                           <h2>Incident Reports</h2>
-                          <div class="severity-filter">
-                              <select id="severity-select" [(ngModel)]="selectedSeverity" (change)="filterIncidents()">
-                                  <option value="all">All</option>
-                                  <option value="critical">Critical</option>
-                                  <option value="high">High</option>
-                                  <option value="medium">Medium</option>
-                              </select>
-                          </div>
                       </div>
                       
                       <table id="incident-table">

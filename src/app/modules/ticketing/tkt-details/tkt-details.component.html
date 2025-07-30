@@ -103,11 +103,9 @@
                 <td class="compact">{{ formatDate(ticket.LastUpdatedDT) }}</td>
                 <td class="compact actions">
                   <button class="icon-btn" title="View" (click)="openTicket(ticket.TicketID)">
-                    <i class="bx bx-refresh"></i>
-                  </button>
-                  <button class="icon-btn" title="Edit" (click)="openTicket(ticket.TicketID)">
                     <i class="bx bx-message"></i>
                   </button>
+                
                 </td>
               </tr>
             </tbody>
@@ -168,9 +166,8 @@
       </div>
     </div>
 
-    <h2 class="ticket-subject">{{selectedTicket?.Subject}}</h2>
-    <h4 class="ticket-description">{{selectedTicket?.Description}}</h4>
-
+    <h2 class="ticket-subject">{{selectedTicket?.Subject}} <p class="ticket-description">Description: {{selectedTicket?.Description}}</p></h2>
+    
     <div class="ticket-meta">
       <div class="meta-item">
         <span class="meta-label">Client:</span>
@@ -188,76 +185,75 @@
 
     <!-- Scrollable Conversation Area -->
     <div class="conversation-container">
-      <div class="conversation-thread">
-        
+      <div class="conversation-thread">  
+        <div *ngIf="messages.length === 0" class="no-messages">No messages yet.</div>
+        <div *ngFor="let msg of messages" 
+         [ngClass]="{
+       'message-box': true,
+       'sent-message': msg.role === 'Admin',
+       'reply-message': msg.role === 'Client'
+     }">
 
-        <div class="message-box message-right support-message">
-          <div class="message-header">
-            <div class="message-sender">
-              <span class="name">{{selectedTicket?.ClientName}}</span>
-              <span class="role">Client</span> 
-            </div>
-            <span class="time">10:35 AM</span>
+        <div class="message-header">
+          <div class="message-sender">
+            <span class="name">{{ msg.sender }}</span>
+            <span class="role">{{ msg.role }}</span>
           </div>
-          <div class="message-body">
-            <p>Hello, I'm having issues with my login credentials.</p>
-          </div>
+          <span class="time">{{ msg.time }}</span>
         </div>
-        
-        <div class="message-box message-left user-message">
-          <div class="message-header">
-            <div class="message-sender">
-              <span class="name">Support Team</span>
-              <span class="role">Technical Support</span> 
-            </div>
-            <span class="time">10:30 AM</span>
-          </div>
-          <div class="message-body">
-            <p>We're looking into your issue and will get back to you shortly.</p>
-          </div>
-        </div>
-
-        <div class="message-box system-message">
-          <div class="message-header">
-            <div class="message-sender">
-              <span class="name">System</span>
-              <span class="role">System</span> 
-            </div>
-            <span class="time">10:36 AM</span>
-          </div>
-          <div class="message-body">
-            <p>Ticket status changed to "In Progress"</p>
-          </div>
+        <div class="message-body">
+          <p>{{ msg.content }}</p>
+          <div *ngIf="msg.attachments?.length" class="message-footer">
+           <div class="attachments">
+                  <div *ngFor="let attachment of msg.attachments" class="attachment">
+                    <i class='bx' [ngClass]="{
+                      'bx-image': attachment.type === 'image',
+                      'bx-file': attachment.type !== 'image'
+                    }"></i>
+                    <span>{{attachment.name}}</span>
+                    <a *ngIf="attachment.url" [href]="attachment.url" target="_blank" class="preview-link">
+                      <i class='bx bx-search-alt'></i> Preview
+                    </a>
+                  </div>
+                </div>
+           </div>
+         </div>
         </div>
       </div>
     </div>
 
     <div class="response-section">
-      <div class="attachments-preview">
-        <div class="attachment-preview">
-          <span>screenshot.png</span>
-          <button class="remove-attachment">
-            <i class='bx bx-x'></i>
-          </button>
-        </div>
+   
+        <div *ngFor="let file of attachments; let i = index" class="attachment-preview">
+        <span>{{ file.name }}</span>
+        <button class="remove-attachment" (click)="removeAttachment(i)" *ngFor="let file of attachments; let i = index">
+          <i class='bx bx-x'></i>
+        </button>
       </div>
+
       
       <div class="response-input-container">
-        <input type="text" placeholder="Type your response here..." />
+        <input type="text" [(ngModel)]="newMessage" placeholder="Type your response here..." [disabled]="isChatDisabled" />
         <div class="response-actions">
           <label for="fileInput" class="attachment-btn" title="Attach file">
             <i class='bx bx-paperclip'></i>
-            <input id="fileInput" type="file" multiple style="display: none;">
+            <input id="fileInput" type="file" (change)="onFileSelected($event)" multiple style="display: none;">
+
           </label>
-          <button class="send-btn">
+         <button class="send-btn" (click)="sendMessage()" [disabled]="isChatDisabled || !newMessage.trim()">
             Send <i class='bx bx-send'></i>
           </button>
         </div>
       </div>
     </div>
+
+      <!-- View-only message when ticket is closed -->
+    <div class="view-only-message" *ngIf="selectedTicket?.Status === 'Closed'">
+      <p>This ticket is closed and cannot be modified.</p>
+    </div>
   </div>
 </div>
-<!-- Incident Report Modal (new modal) -->
+<!-- Incident Report Modal -->
 <div class="modal-overlay" *ngIf="showTicketModal" (click)="onBackdropClick($event)">
   <div class="modal-container">
     

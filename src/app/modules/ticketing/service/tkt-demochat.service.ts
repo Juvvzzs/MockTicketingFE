@@ -1,64 +1,36 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { catchError, map } from 'rxjs/operators'; 
-import { TktChatmessages } from '../models/tkt-chatmessages';
+
+interface Message {
+  messageId: number;
+  sender: string;
+  role: string;
+  content: string;
+  time: string;
+  attachments: { name: string; type: string; url?: string }[];
+  type: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class TktDemochatService {
+  private chatStorageKey = 'tkt-demo-chat-messages';
 
- private messagesKey = 'chatMessages';
-  private ticketsKey = 'chatTickets';
-
-  // Message methods
-  getMessages(ticketId: string): TktChatmessages[] {
-    const all = JSON.parse(localStorage.getItem(this.messagesKey) || '{}');
-    return all[ticketId] || [];
+  getAllMessages(): { [ticketId: string]: Message[] } {
+    const raw = localStorage.getItem(this.chatStorageKey);
+    return raw ? JSON.parse(raw) : {};
   }
 
-  // In demochat.service.ts
-sendMessage(ticketId: string, message: TktChatmessages): void {
-  const all = JSON.parse(localStorage.getItem(this.messagesKey) || '{}');
-  if (!all[ticketId]) all[ticketId] = [];
-  
-  // Check for duplicates before adding
-  const exists = all[ticketId].some((m: TktChatmessages) => 
-    m.timestamp === message.timestamp
-  );
-  
-  if (!exists) {
-    all[ticketId].push(message);
-    localStorage.setItem(this.messagesKey, JSON.stringify(all));
-  }
-}
-
-  // Ticket methods
-  createTicket(ticket: any): void {
-    const allTickets = JSON.parse(localStorage.getItem(this.ticketsKey) || '{}');
-    allTickets[ticket.id] = ticket;
-    localStorage.setItem(this.ticketsKey, JSON.stringify(allTickets));
+   getMessages(ticketId: string): Message[] {
+    const key = `chat_${ticketId}`;
+    const messages = localStorage.getItem(key);
+    return messages ? JSON.parse(messages) : [];
   }
 
-  getTicket(ticketId: string): any {
-    const allTickets = JSON.parse(localStorage.getItem(this.ticketsKey) || '{}');
-    return allTickets[ticketId];
+  sendMessage(ticketId: string, message: Message): void {
+    const key = `chat_${ticketId}`;
+    const existingMessages = this.getMessages(ticketId);
+    existingMessages.push(message);
+    localStorage.setItem(key, JSON.stringify(existingMessages));
   }
-
-  getAllTickets(): any[] {
-    const allTickets = JSON.parse(localStorage.getItem(this.ticketsKey) || '{}');
-    return Object.values(allTickets);
-  }
-
-  updateTicket(ticket: any): void {
-    const allTickets = JSON.parse(localStorage.getItem(this.ticketsKey) || '{}');
-    allTickets[ticket.id] = ticket;
-    localStorage.setItem(this.ticketsKey, JSON.stringify(allTickets));
-  }
-   
-getNewMessages(ticketId: string, lastTimestamp: number): TktChatmessages[] {
-  const all = JSON.parse(localStorage.getItem(this.messagesKey) || '{}');
-  const ticketMessages = all[ticketId] || [];
-  return ticketMessages.filter((msg: TktChatmessages) => msg.timestamp > lastTimestamp);
-}
 }

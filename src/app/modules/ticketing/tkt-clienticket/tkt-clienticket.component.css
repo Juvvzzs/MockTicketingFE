@@ -589,6 +589,26 @@ option {
   opacity: 0;
   transform: translateY(10px);
   animation: fadeIn 0.3s forwards;
+  margin: 10px 0;
+}
+
+.sent-message {
+  align-self: flex-end;
+  background-color: #e1f5fe;
+  color: #000;
+  border-top-right-radius: 0;
+  margin-left: auto;
+  border-right: 3px solid #0288d1;
+}
+
+/* Left-aligned (Client) */
+.reply-message {
+  align-self: flex-start;
+  background-color: #f1f8e9;
+  color: #333;
+  border-top-left-radius: 0;
+  margin-right: auto;
+  border-left: 3px solid #4CAF50;
 }
 
 
@@ -1201,4 +1221,62 @@ option {
 .response-section input[disabled] {
   opacity: 0.6;
   pointer-events: none;
+}
+
+.attachments {
+  margin-top: 10px;
+  border-top: 1px dashed #ddd;
+  padding-top: 5px;
+}
+
+.attachment {
+  display: flex;
+  align-items: center;
+  margin: 5px 0;
+  padding: 5px;
+  background: rgba(0,0,0,0.05);
+  border-radius: 4px;
+}
+
+.attachment i {
+  margin-right: 8px;
+  font-size: 1.2em;
+}
+
+.attachment-btn {
+  cursor: pointer;
+  padding: 10px;
+  background: #f5f5f5;
+  border-radius: 4px;
+  margin-right: 5px;
+}
+
+.attachment-btn.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+
+
+.attachments-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.attachment-preview {
+  background: #f5f5f5;
+  padding: 5px 10px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.remove-attachment {
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  margin-left: 5px;
 }

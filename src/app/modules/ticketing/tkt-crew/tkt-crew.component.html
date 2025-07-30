@@ -75,26 +75,23 @@
               <th>Status</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td>
-                <div class="d-flex align-items-center">
-                  <img src="https://storage.googleapis.com/a1aa/image/43338b52-960c-428e-4c5a-6cecb6eddfaa.jpg" 
-                       alt="Avatar" 
-                       class="rounded-circle me-2" 
-                       width="32" 
-                       height="32">
-                  Sandeep
-                </div>
-              </td>
-              <td>Cybersecurity</td>
-              <td>9898989898</td>
-              <td>
-                <span class="badge bg-success">Online</span>
-              </td>
-            </tr>
-            <!-- Add more rows using *ngFor -->
-          </tbody>
+        <tbody>
+          <tr *ngFor="let crew of ticketingCrew">
+            <td>
+              <div class="d-flex align-items-center">
+                 <img [src]="profilePicture.imageDataURL? profilePicture.imageDataURL: './assets/img/avatars/profilepng.webp'"
+                            alt class="w-px-40 h-auto rounded-circle" />
+                {{ crew.fullname }}
+              </div>
+            </td>
+            <td>{{ crew.category_assigned }}</td>
+            <td>{{ crew.Emp_id }}</td>
+            <td>
+              <span class="badge bg-success">Online</span>
+            </td>
+          </tr>
+        </tbody>
+
         </table>
       </div>
     </div>
@@ -129,7 +126,7 @@
 </div>
 
 <!-- Add Crew Modal -->
-<div class="modal fade" id="addCrewModal" tabindex="-1">
+<div class="modal fade" #addCrewModal id="addCrewModal" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -137,7 +134,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        <form>
+        <form (ngSubmit)="onSubmit()" #crewForm="ngForm">
           <div class="text-center mb-4">
             <img src="https://storage.googleapis.com/a1aa/image/6d409bd2-1eec-49d1-afc1-c90d305bbfdf.jpg" 
                  alt="Profile" 
@@ -149,27 +146,26 @@
             <div class="text-muted small">PROFILE (Optional)</div>
           </div>
 
-          <div class="mb-3">
-            <label class="form-label">FullName</label>
-            <input type="text" class="form-control" placeholder="Name">
-          </div>
+            <div class="mb-3">
+              <label class="form-label">FullName</label>
+              <input type="text" class="form-control" [(ngModel)]="newCrew.fullname" name="fullname" placeholder="FullName">
+            </div>
 
-          <div class="mb-3">
-            <label class="form-label">Category</label>
-            <select class="form-select">
-              <option disabled selected>Please Select</option>
-              <option value="cybersecurity">Cybersecurity</option>
-              <!-- Additional options -->
-            </select>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label">UID</label>
-            <input type="text" class="form-control" placeholder="UID">
-          </div>
+            <div class="mb-3">
+              <label class="form-label">Category</label>
+              <select class="form-select" [(ngModel)]="newCrew.category_assigned" name="category_assigned" (change)="onCategoryChange($event)">
+                <option value="">Select a category</option>
+                <option *ngFor="let category of categories" [value]="category.Category">
+                  {{ category.Category }}
+                </option>
+              </select>
+            </div>
+                
 
           <div class="d-flex gap-2 justify-content-end mt-4">
-            <button type="submit" class="btn btn-success px-4">Submit</button>
+            <button type="submit" class="btn btn-success px-4"
+            
+             ><span *ngIf="submitting" class="spinner-border spinner-border-sm me-1"></span>Submit</button>
             <button type="button" class="btn btn-danger px-4" data-bs-dismiss="modal">Cancel</button>
           </div>
         </form>

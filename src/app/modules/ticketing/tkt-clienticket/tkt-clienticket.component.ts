@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { TktCategory } from '../models/tkt-category';
 import { TktCategoryService } from '../service/tkt-category.service';
 import { TktCreatedService } from '../service/tkt-created.service';
+import { TktDemochatService } from '../service/tkt-demochat.service';
+
 import Swal from 'sweetalert2';
 
 import {  Ticket } from '../models/tkt-created';
@@ -14,6 +16,13 @@ interface Message {
   time: string;
   attachments: { name: string; type: string; url?: string }[];
   type: string;
+}
+
+ interface Attachment {
+  name: string;
+  type: string;
+  size?: number;
+  url?: string;
 }
 
 interface StatusOption {
@@ -32,10 +41,7 @@ interface Status {
 })
 export class TktClienticketComponent implements OnInit {
  
-  showTicketModal = false;
-  showMessageModal = false;
-  currentTicketId: string | null = null;
-
+  
   ticketForm = {
     subject: '',
     description: '',
@@ -67,6 +73,7 @@ export class TktClienticketComponent implements OnInit {
 
   messages: Message[] = [];
   newMessage = '';
+  initialAttachments: File[] = [];
   attachments: File[] = [];
   isChatDisabled = false;
   paginatedTickets: Ticket[] = [];
@@ -102,7 +109,8 @@ export class TktClienticketComponent implements OnInit {
 
   constructor(
     private tktCategoryService: TktCategoryService,
-    private tktCreatedService: TktCreatedService
+    private tktCreatedService: TktCreatedService,
+    private chatService: TktDemochatService 
   ) {}
 
   ngOnInit(): void {
@@ -112,6 +120,11 @@ export class TktClienticketComponent implements OnInit {
 
   showModal = false;
   selectedTicket: any = null;
+
+  showTicketModal = false;
+  showMessageModal = false;
+  currentTicketId: any = null;
+
 
   loadCategories(): void {
     this.tktCategoryService.getTicketCategory().subscribe({
@@ -231,9 +244,49 @@ private normalizeStatusClass(status: string): string {
   }
 
   openMessageModal(ticketId: string): void {
-    this.currentTicketId = ticketId;
-    this.showMessageModal = true;
-  }
+  this.currentTicketId = ticketId;
+  this.messages = this.chatService.getMessages(ticketId);
+  this.showMessageModal = true;
+  this.isChatDisabled = ['RESOLVED', 'CLOSED'].includes(
+    this.tickets.find(t => t.tktId === ticketId)?.status || ''
+  );
+}
+
+//send message add here
+sendMessage(): void {
+  if (!this.newMessage.trim() || !this.currentTicketId || this.isChatDisabled){ 
+    alert('Please fill in all required fileds');
+    return;
+  } 
+
+  const newMsg: Message = {
+    messageId: Date.now(),
+    sender: 'Azaleah Lenihan',
+    role: 'Client',
+    content: this.newMessage,
+    time: new Date().toLocaleTimeString(),
+    attachments: this.attachments.map(file => ({
+      name: file.name,
+      type: file.type.split('/')[0] || 'file',
+      url: URL.createObjectURL(file) 
+    })),
+    type: 'text'
+  };
+
+  this.chatService. sendMessage(this.currentTicketId, newMsg);
+  this.messages.push(newMsg);
+  this.newMessage = '';
+  this.attachments = [];
+  this.scrollToBottom();
+}
+
+private scrollToBottom() {
+  setTimeout(() => {
+    const thread = document.querySelector('.conversation-thread');
+    if (thread) thread.scrollTop = thread.scrollHeight;
+  }, 100);
+}
+
 
   // Add this method to handle category selection
 onCategoryChange(event: any): void {
@@ -384,23 +437,46 @@ getStatusClass(status: string): string {
     return new Date(dateString).toLocaleDateString(undefined, options);
   }
 
-  onFileSelected(event: Event): void {
-    if (this.isChatDisabled) return;
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      this.attachments = Array.from(input.files);
+  onFileSelected(event: any) {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      this.attachments = Array.from(files);
     }
   }
 
+  onInitialFileSelected(event: any) {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      this.initialAttachments = Array.from(files);
+    }
+  }
+
+   openTicket(ticketId: string) {
+      this.selectedTicket = this.tickets.find(t => t.tktId === ticketId);
+      this.currentTicketId = ticketId; // ← Add this line
+      this.loadMessages(ticketId);
+      this.messages = this.chatService.getMessages(ticketId);
+      this.newMessage = '';
+
+      if (this.selectedTicket) {
+        const statusClass = this.getStatusClass(this.selectedTicket.Status);
+        this.selectedTicket.statusClass = statusClass;
+        this.isChatDisabled = ['RESOLVED', 'CLOSED'].includes(
+          this.tickets.find(t => t.tktId === ticketId)?.status || ''
+        );
+      }
+
+      this.showModal = true;
+    }
 
   viewTicket(ticketId: string) {
-      this.selectedTicket = this.tickets.find(t => t.tktId === ticketId);
+      this.currentTicketId = this.tickets.find(t => t.tktId === ticketId);
       
       // Set the current status using your existing getStatusClass method
-      if (this.selectedTicket) {
-        const statusClass = this.getStatusClass(this.selectedTicket.status);
+      if (this.currentTicketId) {
+        const statusClass = this.getStatusClass(this.currentTicketId.status);
         // Map the status class to our dropdown values
-        this.selectedTicket.currentStatus = statusClass === 'paused' ? 'in-progress' : statusClass;
+        this.currentTicketId.currentStatus = statusClass === 'paused' ? 'in-progress' : statusClass;
       }
       
       this.showModal = true;
@@ -421,7 +497,9 @@ getStatusClass(status: string): string {
     if (this.isChatDisabled) return;
     this.attachments.splice(index, 1);
   }
-
+ loadMessages(ticketId: string): void {
+  this.messages = this.chatService.getMessages(ticketId);
+}
   //update status of the selected ticket
 
   updateTicketStatus(ticket: any) {
