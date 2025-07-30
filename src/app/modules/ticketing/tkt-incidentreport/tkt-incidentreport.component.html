@@ -2,34 +2,42 @@
     <h1>Incident Reports</h1>
 </header>
 
-<div class="summary-cards-row">
-    <div class="summary-card">
-       <div class="summary-card-content">
-           <div class="card-value">{{ criticalCount }}</div>
-           <div class="card-label">CRITICAL</div>
+<div class="summary-cards">
+    <div class="stat-card">
+       <div class="stat-content">
+           <div class="count">{{ criticalCount }}</div>
+           <div class="label">CRITICAL</div>
        </div>
-      <i class="bi bi-exclamation-triangle-fill icon-critical"></i>
+      <div class="icon-wrapper critical">
+        <fa-icon [icon]="faCritical" class="severity-icon"></fa-icon>
+      </div>
    </div>
-    <div class="summary-card">
-        <div class="summary-card-content">
-           <div class="card-value">{{ highCount }}</div>
-           <div class="card-label">HIGH</div>
+    <div class="stat-card">
+        <div class="stat-content">
+           <div class="count">{{ highCount }}</div>
+           <div class="label">HIGH</div>
        </div>
-       <i class="bi bi-exclamation-triangle icon-high"></i>
+       <div class="icon-wrapper high">
+         <fa-icon [icon]="faHigh" class="severity-icon"></fa-icon>
+       </div>
    </div>
-    <div class="summary-card">
-        <div class="summary-card-content">
-            <div class="card-value">{{ mediumCount }}</div>
-            <div class="card-label">MEDIUM</div>
+    <div class="stat-card">
+        <div class="stat-content">
+            <div class="count">{{ mediumCount }}</div>
+            <div class="label">MEDIUM</div>
         </div>
-        <i class="bi bi-exclamation-triangle icon-medium"></i>
+        <div class="icon-wrapper medium">
+          <fa-icon [icon]="faMedium" class="severity-icon"></fa-icon>
+        </div>
    </div>
-   <div class="summary-card">
-        <div class="summary-card-content">
-            <div class="card-value">{{ lowCount }}</div>
-            <div class="card-label">LOW</div>
+   <div class="stat-card">
+        <div class="stat-content">
+            <div class="count">{{ lowCount }}</div>
+            <div class="label">LOW</div>
         </div>
-       <i class="bi bi-exclamation-triangle-fill icon-low"></i>
+       <div class="icon-wrapper low">
+         <fa-icon [icon]="faLow" class="severity-icon"></fa-icon>
+       </div>
    </div>
 </div>
 

@@ -23,6 +23,91 @@ tbody td:last-child {
   opacity: 1;
 }
 
+/* Summary Cards - Match ticket page styling */
+.summary-cards {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 10px;
+  padding: 1rem;
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f0f0f0;
+  position: relative;
+  min-height: 80px;
+}
+
+.stat-content {
+  flex: 1;
+}
+
+.stat-icon {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  margin-left: 1rem;
+}
+
+/* Icon wrapper for FontAwesome icons with colored backgrounds */
+.icon-wrapper {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 1rem;
+}
+
+.severity-icon {
+  font-size: 20px;
+}
+
+/* Severity-specific colors - soft transparent backgrounds like ticket page */
+.icon-wrapper.critical {
+  background-color: rgba(255, 82, 82, 0.1);
+  color: #ff5252;
+}
+
+.icon-wrapper.high {
+  background-color: rgba(255, 152, 0, 0.1);
+  color: #ff9800;
+}
+
+.icon-wrapper.medium {
+  background-color: rgba(33, 150, 243, 0.1);
+  color: #2196f3;
+}
+
+.icon-wrapper.low {
+  background-color: rgba(76, 175, 80, 0.1);
+  color: #4caf50;
+}
+
+.severity-icon {
+  font-size: 20px;
+}
+
+.count {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.label {
+  font-size: 0.8rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
 
 
 .page-header h1 {

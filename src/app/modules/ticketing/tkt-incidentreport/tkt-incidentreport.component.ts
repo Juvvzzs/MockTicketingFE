@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { IncidentList } from '../models/tkt-details.model';
 import { IncidentserviceService } from '../service/incidents.service';
+import { faExclamationTriangle, faExclamationCircle, faInfoCircle, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-tkt-incidentreport',
@@ -21,6 +22,12 @@ export class TktIncidentreportComponent implements OnInit {
   public highCount: number = 0;
   public mediumCount: number = 0;
   public lowCount: number = 0;
+
+  // FontAwesome icons for severity levels
+  faCritical = faExclamationTriangle;  // Triangle warning for critical
+  faHigh = faExclamationCircle;        // Circle warning for high
+  faMedium = faInfoCircle;             // Info circle for medium
+  faLow = faCheckCircle;               // Check circle for low
 
   // Filters
   selectedSeverity = '';

@@ -4,16 +4,18 @@
 .page-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start; /* Changed to flex-start for better alignment */
     margin-bottom: 25px;
     padding-bottom: 0;
     border-bottom: none; /* Removed border */
+    gap: 20px; /* Add gap between left and right sections */
 }
 
 .title-with-pills {
     display: flex;
     align-items: center; /* Vertically align title and pills */
     gap: 15px; /* Space between title and pills */
+    flex: 1; /* Allow this section to grow */
 }
 
 .page-header h1 {
@@ -34,8 +36,17 @@
     color: #5e72e4;
 }
 
+.header-actions {
+    display: flex;
+    gap: 12px; /* Use gap instead of margin for consistent spacing */
+    flex-shrink: 0; /* Prevent buttons from shrinking */
+    align-items: flex-start; /* Align buttons to top */
+    margin-top: 20px; /* Add top margin to align with title */
+}
+
+/* Remove the old margin-left rule for buttons */
 .header-actions button {
-    margin-left: 10px;
+    white-space: nowrap; /* Prevent button text from wrapping */
 }
 
 /* --- Buttons --- */
@@ -251,6 +262,32 @@
     .info-label {
         margin-bottom: 3px; /* Add spacing between label and value */
     }
+    
+    /* Mobile header adjustments */
+    .page-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+    }
+    
+    .header-actions {
+        margin-top: 0;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+    
+    .header-actions button {
+        font-size: 13px;
+        padding: 8px 16px;
+    }
+}
+
+/* Tablet adjustments */
+@media (max-width: 1024px) and (min-width: 768px) {
+    .header-actions button {
+        font-size: 13px;
+        padding: 8px 18px;
+    }
 }
 
 /* --- Grid for details below Key Info --- */
@@ -324,73 +361,262 @@
 .minimal-table tbody tr:hover { background-color: #f6f9fc; }
 .minimal-table tbody tr:last-child td { border-bottom: none;}
 
-/* --- Timeline --- */
+/* --- Enhanced Timeline --- */
 .timeline-column .content-card h2 { border-bottom: 1px solid #e9ecef; }
 .timeline-column .content-card { padding-bottom: 10px; }
 
-.btn-add-timeline { margin: 15px 25px 0px 25px; }
+.btn-add-timeline { 
+    margin: 15px 25px 0px 25px; 
+    border: 2px dashed #dee2e6;
+    background-color: transparent;
+    color: #8898aa;
+    transition: all 0.2s ease;
+}
+
+.btn-add-timeline:hover {
+    border-color: #5e72e4;
+    background-color: rgba(94, 114, 228, 0.05);
+    color: #5e72e4;
+}
 
 .timeline {
     position: relative;
-    padding: 20px 25px 10px 45px;
+    padding: 25px 25px 15px 45px;
     margin-top: 10px;
 }
 
 .timeline::before {
     content: '';
     position: absolute;
-    top: 25px;
-    bottom: 15px;
-    left: 22px;
+    top: 0;
+    bottom: 0;
+    left: 32px; /* Positioned to align with dots */
     width: 2px;
     background-color: #e9ecef;
     border-radius: 1px;
 }
 
-.timeline-item { position: relative; margin-bottom: 30px; }
-.timeline-item:last-child { margin-bottom: 0; }
+.timeline-item { 
+    position: relative; 
+    margin-bottom: 25px;
+    padding-left: 25px;
+}
+.timeline-item:last-child { margin-bottom: 15px; }
 
 .timeline-dot {
     position: absolute;
-    left: -28px; /* Centered on the line (Line at 22px, padding 45px => 22-45 = -23. Dot 12px wide, border 2px => radius 8px? Center offset ~6px -> 22-6 = 16 -> 16-45 = -29px? Visually adjust to -28px */
-    top: 6px;
-    width: 12px;
-    height: 12px;
+    left: -19px;
+    top: 8px;
+    width: 14px;
+    height: 14px;
     background-color: #fff;
     border-radius: 50%;
-    border: 2px solid #5e72e4;
+    border: 3px solid #5e72e4;
     z-index: 1;
+    box-shadow: 0 2px 4px rgba(94, 114, 228, 0.2);
 }
-.timeline-item:first-child .timeline-dot { background-color: #5e72e4; } /* Highlight first dot */
+
+.timeline-dot-first { 
+    background-color: #5e72e4; 
+    border-color: #5e72e4;
+    box-shadow: 0 2px 8px rgba(94, 114, 228, 0.4);
+}
+
+.timeline-content {
+    background-color: #fff;
+    border-radius: 8px; /* Smaller border radius */
+    padding: 12px 16px; /* Reduced padding for compactness */
+    border: 1px solid #e9ecef;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+    position: relative;
+    min-height: auto; /* Remove fixed height */
+}
+
+.timeline-content:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    border-color: #dee2e6;
+}
+
+.timeline-content::before {
+    content: '';
+    position: absolute;
+    left: -8px;
+    top: 12px; /* Adjusted position */
+    width: 0;
+    height: 0;
+    border-top: 6px solid transparent; /* Smaller arrow */
+    border-bottom: 6px solid transparent;
+    border-right: 8px solid #e9ecef;
+}
+
+.timeline-content::after {
+    content: '';
+    position: absolute;
+    left: -7px;
+    top: 12px; /* Adjusted position */
+    width: 0;
+    height: 0;
+    border-top: 6px solid transparent; /* Smaller arrow */
+    border-bottom: 6px solid transparent;
+    border-right: 8px solid #fff;
+}
+
+.timeline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px; /* Reduced margin */
+    padding-bottom: 8px; /* Reduced padding */
+    border-bottom: 1px dashed #e9ecef;
+}
+
+.timeline-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px; /* Reduced gap */
+}
 
 .timeline-time {
     font-weight: 600;
-    font-size: 13px;
-    color: #344767;
-    margin-bottom: 5px;
+    font-size: 13px; /* Slightly smaller */
+    color: #5e72e4;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.timeline-author {
+    font-size: 12px; /* Smaller font */
+    color: #8898aa;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.timeline-icon {
+    font-size: 11px; /* Smaller icons */
+    opacity: 0.8;
+}
+
+.timeline-delete-btn {
+    background: none;
+    border: none;
+    color: #8898aa;
+    padding: 2px 4px; /* Smaller button */
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    opacity: 0.6;
+    font-size: 12px; /* Smaller icon */
+}
+
+.timeline-delete-btn:hover {
+    background-color: #f5365c;
+    color: white;
+    opacity: 1;
+    transform: scale(1.1);
 }
 
 .timeline-description {
     font-size: 14px;
     color: #525f7f;
-    margin-bottom: 6px;
-    padding: 0;
-    white-space: normal; /* Allow descriptions to wrap */
+    line-height: 1.4; /* Tighter line height */
+    margin: 0 0 8px 0; /* Reduced margin */
+    white-space: pre-wrap;
+    word-break: break-word;
 }
 
-.timeline-author {
-    font-size: 12px;
-    color: #8898aa;
-    display: block; /* Ensure it takes its own line */
-    margin-bottom: 4px; /* Space before logged time */
+.timeline-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 4px; /* Reduced padding */
 }
 
-/* Added style for RecordedDT */
 .timeline-recorded-dt {
-    display: block;
-    font-size: 11px;
+    font-size: 10px; /* Smaller font */
     color: #adb5bd;
     font-style: italic;
+    background-color: #f8f9fa;
+    padding: 1px 6px; /* Smaller padding */
+    border-radius: 8px; /* Smaller border radius */
+}
+
+/* Empty timeline state */
+.timeline-empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: #8898aa;
+}
+
+.timeline-empty-icon {
+    font-size: 48px;
+    color: #dee2e6;
+    margin-bottom: 16px;
+}
+
+.timeline-empty-text {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.timeline-empty-subtext {
+    font-size: 13px;
+    color: #adb5bd;
+}
+
+/* Responsive timeline */
+@media (max-width: 768px) {
+    .timeline {
+        padding-left: 30px;
+    }
+    
+    .timeline::before {
+        left: 25px; /* Adjusted for mobile */
+    }
+    
+    .timeline-dot {
+        left: -10px; /* Adjusted for mobile positioning */
+        width: 12px;
+        height: 12px;
+        border-width: 2px;
+    }
+    
+    .timeline-item {
+        padding-left: 20px; /* Reduced for mobile */
+        margin-bottom: 20px; /* Tighter spacing on mobile */
+    }
+    
+    .timeline-content {
+        padding: 10px 12px; /* Even more compact on mobile */
+    }
+    
+    .timeline-content::before,
+    .timeline-content::after {
+        left: -6px;
+        border-right-width: 6px;
+        border-top-width: 5px;
+        border-bottom-width: 5px;
+    }
+    
+    .timeline-header {
+        flex-direction: column;
+        gap: 6px;
+        align-items: flex-start;
+        margin-bottom: 6px;
+        padding-bottom: 6px;
+    }
+    
+    .timeline-delete-btn {
+        align-self: flex-end;
+        margin-top: -8px;
+    }
+    
+    .timeline-description {
+        font-size: 13px; /* Smaller on mobile */
+        margin-bottom: 6px;
+    }
 }
 
 /* --- Pagination --- */
@@ -543,4 +769,150 @@ td, th {
     white-space: normal; /* Allow wrapping in table cells */
 }
 th { white-space: nowrap;} /* Keep headers nowrap */
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 25px;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: #f8f9fa;
+  border-radius: 12px 12px 0 0;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #333;
+  font-size: 1.2rem;
+}
+
+.close-modal-btn {
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.close-modal-btn:hover {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.modal-body {
+  padding: 25px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #5e72e4;
+  box-shadow: 0 0 0 3px rgba(94, 114, 228, 0.1);
+}
+
+.form-control::placeholder {
+  color: #8898aa;
+}
+
+textarea.form-control {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 20px 25px;
+  border-top: 1px solid #e0e0e0;
+  background-color: #f8f9fa;
+  border-radius: 0 0 12px 12px;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background-color: #5e72e4;
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #4a61d9;
+}
+
+.btn-secondary {
+  background-color: #fff;
+  color: #666;
+  border: 1px solid #ddd;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: #f8f9fa;
+  border-color: #ccc;
+}
 

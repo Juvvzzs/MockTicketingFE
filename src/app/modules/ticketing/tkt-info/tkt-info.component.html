@@ -13,9 +13,9 @@
             </div>
         </div>
         <div class="header-actions">
-            <button class="btn btn-secondary"><i class="fas fa-edit"></i> Edit Report Details</button>
-            <button class="btn btn-secondary" title="View Linked Ticket #{{ incident?.ticketCategory }}"><i class="fas fa-ticket-alt"></i> View Ticket</button>
-            <button class="btn btn-secondary"><i class="fas fa-file-export"></i> Export</button>
+            <button class="btn btn-secondary" (click)="openEditDetailsModal()"><fa-icon [icon]="faEdit"></fa-icon> Edit Report Details</button>
+            <button class="btn btn-secondary" title="View Linked Ticket #{{ incident?.ticketCategory }}"><fa-icon [icon]="faTicketAlt"></fa-icon> View Ticket</button>
+            <button class="btn btn-secondary"><fa-icon [icon]="faFileExport"></fa-icon> Export</button>
         </div>
     </header>
   
@@ -82,19 +82,38 @@
         <div class="timeline-column">
             <section class="content-card">
                 <h2><i class="bi bi-clock-history icon-title"></i> Incident Timeline</h2>
-                <button class="btn btn-secondary btn-small btn-add-timeline"><i class="fas fa-plus"></i> Add Timeline Entry</button>
+                <button class="btn btn-secondary btn-small btn-add-timeline" (click)="openAddTimelineModal()"><fa-icon [icon]="faPlus"></fa-icon> Add Timeline Entry</button>
                 <div class="timeline">
-                    <div  class="timeline-item">
-                       <div class="timeline-dot"></div>
+                    <div class="timeline-item" *ngFor="let entry of sortedTimeline; let i = index">
+                       <div class="timeline-dot" [class.timeline-dot-first]="i === 0"></div>
                        <div class="timeline-content">
-                           <span class="timeline-time"></span>
-                           <p class="timeline-description"></p>
-                           <span class="timeline-author">Recorded By: </span>
-                           <span class="timeline-recorded-dt">Logged: </span>
+                           <div class="timeline-header">
+                               <div class="timeline-left">
+                                   <span class="timeline-time">
+                                       <fa-icon [icon]="faClock" class="timeline-icon"></fa-icon>
+                                       {{ entry.timestamp | date:'MMM d, y, h:mm a' }}
+                                   </span>
+                                   <span class="timeline-author">
+                                       <fa-icon [icon]="faUser" class="timeline-icon"></fa-icon>
+                                       {{ entry.author }}
+                                   </span>
+                               </div>
+                               <button class="timeline-delete-btn" (click)="deleteTimelineEntry(entry.id)" title="Delete entry">
+                                   <fa-icon [icon]="faTrash"></fa-icon>
+                               </button>
+                           </div>
+                           <p class="timeline-description">{{ entry.description }}</p>
+                           <div class="timeline-footer">
+                               <span class="timeline-recorded-dt">Logged: {{ entry.recordedAt | date:'MMM d, y, h:mm a' }}</span>
+                           </div>
                        </div>
                    </div>
-                   <div  class="timeline-item">
-                      <p class="timeline-description">No timeline entries recorded.</p>
+                   <div class="timeline-empty" *ngIf="sortedTimeline.length === 0">
+                      <div class="timeline-empty-icon">
+                          <fa-icon [icon]="faClock"></fa-icon>
+                      </div>
+                      <p class="timeline-empty-text">No timeline entries recorded.</p>
+                      <small class="timeline-empty-subtext">Click "Add Timeline Entry" to start documenting this incident.</small>
                    </div>
                 </div>
             </section>
@@ -108,6 +127,93 @@
 
 <ng-template #loadingTemplate>
   <div class="loading-indicator">
-    <i class="fas fa-spinner fa-spin"></i> Loading...
+    <fa-icon [icon]="faSpinner" [spin]="true"></fa-icon> Loading...
   </div>
 </ng-template>
+
+<!-- Edit Details Modal -->
+<div class="modal-overlay" *ngIf="showEditDetailsModal" (click)="closeEditDetailsModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Edit Incident Details</h3>
+    </div>
+    
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="impactAssessment">Impact Assessment</label>
+        <textarea id="impactAssessment" [(ngModel)]="editForm.ImpactAssessment" 
+                  class="form-control" rows="3" placeholder="Describe the impact of this incident..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label for="containmentActions">Containment Actions</label>
+        <textarea id="containmentActions" [(ngModel)]="editForm.ContainmentActions" 
+                  class="form-control" rows="3" placeholder="Describe containment actions taken..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label for="eradicationSteps">Eradication Steps</label>
+        <textarea id="eradicationSteps" [(ngModel)]="editForm.EradicationSteps" 
+                  class="form-control" rows="3" placeholder="Describe eradication steps..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label for="recoveryProcess">Recovery Process</label>
+        <textarea id="recoveryProcess" [(ngModel)]="editForm.RecoveryProcess" 
+                  class="form-control" rows="3" placeholder="Describe recovery process..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label for="lessonsLearned">Lessons Learned</label>
+        <textarea id="lessonsLearned" [(ngModel)]="editForm.LessonsLearned" 
+                  class="form-control" rows="3" placeholder="Document lessons learned..."></textarea>
+      </div>
+    </div>
+    
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeEditDetailsModal()" [disabled]="savingDetails">Cancel</button>
+      <button class="btn btn-primary" (click)="saveIncidentDetails()" [disabled]="savingDetails">
+        <fa-icon [icon]="faSpinner" [spin]="true" *ngIf="savingDetails"></fa-icon>
+        {{ savingDetails ? 'Saving...' : 'Save Changes' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Timeline Entry Modal -->
+<div class="modal-overlay" *ngIf="showAddTimelineModal" (click)="closeAddTimelineModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Add Timeline Entry</h3>
+    </div>
+    
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="timestamp">Timestamp</label>
+        <input type="datetime-local" id="timestamp" [(ngModel)]="timelineForm.timestamp" 
+               class="form-control" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" [(ngModel)]="timelineForm.description" 
+                  class="form-control" rows="4" placeholder="Describe what happened..." required></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label for="author">Author</label>
+        <input type="text" id="author" [(ngModel)]="timelineForm.author" 
+               class="form-control" placeholder="Your name" required>
+      </div>
+    </div>
+    
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeAddTimelineModal()" [disabled]="savingTimeline">Cancel</button>
+      <button class="btn btn-primary" (click)="saveTimelineEntry()" 
+              [disabled]="savingTimeline || !timelineForm.description.trim()">
+        <fa-icon [icon]="faSpinner" [spin]="true" *ngIf="savingTimeline"></fa-icon>
+        {{ savingTimeline ? 'Adding...' : 'Add Entry' }}
+      </button>
+    </div>
+  </div>
+</div>

@@ -61,6 +61,7 @@ export class IncidentserviceService {
       ReportDateTime: new Date(apiIncident.reportDateTime || apiIncident.ReportDateTime).toISOString(),
       ReportedBy: apiIncident.reportedBy || apiIncident.ReportedBy,
       Status: apiIncident.Status || apiIncident.TicketStatus,
+      timeline: apiIncident.timeline || [] // Add timeline mapping
       
     };
   }
@@ -76,5 +77,83 @@ export class IncidentserviceService {
   private handleError(error: any) {
     console.error('API Error:', error);
     return throwError(() => new Error(error.message || 'Server error'));
+  }
+
+  // Update incident details
+  updateIncident(incidentId: string, updatedData: Partial<IncidentReport>): Observable<IncidentReport> {
+    return this.http.get<JsonBinResponse2>(`${this.apiUrl}/latest`).pipe(
+      switchMap(response => {
+        const reports = response.record?.incident_reports || [];
+        const incidentIndex = reports.findIndex(incident => incident.IncidentID === incidentId);
+        
+        if (incidentIndex === -1) {
+          return throwError(() => new Error('Incident not found'));
+        }
+
+        // Update the incident
+        reports[incidentIndex] = { ...reports[incidentIndex], ...updatedData };
+
+        // Save back to JSONBin
+        return this.http.put(`${this.apiUrl}`, { incident_reports: reports }).pipe(
+          map(() => this.mapIncidentData(reports[incidentIndex]))
+        );
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+  // Add timeline entry to incident
+  addTimelineEntry(incidentId: string, timelineEntry: any): Observable<any> {
+    return this.http.get<JsonBinResponse2>(`${this.apiUrl}/latest`).pipe(
+      switchMap(response => {
+        const reports = response.record?.incident_reports || [];
+        const incidentIndex = reports.findIndex(incident => incident.IncidentID === incidentId);
+        
+        if (incidentIndex === -1) {
+          return throwError(() => new Error('Incident not found'));
+        }
+
+        // Initialize timeline if it doesn't exist
+        if (!reports[incidentIndex].timeline) {
+          reports[incidentIndex].timeline = [];
+        }
+
+        // Add new timeline entry - use non-null assertion since we just initialized it
+        reports[incidentIndex].timeline!.push(timelineEntry);
+
+        // Save back to JSONBin
+        return this.http.put(`${this.apiUrl}`, { incident_reports: reports }).pipe(
+          map(() => ({ success: true, entry: timelineEntry }))
+        );
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+  // Delete timeline entry from incident
+  deleteTimelineEntry(incidentId: string, entryId: string): Observable<any> {
+    return this.http.get<JsonBinResponse2>(`${this.apiUrl}/latest`).pipe(
+      switchMap(response => {
+        const reports = response.record?.incident_reports || [];
+        const incidentIndex = reports.findIndex(incident => incident.IncidentID === incidentId);
+        
+        if (incidentIndex === -1) {
+          return throwError(() => new Error('Incident not found'));
+        }
+
+        if (!reports[incidentIndex].timeline) {
+          return throwError(() => new Error('No timeline found for this incident'));
+        }
+
+        // Remove the timeline entry
+        reports[incidentIndex].timeline = reports[incidentIndex].timeline!.filter(entry => entry.id !== entryId);
+
+        // Save back to JSONBin
+        return this.http.put(`${this.apiUrl}`, { incident_reports: reports }).pipe(
+          map(() => ({ success: true, deletedId: entryId }))
+        );
+      }),
+      catchError(this.handleError)
+    );
   }
 }

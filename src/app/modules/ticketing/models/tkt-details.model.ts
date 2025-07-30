@@ -28,6 +28,15 @@ export interface IncidentReport {
   ReportDateTime: string
   ReportedBy: string;
   Status: string
+  timeline?: TimelineEntry[];
+}
+
+export interface TimelineEntry {
+  id: string;
+  timestamp: string;
+  description: string;
+  author: string;
+  recordedAt: string;
 }
 
 export interface Message {
