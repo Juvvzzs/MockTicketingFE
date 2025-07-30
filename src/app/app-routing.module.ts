@@ -26,6 +26,7 @@ const routes: Routes = [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
       { path: 'ticket_details', component: TktDetailsComponent },
+      { path: 'ticket_details/:id', component: TktDetailsComponent },
       { path: 'ticket_category', component: TktCategoryComponent },
       { path: 'ticket_crew', component: TktCrewComponent },
       { path: 'client_ticket', component: TktClienticketComponent },

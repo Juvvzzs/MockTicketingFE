@@ -191,15 +191,16 @@
 
     <!-- Scrollable Conversation Area -->
     <div class="conversation-container">
-      <div class="conversation-thread">
-      <div *ngIf="messages.length === 0" class="no-messages">No messages yet.</div>
-        <div *ngFor="let msg of messages" 
-         [ngClass]="{
-       'message-box': true,
-       'sent-message': msg.role === 'Client',
-       'reply-message': msg.role === 'Admin'
-     }">
-            <div class="message-header">
+        <div class="conversation-thread">
+          <div *ngIf="messages.length === 0" class="no-messages">No messages yet.</div>
+          <div *ngFor="let msg of messages" 
+              [ngClass]="{
+                'message-box': true,
+                'sent-message': msg.role === 'Client',
+                'reply-message': msg.role === 'Admin',
+                'system-message': msg.role === 'System' || msg.isStatusChange
+              }">
+            <div class="message-header" *ngIf="msg.role !== 'System' && !msg.isStatusChange">
               <div class="message-sender">
                 <span class="name">{{ msg.sender }}</span>
                 <span class="role">{{ msg.role }}</span>
@@ -224,7 +225,7 @@
               </div>
             </div>
           </div>
-      </div>
+        </div>
     </div>
 
     <div class="response-section" *ngIf="selectedTicket?.Status !== 'Closed'">
