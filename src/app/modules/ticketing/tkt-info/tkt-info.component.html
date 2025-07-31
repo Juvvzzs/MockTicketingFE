@@ -2,7 +2,7 @@
     <header class="page-header">
         <div>
             <div class="breadcrumbs"><a routerLink="/incidents">Incident Reports</a> / {{ incident?.IncidentID }}</div>
-            <div class="title-with-pills">
+            <div class="title-with-pills"> 
                 <!-- Change all properties to match your interface exactly -->
                     <h1>Incident: {{ incident?.IncidentType }}</h1>
                     <span class="info-value">{{ incident?.ReportDateTime | date:'medium' }}</span>

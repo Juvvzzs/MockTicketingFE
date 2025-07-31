@@ -13,7 +13,7 @@
 
 .title-with-pills {
     display: flex;
-    align-items: center; /* Vertically align title and pills */
+    align-items: center; /* Vertically align title and pills */ 
     gap: 15px; /* Space between title and pills */
     flex: 1; /* Allow this section to grow */
 }

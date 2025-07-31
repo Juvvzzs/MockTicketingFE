@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { IncidentserviceService } from '../service/incidents.service';
-import { IncidentReport, TimelineEntry } from '../models/tkt-details.model';
+import { IncidentReport, TimelineEntry } from '../models/tkt-details.model'; 
 import { faEdit, faTicketAlt, faFileExport, faPlus, faSpinner, faTrash, faClock, faUser } from '@fortawesome/free-solid-svg-icons';
 
 @Component({

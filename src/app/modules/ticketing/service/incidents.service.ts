@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { JsonBinResponse } from '../models/tkt-details.model';
-import { IncidentReport, IncidentList, JsonBinResponse2,} from '../models/tkt-details.model';
+import { IncidentReport, IncidentList, JsonBinResponse2, } from '../models/tkt-details.model'; 
 
 @Injectable({
   providedIn: 'root'

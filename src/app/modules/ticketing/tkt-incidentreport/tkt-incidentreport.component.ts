@@ -9,7 +9,7 @@ import { faExclamationTriangle, faExclamationCircle, faInfoCircle, faCheckCircle
   templateUrl: './tkt-incidentreport.component.html',
   styleUrls: ['./tkt-incidentreport.component.css']
 })
-export class TktIncidentreportComponent implements OnInit {
+export class TktIncidentreportComponent implements OnInit { 
   incidentList: IncidentList[] = [];
   filteredIncidentList: IncidentList[] = [];
   paginatedIncidentList: IncidentList[] = [];

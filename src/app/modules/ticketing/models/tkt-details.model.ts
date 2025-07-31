@@ -15,7 +15,7 @@ export interface Ticket {
 }
 
 export interface IncidentReport {
-  IncidentID: string;
+  IncidentID: string; 
   ticketCategory : string //ticket id ni dapat dre
   Severity : 'Critical' | 'High' | 'Medium' | 'Low';// 'Critical', 'High', 'Medium', 'Low'
   IncidentType: string, // 'Malware', 'Phishing', 'DDoS', 'Data Breach', etc.
