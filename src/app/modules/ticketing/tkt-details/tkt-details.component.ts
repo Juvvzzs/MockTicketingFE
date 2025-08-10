@@ -1,11 +1,15 @@
   import { Component } from '@angular/core';
-  import { ActivatedRoute, Router } from '@angular/router';
+  import { CommonModule } from '@angular/common';
+  import { FormsModule } from '@angular/forms';
+  import { ActivatedRoute, Router, RouterModule } from '@angular/router';
   import { TktAdminviewService } from '../service/tkt-adminview.service';
   import { Ticket, StatusOption, IncidentReport } from '../models/tkt-details.model';
   import { TktCrtincReportService } from '../service/tkt-crtinc-report.service';
   import { TktCategoryService } from '../service/tkt-category.service';
   import { TktCategory } from '../models/tkt-category';
   import { TktDemochatService } from '../service/tkt-demochat.service';
+  import Swal from 'sweetalert2';
+  import { tap, switchMap } from 'rxjs';
 
   interface Message {
   messageId: number;
@@ -15,21 +19,28 @@
   time: string;
   attachments: { name: string; type: string; url?: string }[];
   type: string;
+  isStatusChange?: boolean;
 }
 
 
   interface Status {
     value: string;
   } 
-  import Swal from 'sweetalert2';
-import { tap, switchMap } from 'rxjs';
+
   @Component({
     selector: 'app-tkt-details',
     templateUrl: './tkt-details.component.html',
-    styleUrls: ['./tkt-details.component.css']
+    styleUrls: ['./tkt-details.component.css'],
+    standalone: true,
+    imports: [
+      CommonModule,
+      FormsModule,
+      RouterModule
+    ]
   })
 
   export class TktDetailsComponent {
+     private previousStatus = '';
     categories: TktCategory[] = [];
     tickets: Ticket[] = [];
     incReport_Ticket: IncidentReport [] =[]; 
@@ -42,7 +53,7 @@ import { tap, switchMap } from 'rxjs';
     successMessage: string | undefined;
     paginatedTickets: Ticket[] = [];
     currentPage: number = 1;
-    itemsPerPage: number = 7;
+    itemsPerPage: number = 10;
 
     totalPages: number = 0;
     startIndex: number = 0;
@@ -346,6 +357,84 @@ private processTicketData(data: any): void {
       this.incidentReportData = { severity: '', incidentType: '' };
     }
 
+    onStatusChange(newStatus: string): void {
+    if (!this.currentTicketId || !this.selectedTicket) return;
+
+    this.previousStatus = this.selectedTicket.status;
+    this.selectedTicket.status = newStatus;
+    this.selectedTicket.updated = new Date().toLocaleString();
+    this.selectedTicket.statusClass = this.normalizeStatusClass(this.selectedTicket.status);
+    this.isChatDisabled = ['CLOSED'].includes(newStatus);
+
+    this.addStatusChangeMessage(this.currentTicketId, newStatus);
+    this.updateTicketStatus(this.selectedTicket);
+
+  }
+
+   private addStatusChangeMessage(ticketId: string, newStatus: string): void {
+      const statusMessage = `Ticket status changed to ${newStatus}`;
+  
+      const systemMsg: Message = {
+        messageId: Date.now(),
+        sender: 'System',
+        role: 'System',
+        content: statusMessage,
+        time: new Date().toLocaleTimeString(),
+        attachments: [],
+        type: 'system',
+        isStatusChange: true
+      };
+  
+      this.chatService.sendMessage(ticketId, systemMsg);
+      this.messages.push(systemMsg);
+      this.scrollToBottom();
+    }
+  private normalizeStatusClass(status: string): string {
+      if (!status) return 'new';
+  
+      const statusLower = status.toLowerCase().trim();
+  
+      if (statusLower.includes('progress') || statusLower.includes('paused')) {
+        return 'in-progress';
+      }
+      if (statusLower.includes('resolve')) {
+        return 'resolved';
+      }
+      if (statusLower.includes('close')) {
+        return 'closed';
+      }
+      return statusLower;
+    }
+    getFirstItemOnPage(): number {
+      return this.startIndex + 1;
+    }
+  
+    getLastItemOnPage(): number {
+      return Math.min(this.endIndex, this.filteredTickets.length);
+    }
+  
+    getTotalPages(): number {
+      return Math.ceil(this.filteredTickets.length / this.itemsPerPage);
+    }
+  
+    updateTicketStatus(ticket: Ticket): void {
+      if (!ticket?.TicketID) return;
+  
+      this.tktAdminviewService.updateTicketStatus(ticket.TicketID, ticket.Status).subscribe({
+        next: () => {
+          console.log('Status updated successfully!');
+          this.addStatusChangeMessage(ticket.TicketID, `Status confirmed as ${ticket.Status}`);
+        },
+        error: (err) => {
+          console.error('Error updating status:', err);
+          if (this.selectedTicket) {
+            this.selectedTicket.status = this.previousStatus;
+            this.addStatusChangeMessage(ticket.TicketID,
+              `Failed to update status to ${ticket.Status}. Reverted to ${this.previousStatus}`);
+          }
+        }
+      });
+    }
       NewOpenCount(): number {
         return this.filteredTickets.filter(ticket => ticket.Status === 'NEW').length;
       }

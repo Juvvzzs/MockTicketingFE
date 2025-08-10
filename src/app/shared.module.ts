@@ -4,12 +4,11 @@ import { GlobalFilterPipe } from './pipe/globalFilter.pipe';
 import { TruncatePipe } from 'src/app/pipe/truncate.pipe';
 
 @NgModule({
-  declarations: [
+  
+  imports: [  
     FirstLetterUppercasePipe,
     TruncatePipe,
     GlobalFilterPipe,
-  ],
-  imports: [  
   ],
   exports: [
     FirstLetterUppercasePipe,

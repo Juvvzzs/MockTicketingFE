@@ -142,10 +142,7 @@
 
 <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
   <div class="modal-content" (click)="$event.stopPropagation()">
-    <button class="close-modal-btn" (click)="closeModal()">
-      <i class='bx bx-x'></i>
-    </button>
-    
+   
     <div class="ticket-header">
       <div class="priority-badge {{selectedTicket?.Priority?.toLowerCase() || 'medium'}}">
         {{selectedTicket?.Priority || 'Medium'}} Priority
@@ -153,12 +150,17 @@
       <div class="ticket-id">Ticket #{{selectedTicket?.TicketID}}</div>
       <div class="ticket-status">
         <span class="status-label">Status</span>
-        <div class="status-dropdown {{getStatusDropdownClass(selectedTicket?.Status)}}">
-          <select class="status-select">
-            <option *ngFor="let option of statusOptions" 
-                    [value]="option.value"
-                    [selected]="option.value === selectedTicket?.currentStatus">
-              {{option.label}}
+        <div class="status-display {{selectedTicket?.statusClass || 'new'}}" 
+             *ngIf="selectedTicket?.status === 'CLOSED'">
+          {{selectedTicket?.status}}
+        </div>
+        <div class="status-dropdown {{selectedTicket?.statusClass || 'new'}}" 
+             *ngIf="selectedTicket?.status !== 'CLOSED'">
+          <select class="status-select"
+            [ngModel]="selectedTicket?.status"
+            (ngModelChange)="selectedTicket && onStatusChange($event)">
+            <option *ngFor="let option of statusOptions" [value]="option.value">
+              {{ option.label }}
             </option>
           </select>
           <i class='bx bx-chevron-down dropdown-icon'></i>
@@ -191,10 +193,11 @@
          [ngClass]="{
        'message-box': true,
        'sent-message': msg.role === 'Admin',
-       'reply-message': msg.role === 'Client'
+       'reply-message': msg.role === 'Client',
+       'system-message': msg.role === 'System' || msg.isStatusChange
      }">
 
-        <div class="message-header">
+        <div class="message-header"  *ngIf="msg.role !== 'System' && !msg.isStatusChange">
           <div class="message-sender">
             <span class="name">{{ msg.sender }}</span>
             <span class="role">{{ msg.role }}</span>
@@ -222,16 +225,18 @@
       </div>
     </div>
 
-    <div class="response-section">
-   
-        <div *ngFor="let file of attachments; let i = index" class="attachment-preview">
-        <span>{{ file.name }}</span>
-        <button class="remove-attachment" (click)="removeAttachment(i)" *ngFor="let file of attachments; let i = index">
-          <i class='bx bx-x'></i>
-        </button>
+    <div class="response-section" *ngIf="selectedTicket?.status !== 'CLOSED'">
+         <div class="attachments-preview" *ngIf="attachments.length > 0">
+        <div class="attachment-preview">
+          <div *ngFor="let file of attachments; let i = index" class="attachment-item">
+            <span>{{ file.name }}</span>
+            <button class="remove-attachment" (click)="removeAttachment(i)">
+              <i class='bx bx-x'></i>
+            </button>
+          </div>
+        </div>
       </div>
 
-      
       <div class="response-input-container">
         <input type="text" [(ngModel)]="newMessage" placeholder="Type your response here..." [disabled]="isChatDisabled" />
         <div class="response-actions">
@@ -240,15 +245,15 @@
             <input id="fileInput" type="file" (change)="onFileSelected($event)" multiple style="display: none;">
 
           </label>
-         <button class="send-btn" (click)="sendMessage()" [disabled]="isChatDisabled || !newMessage.trim()">
-            Send <i class='bx bx-send'></i>
-          </button>
+          <button class="send-btn" (click)="sendMessage()" [disabled]="isChatDisabled || !newMessage.trim()">
+          Send <i class='bx bx-send'></i>
+        </button>
         </div>
       </div>
     </div>
 
       <!-- View-only message when ticket is closed -->
-    <div class="view-only-message" *ngIf="selectedTicket?.Status === 'Closed'">
+    <div class="view-only-message" *ngIf="selectedTicket?.Status === 'CLOSED'">
       <p>This ticket is closed and cannot be modified.</p>
     </div>
   </div>

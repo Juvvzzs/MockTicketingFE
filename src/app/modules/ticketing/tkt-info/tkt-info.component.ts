@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { IncidentserviceService } from '../service/incidents.service';
 import { IncidentReport } from '../models/tkt-details.model';
 import Swal from 'sweetalert2';
@@ -7,7 +9,9 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-tkt-info',
   templateUrl: './tkt-info.component.html',
-  styleUrls: ['./tkt-info.component.css']
+  styleUrls: ['./tkt-info.component.css'],
+  standalone: true,
+  imports: [CommonModule, FormsModule, RouterModule]
 })
 export class TktInfoComponent implements OnInit {
   incident: IncidentReport | null = null;

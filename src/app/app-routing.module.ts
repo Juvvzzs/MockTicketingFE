@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from './auth.guard';
+import { authGuard } from './auth.guard';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { MainlayoutComponent } from './layout/mainlayout/mainlayout.component';
 import { LoginComponent } from './login/user-login/user-login.component';
@@ -11,7 +11,7 @@ import { TktClienticketComponent } from './modules/ticketing/tkt-clienticket/tkt
 import { TktIncidentreportComponent } from './modules/ticketing/tkt-incidentreport/tkt-incidentreport.component';
 import { TktInfoComponent } from './modules/ticketing/tkt-info/tkt-info.component';
 
-const routes: Routes = [
+export const routes: Routes = [
  
   { path: '', redirectTo: '/login', pathMatch: 'full' },
 
@@ -21,7 +21,7 @@ const routes: Routes = [
   {
     path: '',
     component: MainlayoutComponent,
-    canActivate: [AuthGuard],
+    canActivate: [authGuard],
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
@@ -31,7 +31,7 @@ const routes: Routes = [
       { path: 'ticket_crew', component: TktCrewComponent },
       { path: 'client_ticket', component: TktClienticketComponent },
       { path: 'incident_report', component: TktIncidentreportComponent },
-      { path: 'incident_info/:id', component: TktInfoComponent, canActivate: [AuthGuard] }
+      { path: 'incident_info/:id', component: TktInfoComponent, canActivate: [authGuard] }
     ]
   },
 
@@ -39,8 +39,6 @@ const routes: Routes = [
   { path: '**', redirectTo: '/login' }
 ];
 
-@NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
-})
-export class AppRoutingModule { }
+
+
+// No NgModule needed for standalone components

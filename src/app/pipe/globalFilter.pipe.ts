@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'filter'
+  name: 'filter',
+  standalone: true
 })
 export class GlobalFilterPipe implements PipeTransform {
   transform(items: any[], property: string, searchText: string): any[] {

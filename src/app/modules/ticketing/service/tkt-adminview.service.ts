@@ -3,7 +3,7 @@ import { TktAdminview } from '../models/tkt-adminview';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/internal/operators/map';
 import { Observable } from 'rxjs/internal/Observable';
-import { catchError, throwError } from 'rxjs';
+import { catchError, switchMap, throwError } from 'rxjs';
 
 interface JsonBinResponse{
   record: {
@@ -34,6 +34,22 @@ export class TktAdminviewService {
       );
     }
   
+      getTicketById(ticketId: string): Observable<TktAdminview | undefined> {
+        return this.getTickets().pipe(
+          map(tickets => tickets.find(t => t.TicketID === ticketId))
+        );
+      }
+      updateTicketStatus(tktId: string, newStatus: string): Observable<any> {
+      return this.getTickets().pipe(
+        switchMap((tickets: TktAdminview[]) => {
+          const updatedTickets = tickets.map(ticket =>
+            ticket.TicketID === tktId ? { ...ticket, Status: newStatus, updated: new Date().toISOString() } : ticket
+          );
+          return this.http.put(this.apiUrl, { TicketsCreated: updatedTickets });
+        }),
+        catchError(this.handleError)
+      );
+    }
 private handleError(error: any) {
     console.error('API Error:', error);
     return throwError(() => new Error(error.message || 'Server error'));

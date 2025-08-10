@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { finalize } from 'rxjs';
 import { AuthService } from 'src/app/modules/ticketing/service/auth.service';
@@ -7,7 +9,9 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-user-login',
   templateUrl: './user-login.component.html',
-  styleUrls: ['./user-login.component.css']
+  styleUrls: ['./user-login.component.css'],
+  standalone: true,
+  imports: [CommonModule, FormsModule]
 })
 export class LoginComponent implements OnInit {
   username = '';
