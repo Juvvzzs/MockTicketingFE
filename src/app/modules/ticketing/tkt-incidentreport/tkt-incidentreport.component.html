@@ -1,127 +1,142 @@
 <header class="page-header">
-    <h1>Incident Reports</h1>
+  <h1>Incident Reports</h1>
 </header>
 
 <div class="summary-cards-row">
-    <div class="summary-card">
-       <div class="summary-card-content">
-           <div class="card-value">{{ criticalCount }}</div>
-           <div class="card-label">CRITICAL</div>
-       </div>
-      <i class="bi bi-exclamation-triangle-fill icon-critical"></i>
-   </div>
-    <div class="summary-card">
-        <div class="summary-card-content">
-           <div class="card-value">{{ highCount }}</div>
-           <div class="card-label">HIGH</div>
-       </div>
-       <i class="bi bi-exclamation-triangle icon-high"></i>
-   </div>
-    <div class="summary-card">
-        <div class="summary-card-content">
-            <div class="card-value">{{ mediumCount }}</div>
-            <div class="card-label">MEDIUM</div>
-        </div>
-        <i class="bi bi-exclamation-triangle icon-medium"></i>
-   </div>
-   <div class="summary-card">
-        <div class="summary-card-content">
-            <div class="card-value">{{ lowCount }}</div>
-            <div class="card-label">LOW</div>
-        </div>
-       <i class="bi bi-exclamation-triangle-fill icon-low"></i>
-   </div>
+  <div class="summary-card">
+    <div class="summary-card-content">
+      <div class="card-value">{{ criticalCount }}</div>
+      <div class="card-label">CRITICAL</div>
+    </div>
+    <i class="bi bi-exclamation-triangle-fill icon-critical"></i>
+  </div>
+  <div class="summary-card">
+    <div class="summary-card-content">
+      <div class="card-value">{{ highCount }}</div>
+      <div class="card-label">HIGH</div>
+    </div>
+    <i class="bi bi-exclamation-triangle icon-high"></i>
+  </div>
+  <div class="summary-card">
+    <div class="summary-card-content">
+      <div class="card-value">{{ mediumCount }}</div>
+      <div class="card-label">MEDIUM</div>
+    </div>
+    <i class="bi bi-exclamation-triangle icon-medium"></i>
+  </div>
+  <div class="summary-card">
+    <div class="summary-card-content">
+      <div class="card-value">{{ lowCount }}</div>
+      <div class="card-label">LOW</div>
+    </div>
+    <i class="bi bi-exclamation-triangle-fill icon-low"></i>
+  </div>
 </div>
 
 <div class="filters-bar">
-     <input type="search" [(ngModel)]="searchTerm" (input)="applyFilters()" placeholder="Search by ID, Ticket ID...">
-      <select [(ngModel)]="selectedSeverity" (change)="applyFilters()">
-        <option value="">Filter by Severity</option>
-        <option *ngFor="let option of severityOptions" [value]="option.value">
-      {{ option.label }}
-    </option>
+  <input type="search" [(ngModel)]="searchTerm" (input)="applyFilters()" placeholder="Search by ID, Ticket ID...">
+  <select [(ngModel)]="selectedSeverity" (change)="applyFilters()">
+    <option value="">Filter by Severity</option>
+    @for (option of severityOptions; track option) {
+      <option [value]="option.value">
+        {{ option.label }}
+      </option>
+    }
   </select>
-       <select [(ngModel)]="selectedType" (change)="applyFilters()">
+  <select [(ngModel)]="selectedType" (change)="applyFilters()">
     <option value="">Filter by Incident Type</option>
-    <option *ngFor="let option of incidentTypeOptions" [value]="option.value">
-      {{ option.label }}
-    </option>
+    @for (option of incidentTypeOptions; track option) {
+      <option [value]="option.value">
+        {{ option.label }}
+      </option>
+    }
   </select>
 
   <label for="startDate">Reported Date</label>
   <input type="date" id="startDate" [(ngModel)]="startDate" (change)="applyFilters()" />
-     <button class="btn btn-secondary">Reset Filter</button>
+  <button class="btn btn-secondary">Reset Filter</button>
 </div>
 
 <div class="table-title-bar content-card" style="border-radius: 12px 12px 0 0; margin-bottom: 0; box-shadow: none; border-bottom: 1px solid #e9ecef;">
-    <h2>Incident List</h2>
+  <h2>Incident List</h2>
 </div>
 
 <div class="content-card" style="border-radius: 0 0 12px 12px; margin-top: 0; box-shadow: 0 10px 2rem -10px rgba(136,152,170,.15);">
-    <div class="table-container">
-       <table>
-    <thead>
+  <div class="table-container">
+    <table>
+      <thead>
         <tr>
-            <th>Incident / Ticket</th>
-            <th>Severity</th>
-            <th>Incident Type</th>
-            <th>Reported Info</th>
-            <th class="col-authorities"><i class="fas fa-shield-alt"></i>Reported to Authority</th>
-            <th>Actions</th>
+          <th>Incident / Ticket</th>
+          <th>Severity</th>
+          <th>Incident Type</th>
+          <th>Reported Info</th>
+          <th class="col-authorities"><i class="fas fa-shield-alt"></i>Reported to Authority</th>
+          <th>Actions</th>
         </tr>
-    </thead>
-    <tbody>
+      </thead>
+      <tbody>
         <!-- Loading state -->
-        <tr *ngIf="loading">
+        @if (loading) {
+          <tr>
             <td colspan="8" style="text-align: center; padding: 2rem;">
-                Loading incidents...
+              Loading incidents...
             </td>
-        </tr>
+          </tr>
+        }
 
         <!-- Data rows -->
-        <tr *ngFor="let incident of paginatedIncidentList" (click)="viewDetails(incident.IncID)">
+        @for (incident of paginatedIncidentList; track incident) {
+          <tr (click)="viewDetails(incident.IncID)">
             <td class="incident-ticket-cell">
-                {{ incident.IncID }}
-                <a *ngIf="incident.TktID" class="ticket-link" title="View Linked Ticket">
-                    #{{ incident.TktID }}
+              {{ incident.IncID }}
+              @if (incident.TktID) {
+                <a class="ticket-link" title="View Linked Ticket">
+                  #{{ incident.TktID }}
                 </a>
+              }
             </td>
             <td>
-                <span class="pill" [ngClass]="getSeverityClass(incident.severity)">
-                    {{ incident.severity }}
-                </span>
+              <span class="pill" [ngClass]="getSeverityClass(incident.severity)">
+                {{ incident.severity }}
+              </span>
             </td>
             <td>{{ incident.IncidentType }}</td>
             <td class="reported-cell">
-                <span class="reported-date" [title]="incident.ReportDateTime | date:'medium'">
-                    {{ incident.ReportDateTime | date:'longDate' }}
-                </span>
-                <small class="reported-by-subtext">by {{ incident.reportedBy }}</small>
+              <span class="reported-date" [title]="incident.ReportDateTime | date:'medium'">
+                {{ incident.ReportDateTime | date:'longDate' }}
+              </span>
+              <small class="reported-by-subtext">by {{ incident.reportedBy }}</small>
             </td>
-          
             <td class=" ">
-                <i *ngIf="incident.reportedToAuthorities" class="bi bi-check2-circle " title="Yes">Yes</i>
-                <i *ngIf="!incident.reportedToAuthorities" class="bi bi-x-circle " title="No">No</i>
+              @if (incident.reportedToAuthorities) {
+                <i class="bi bi-check2-circle " title="Yes">Yes</i>
+              }
+              @if (!incident.reportedToAuthorities) {
+                <i class="bi bi-x-circle " title="No">No</i>
+              }
             </td>
             <td>
-                <i class="bi bi-chevron-right icon-right" title="View Details"></i>
+              <i class="bi bi-chevron-right icon-right" title="View Details"></i>
             </td>
-        </tr>
+          </tr>
+        }
 
         <!-- Empty state -->
-        <tr *ngIf="!loading && incidentList.length === 0">
+        @if (!loading && incidentList.length === 0) {
+          <tr>
             <td colspan="8" style="text-align: center; padding: 2rem;">
-                No incidents found.
+              No incidents found.
             </td>
-        </tr>
-    </tbody>
-</table>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <div class="pagination">
+    <span>Showing {{ getFirstItemOnPage() }}-{{ getLastItemOnPage() }} of {{ incidentList.length }} Results</span>
+    <div>
+      <button class="btn btn-secondary" [disabled]="currentPage === 1" (click)="previousPage()">< Prev</button>
+      <button class="btn btn-secondary" [disabled]="currentPage === getTotalPages()" (click)="nextPage()">Next ></button>
     </div>
-     <div class="pagination">
-        <span>Showing {{ getFirstItemOnPage() }}-{{ getLastItemOnPage() }} of {{ incidentList.length }} Results</span>
-        <div>
-            <button class="btn btn-secondary" [disabled]="currentPage === 1" (click)="previousPage()">< Prev</button>
-            <button class="btn btn-secondary" [disabled]="currentPage === getTotalPages()" (click)="nextPage()">Next ></button>
-        </div>
-    </div>
+  </div>
 </div>

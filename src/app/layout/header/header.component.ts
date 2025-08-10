@@ -1,16 +1,15 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AuthService } from 'src/app/modules/ticketing/service/auth.service';
 import { UtilsService } from 'src/app/service/utils.service';
 
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css'],
-  standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule]
+    selector: 'app-header',
+    templateUrl: './header.component.html',
+    styleUrls: ['./header.component.css'],
+    imports: [RouterModule, FormsModule]
 })
 export class HeaderComponent implements OnInit {
   constructor(

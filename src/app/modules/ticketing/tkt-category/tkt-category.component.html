@@ -1,179 +1,186 @@
 <div class="ms-5">
-    <body class="custom-body">
-      <div class="container my-4">
-        <h1>Ticket Category</h1>
-        <p class="text-muted">{{ currentDate }}</p>
-        <hr class="custom-hr">
-        
-    
-        <!--navigation bar-->
-        <button type="button" class="btn btn-link fw-bold p-0 m-0 align-baseline me-2 custom-link">
-          <i class="bi bi-house me-2 custom-icon" routerLink="/dashboard"></i> DASHBOARD
-        </button>
-        <i class="custom-icon-divider" style="margin-right: 8px;">/</i>
-    
-        <button type="button" class="btn btn-link fw-bold p-0 m-0 align-baseline me-3 custom-link">
-          <i class="bi bi-ticket-perforated custom-icon" ></i> CATEGORY
-        </button>
-        <i class="bi bi-chevron-left custom-icon-chevron" routerLink="/dashboard"></i>
-        <hr class="custom-hr-white">
-    
-        <!-- Buttons-->
-        <div class="border p-3 mb-3 custom-button-container">
-          <div class="d-flex align-items-center gap-4 ms-3">
-            <button type="button" 
-                class="btn btn-link fw-bold p-0 m-0 align-baseline me-3 custom-button" 
-                data-bs-toggle="modal" data-bs-target="#addCategoryModal">
-                <i class="bi bi-plus-lg custom-icon-button"></i> ADD CATEGORY
-            </button>
-    
-                          <!-- ENABLE Button -->
-              <button type="button" 
-              class="btn btn-link fw-bold p-0 m-0 align-baseline me-3 custom-button"
-              (click)="updateTicketStatus('Enabled')">
-              <i class="bi bi-check2-square custom-icon-button"></i> ENABLE
-              </button>
+  <body class="custom-body">
+    <div class="container my-4">
+      <h1>Ticket Category</h1>
+      <p class="text-muted">{{ currentDate }}</p>
+      <hr class="custom-hr">
 
-              <!-- DISABLE Button -->
-              <button type="button" 
-              class="btn btn-link fw-bold p-0 m-0 align-baseline me-3 custom-button"
-              (click)="updateTicketStatus('Disabled')">
-              <i class="bi bi-x-circle custom-icon-button"></i> DISABLE
-              </button>
-    
-              <!-- DELETE Button -->
-              <button 
-              type="button" 
-              class="btn btn-link fw-bold p-0 m-0 align-baseline custom-button" 
-              data-bs-toggle="modal" 
-              data-bs-target="#confirmDeleteModal"
-              [disabled]="!isAnyTicketSelected"  (click)="isModalVisible = true">
-              <i class="bi bi-trash custom-icon-button" ></i> DELETE
-              </button>
-              
-          
-            <div class="ms-auto">
-              <select class="form-select fw-bold custom-select" [(ngModel)]="sortBy" (change)="filterTickets()" aria-placeholder="Sort by">
-                <option value="">All</option>
-                <option value="Enabled">Enabled</option>
-                <option value="Disabled">Disabled</option>
-              </select>
-            </div>     
 
+      <!--navigation bar-->
+      <button type="button" class="btn btn-link fw-bold p-0 m-0 align-baseline me-2 custom-link">
+        <i class="bi bi-house me-2 custom-icon" routerLink="/dashboard"></i> DASHBOARD
+      </button>
+      <i class="custom-icon-divider" style="margin-right: 8px;">/</i>
+
+      <button type="button" class="btn btn-link fw-bold p-0 m-0 align-baseline me-3 custom-link">
+        <i class="bi bi-ticket-perforated custom-icon" ></i> CATEGORY
+      </button>
+      <i class="bi bi-chevron-left custom-icon-chevron" routerLink="/dashboard"></i>
+      <hr class="custom-hr-white">
+
+      <!-- Buttons-->
+      <div class="border p-3 mb-3 custom-button-container">
+        <div class="d-flex align-items-center gap-4 ms-3">
+          <button type="button"
+            class="btn btn-link fw-bold p-0 m-0 align-baseline me-3 custom-button"
+            data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+            <i class="bi bi-plus-lg custom-icon-button"></i> ADD CATEGORY
+          </button>
+
+          <!-- ENABLE Button -->
+          <button type="button"
+            class="btn btn-link fw-bold p-0 m-0 align-baseline me-3 custom-button"
+            (click)="updateTicketStatus('Enabled')">
+            <i class="bi bi-check2-square custom-icon-button"></i> ENABLE
+          </button>
+
+          <!-- DISABLE Button -->
+          <button type="button"
+            class="btn btn-link fw-bold p-0 m-0 align-baseline me-3 custom-button"
+            (click)="updateTicketStatus('Disabled')">
+            <i class="bi bi-x-circle custom-icon-button"></i> DISABLE
+          </button>
+
+          <!-- DELETE Button -->
+          <button
+            type="button"
+            class="btn btn-link fw-bold p-0 m-0 align-baseline custom-button"
+            data-bs-toggle="modal"
+            data-bs-target="#confirmDeleteModal"
+            [disabled]="!isAnyTicketSelected"  (click)="isModalVisible = true">
+            <i class="bi bi-trash custom-icon-button" ></i> DELETE
+          </button>
+
+
+          <div class="ms-auto">
+            <select class="form-select fw-bold custom-select" [(ngModel)]="sortBy" (change)="filterTickets()" aria-placeholder="Sort by">
+              <option value="">All</option>
+              <option value="Enabled">Enabled</option>
+              <option value="Disabled">Disabled</option>
+            </select>
           </div>
+
         </div>
-        
-        <!-- Ticket Table -->
-        <table class="table custom-table">
-          <thead>
-            <tr>
-              <th>
-                <input type="checkbox" checked class="custom-checkbox" />
-              </th>
-              <th>ID</th>
-              <th>Category</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-        
-          <tbody>
-            <tr 
-              *ngFor="let ticket of filteredTickets"
-              (click)="toggleSelection(ticket)" 
+      </div>
+
+      <!-- Ticket Table -->
+      <table class="table custom-table">
+        <thead>
+          <tr>
+            <th>
+              <input type="checkbox" checked class="custom-checkbox" />
+            </th>
+            <th>ID</th>
+            <th>Category</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (ticket of filteredTickets; track ticket) {
+            <tr
+              (click)="toggleSelection(ticket)"
               [class.table-active]="ticket.selected"
               style="cursor: pointer;">
               <td>
-                <input 
-                  type="checkbox" 
-                  class="custom-checkbox" 
-                  [checked]="ticket.selected" 
+                <input
+                  type="checkbox"
+                  class="custom-checkbox"
+                  [checked]="ticket.selected"
                   (click)="$event.stopPropagation(); toggleSelection(ticket)"/>
-              </td>
-              <td>{{ ticket.CatId }}</td>
-              <td>{{ ticket.Category }}</td>
-              <td>
-                <span class="badge"
+                </td>
+                <td>{{ ticket.CatId }}</td>
+                <td>{{ ticket.Category }}</td>
+                <td>
+                  <span class="badge"
                   [ngClass]="{
                     'rounded-pill text-white': true,
                     'bg-success-custom': ticket.Status === 'Enabled',
                     'bg-danger': ticket.Status === 'Disabled'
                   }"
-                  class="custom-badge">
-                  {{ ticket.Status }}
-                </span>
-              </td>
-            </tr>
+                    class="custom-badge">
+                    {{ ticket.Status }}
+                  </span>
+                </td>
+              </tr>
+            }
           </tbody>
         </table>
 
-        <div *ngIf="!loading && filteredTickets.length === 0" class="no-data-message">
-        No ticket categories available.
-        </div>
+        @if (!loading && filteredTickets.length === 0) {
+          <div class="no-data-message">
+            No ticket categories available.
+          </div>
+        }
 
       </div>
-  
- <form (ngSubmit)="onSubmit()" #categoryForm="ngForm">
-  <div class="modal fade" #addCategoryModal id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title custom-modal-title">Add Category</h4>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
 
-        <div class="modal-body">
-          <p>Category Information <i class="bi bi-pencil-fill custom-icon-pencil"></i></p>
+      <form (ngSubmit)="onSubmit()" #categoryForm="ngForm">
+        <div class="modal fade" #addCategoryModal id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title custom-modal-title">Add Category</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+              </div>
 
-          <!-- Category input -->
-          <input type="text" name="category" class="form-control custom-input"
-                 [(ngModel)]="newCategory.Category"
-                 placeholder="ex. Access issue" required>
-          <p class="text-muted">Category*</p>
-        </div>
+              <div class="modal-body">
+                <p>Category Information <i class="bi bi-pencil-fill custom-icon-pencil"></i></p>
 
-        <div class="modal-footer d-flex justify-content-start gap-2">
-          <button 
-            type="submit" 
-            class="btn bg-success-custom text-white custom-button-save"
-            [disabled]="!newCategory.Category || !newCategory.Status || submitting">
-            <span *ngIf="submitting" class="spinner-border spinner-border-sm me-1"></span>
-            Save changes
-          </button>
-
-          <button type="button" class="btn btn-secondary custom-button-close" data-bs-dismiss="modal">
-            Close
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-</form>
-
-
-      <!-- Delete Modal dre -->
-      <div *ngIf="isModalVisible" class="custom-modal-backdrop">
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h4 class="modal-title">Confirm(ed) Deletion</h4>
-            </div>
-            <div class="modal-body text-center" style="color: #ea0000;">
-              <ng-container *ngIf="!successDeleteMessage; else successBlock">
-                <i class="bi bi-exclamation-triangle"></i> Are you sure you want to delete this item?
-              </ng-container>
-              <ng-template #successBlock>
-                <div class="alert alert-success m-0" role="alert">
-                  {{ successDeleteMessage }}
+                <!-- Category input -->
+                <input type="text" name="category" class="form-control custom-input"
+                  [(ngModel)]="newCategory.Category"
+                  placeholder="ex. Access issue" required>
+                  <p class="text-muted">Category*</p>
                 </div>
-              </ng-template>
-            </div>
-            <div class="modal-footer justify-content-start" *ngIf="!successDeleteMessage">
-              <button type="button" class="btn btn-danger" (click)="confirmDelete()">Yes, Delete</button>
-              <button type="button" class="btn btn-secondary" (click)="isModalVisible = false">Exit</button>
+
+                <div class="modal-footer d-flex justify-content-start gap-2">
+                  <button
+                    type="submit"
+                    class="btn bg-success-custom text-white custom-button-save"
+                    [disabled]="!newCategory.Category || !newCategory.Status || submitting">
+                    @if (submitting) {
+                      <span class="spinner-border spinner-border-sm me-1"></span>
+                    }
+                    Save changes
+                  </button>
+
+                  <button type="button" class="btn btn-secondary custom-button-close" data-bs-dismiss="modal">
+                    Close
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-    </body>
-  </div>
-  
+        </form>
+
+
+        <!-- Delete Modal dre -->
+        @if (isModalVisible) {
+          <div class="custom-modal-backdrop">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">Confirm(ed) Deletion</h4>
+                </div>
+                <div class="modal-body text-center" style="color: #ea0000;">
+                  @if (!successDeleteMessage) {
+                    <i class="bi bi-exclamation-triangle"></i> Are you sure you want to delete this item?
+                  } @else {
+                    <div class="alert alert-success m-0" role="alert">
+                      {{ successDeleteMessage }}
+                    </div>
+                  }
+                </div>
+                @if (!successDeleteMessage) {
+                  <div class="modal-footer justify-content-start">
+                    <button type="button" class="btn btn-danger" (click)="confirmDelete()">Yes, Delete</button>
+                    <button type="button" class="btn btn-secondary" (click)="isModalVisible = false">Exit</button>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        }
+      </body>
+    </div>

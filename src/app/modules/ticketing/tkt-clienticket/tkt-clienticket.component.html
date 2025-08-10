@@ -1,258 +1,292 @@
 <div class="content-wrapper">
   <div class="card">
     <div class="container-xxl container-p-y">
-      <div class="misc-wrapper"> 
-     <div class="filter-bar">
-        <div class="filter-group">
-          <label>Status</label>
-          <select [(ngModel)]="selectedStatus" (change)="applyFilters()">
-            <option value="all">All Status</option>
-            <option *ngFor="let option of statusOptions" [value]="option.value">
-              {{option.label}}
-            </option>
-          </select>
-        </div>
-        <div class="filter-group">
-          <label>Date Range</label>
-          <select [(ngModel)]="selectedDateRange" (change)="applyFilters()">
-            <option value="all">All Dates</option>
-            <option value="today">Today</option>
-            <option value="week">This Week</option>
-            <option value="month">This Month</option>
-            <option value="custom">Custom Range</option>
-          </select>
-        </div>
-        <div class="filter-group">
-          <label>Category</label>
-          <select [(ngModel)]="selectedCategory" (change)="applyFilters()">
-            <option value="all">All Categories</option>
-            <option *ngFor="let category of categories" [value]="category.Category">
-              {{category.Category}}
-            </option>
-          </select>
-        </div>
-        <button class="filter-btn" (click)="applyFilters()">
-          <i class="bx bx-filter-alt"></i> Apply Filters
-        </button>
+      <div class="misc-wrapper">
+        <div class="filter-bar">
+          <div class="filter-group">
+            <label>Status</label>
+            <select [(ngModel)]="selectedStatus" (change)="applyFilters()">
+              <option value="all">All Status</option>
+              @for (option of statusOptions; track option) {
+                <option [value]="option.value">
+                  {{option.label}}
+                </option>
+              }
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>Date Range</label>
+            <select [(ngModel)]="selectedDateRange" (change)="applyFilters()">
+              <option value="all">All Dates</option>
+              <option value="today">Today</option>
+              <option value="week">This Week</option>
+              <option value="month">This Month</option>
+              <option value="custom">Custom Range</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>Category</label>
+            <select [(ngModel)]="selectedCategory" (change)="applyFilters()">
+              <option value="all">All Categories</option>
+              @for (category of categories; track category) {
+                <option [value]="category.Category">
+                  {{category.Category}}
+                </option>
+              }
+            </select>
+          </div>
+          <button class="filter-btn" (click)="applyFilters()">
+            <i class="bx bx-filter-alt"></i> Apply Filters
+          </button>
           <button class="tktcreate-btn" (click)="openCreateTicketModal()">
             <i class="bx bx-plus"></i> Create Ticket
           </button>
         </div>
 
-        
-<div class="ticket-table-container">
-  <table class="ticket-table">
-    <thead>
-      <tr>
-        <th class="compact">TicketID</th>
-        <th class="compact">Category</th>
-        <th class="compact">Subject</th>
-        <th class="compact">Status</th>
-        <th class="compact">Created</th>
-        <th class="compact">Updated</th>
-        <th class="compact">Actions</th>
-      </tr>
-    </thead>
-    <tbody *ngIf="paginatedTickets.length > 0; else noTickets">
-      <tr *ngFor="let ticket of paginatedTickets">
-        <td class="compact">{{ ticket.tktId }}</td>
-        <td class="compact">{{ ticket.category }}</td>
-        <td class="compact">{{ ticket.subject }}</td>
-        <td class="compact">
-          <span class="status-badge {{ ticket.statusClass || 'new' }}">{{ ticket.status || 'New' }}</span>
-        </td>
-        <td class="compact">{{ ticket.created }}</td>
-        <td class="compact">{{ ticket.updated }}</td>
-        <td class="compact actions">
-          <button class="icon-btn" title="View/Edit" (click)="openTicket(ticket.tktId)">
-            <i class="bx bx-show"></i>
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
 
-  <ng-template #noTickets>
-    <tbody>
-      <tr>
-        <td colspan="7" style="text-align: center;">No tickets found.</td>
-      </tr>
-    </tbody>
-  </ng-template>
-</div>
+        <div class="ticket-table-container">
+          <table class="ticket-table">
+            <thead>
+              <tr>
+                <th class="compact">TicketID</th>
+                <th class="compact">Category</th>
+                <th class="compact">Subject</th>
+                <th class="compact">Status</th>
+                <th class="compact">Created</th>
+                <th class="compact">Updated</th>
+                <th class="compact">Actions</th>
+              </tr>
+            </thead>
+            @if (paginatedTickets.length > 0) {
+              <tbody>
+                @for (ticket of paginatedTickets; track ticket) {
+                  <tr>
+                    <td class="compact">{{ ticket.tktId }}</td>
+                    <td class="compact">{{ ticket.category }}</td>
+                    <td class="compact">{{ ticket.subject }}</td>
+                    <td class="compact">
+                      <span class="status-badge {{ ticket.statusClass || 'new' }}">{{ ticket.status || 'New' }}</span>
+                    </td>
+                    <td class="compact">{{ ticket.created }}</td>
+                    <td class="compact">{{ ticket.updated }}</td>
+                    <td class="compact actions">
+                      <button class="icon-btn" title="View/Edit" (click)="openTicket(ticket.tktId)">
+                        <i class="bx bx-show"></i>
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            } @else {
+              <tbody>
+                <tr>
+                  <td colspan="7" style="text-align: center;">No tickets found.</td>
+                </tr>
+              </tbody>
+            }
+          </table>
 
-<div class="pagination-controls">
-  <div class="page-info">Showing {{ getFirstItemOnPage() }}-{{ getLastItemOnPage() }} of {{ tickets.length }} tickets</div>
-  <div class="page-buttons">
-    <button class="page-btn" [disabled]="currentPage === 1" (click)="previousPage()">
-      <i class="bx bx-chevron-left"></i>
-    </button>
-    <span class="page-number">Page {{ currentPage }} of {{ getTotalPages() }}</span>
-    <button class="page-btn" [disabled]="currentPage === getTotalPages()" (click)="nextPage()">
-      <i class="bx bx-chevron-right"></i>
-    </button>
-  </div>
-</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay" *ngIf="showTicketModal">
-  <div class="ticket-creation-modal">
-    <h2>Create New Ticket</h2>
-
-    <!-- Error message display -->
-    <div class="error-message" *ngIf="error">{{ error }}</div>
-    <div class="success-message" *ngIf="successMessage">{{ successMessage }}</div>
-    <div class="form-group">
-      <label>Subject *</label>
-      <input type="text" name="subject" [(ngModel)]="ticketForm.subject" placeholder="Add subject here" required>
-    </div>
-    <div class="form-group">
-      <label>Category *</label>
-      <select name="catId" [(ngModel)]="ticketForm.catId" (change)="onCategoryChange($event)">
-        <option value="">Select a category</option>
-        <option *ngFor="let category of categories" [value]="category.CatId">
-          {{category.CatId}} - {{category.Category}}
-        </option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Description *</label>
-      <textarea name="description" type="text" [(ngModel)]="ticketForm.description" placeholder="Brief description of your issue"></textarea>
-      <div class="char-count">
-        <span>{{ ticketForm.description.length || 0 }}/500</span>
-        <span *ngIf="ticketForm.description.length > 500" class="error-text">Character limit exceeded!</span>
-      </div>
-    </div>
-
-    <div class="modal-actions">
-      <button class="cancel-btn" (click)="showTicketModal = false">Cancel</button>
-      <button class="submit-btn" (click)="createTicket()" [disabled]="submitting">
-        {{ submitting ? 'Creating...' : 'Create Ticket' }}
-      </button>
-    </div>
-  </div>
-</div>
-
-
-<div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
-  <div class="modal-content" (click)="$event.stopPropagation()">
-    
-    
-    <div class="ticket-header">
-      <div class="priority-badge {{selectedTicket?.priority?.toLowerCase() || 'low'}}">
-        {{selectedTicket?.priority || 'Low'}} Priority
-      </div>
-      <div class="ticket-id">Ticket #{{selectedTicket?.tktId}}</div>
-      <div class="ticket-status">
-        <span class="status-label">Status</span>
-        <div class="status-display {{selectedTicket?.statusClass || 'new'}}" 
-             *ngIf="selectedTicket?.status === 'CLOSED'">
-          {{selectedTicket?.status}}
         </div>
-        <div class="status-dropdown {{selectedTicket?.statusClass || 'new'}}" 
-             *ngIf="selectedTicket?.status !== 'CLOSED'">
-          <select class="status-select"
-            [ngModel]="selectedTicket?.status"
-            (ngModelChange)="selectedTicket && onStatusChange($event)">
-            <option *ngFor="let option of statusOptions" [value]="option.value">
-              {{ option.label }}
+
+        <div class="pagination-controls">
+          <div class="page-info">Showing {{ getFirstItemOnPage() }}-{{ getLastItemOnPage() }} of {{ tickets.length }} tickets</div>
+          <div class="page-buttons">
+            <button class="page-btn" [disabled]="currentPage === 1" (click)="previousPage()">
+              <i class="bx bx-chevron-left"></i>
+            </button>
+            <span class="page-number">Page {{ currentPage }} of {{ getTotalPages() }}</span>
+            <button class="page-btn" [disabled]="currentPage === getTotalPages()" (click)="nextPage()">
+              <i class="bx bx-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+@if (showTicketModal) {
+  <div class="modal-overlay">
+    <div class="ticket-creation-modal">
+      <h2>Create New Ticket</h2>
+      <!-- Error message display -->
+      @if (error) {
+        <div class="error-message">{{ error }}</div>
+      }
+      @if (successMessage) {
+        <div class="success-message">{{ successMessage }}</div>
+      }
+      <div class="form-group">
+        <label>Subject *</label>
+        <input type="text" name="subject" [(ngModel)]="ticketForm.subject" placeholder="Add subject here" required>
+      </div>
+      <div class="form-group">
+        <label>Category *</label>
+        <select name="catId" [(ngModel)]="ticketForm.catId" (change)="onCategoryChange($event)">
+          <option value="">Select a category</option>
+          @for (category of categories; track category) {
+            <option [value]="category.CatId">
+              {{category.CatId}} - {{category.Category}}
             </option>
-          </select>
-          <i class='bx bx-chevron-down dropdown-icon'></i>
+          }
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Description *</label>
+        <textarea name="description" type="text" [(ngModel)]="ticketForm.description" placeholder="Brief description of your issue"></textarea>
+        <div class="char-count">
+          <span>{{ ticketForm.description.length || 0 }}/500</span>
+          @if (ticketForm.description.length > 500) {
+            <span class="error-text">Character limit exceeded!</span>
+          }
         </div>
       </div>
+      <div class="modal-actions">
+        <button class="cancel-btn" (click)="showTicketModal = false">Cancel</button>
+        <button class="submit-btn" (click)="createTicket()" [disabled]="submitting">
+          {{ submitting ? 'Creating...' : 'Create Ticket' }}
+        </button>
+      </div>
     </div>
+  </div>
+}
 
-    <h2 class="ticket-subject">{{selectedTicket?.subject}}</h2>
-    <h4 class="ticket-description"><span>Description:</span>{{selectedTicket?.description}}</h4>
 
-    <div class="ticket-meta">
-      <div class="meta-item">
-        <span class="meta-label">Category:</span>
-        <span class="meta-value">{{selectedTicket?.tktCategory}}</span>
+@if (showModal) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="ticket-header">
+        <div class="priority-badge {{selectedTicket?.priority?.toLowerCase() || 'low'}}">
+          {{selectedTicket?.priority || 'Low'}} Priority
+        </div>
+        <div class="ticket-id">Ticket #{{selectedTicket?.tktId}}</div>
+        <div class="ticket-status">
+          <span class="status-label">Status</span>
+          @if (selectedTicket?.status === 'CLOSED') {
+            <div class="status-display {{selectedTicket?.statusClass || 'new'}}"
+              >
+              {{selectedTicket?.status}}
+            </div>
+          }
+          @if (selectedTicket?.status !== 'CLOSED') {
+            <div class="status-dropdown {{selectedTicket?.statusClass || 'new'}}"
+              >
+              <select class="status-select"
+                [ngModel]="selectedTicket?.status"
+                (ngModelChange)="selectedTicket && onStatusChange($event)">
+                @for (option of statusOptions; track option) {
+                  <option [value]="option.value">
+                    {{ option.label }}
+                  </option>
+                }
+              </select>
+              <i class='bx bx-chevron-down dropdown-icon'></i>
+            </div>
+          }
+        </div>
       </div>
-      <div class="meta-item">
-        <span class="meta-label">Created:</span>
-        <span class="meta-value">{{selectedTicket && selectedTicket.created ? formatDate(selectedTicket.created) : ''}}</span>
+      <h2 class="ticket-subject">{{selectedTicket?.subject}}</h2>
+      <h4 class="ticket-description"><span>Description:</span>{{selectedTicket?.description}}</h4>
+      <div class="ticket-meta">
+        <div class="meta-item">
+          <span class="meta-label">Category:</span>
+          <span class="meta-value">{{selectedTicket?.tktCategory}}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Created:</span>
+          <span class="meta-value">{{selectedTicket && selectedTicket.created ? formatDate(selectedTicket.created) : ''}}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Updated:</span>
+          <span class="meta-value">{{selectedTicket && selectedTicket.updated ? formatDate(selectedTicket.updated) : ''}}</span>
+        </div>
       </div>
-      <div class="meta-item">
-        <span class="meta-label">Updated:</span>
-        <span class="meta-value">{{selectedTicket && selectedTicket.updated ? formatDate(selectedTicket.updated) : ''}}</span>
-      </div>
-    </div>  
-
-    <!-- Scrollable Conversation Area -->
-    <div class="conversation-container">
+      <!-- Scrollable Conversation Area -->
+      <div class="conversation-container">
         <div class="conversation-thread">
-          <div *ngIf="messages.length === 0" class="no-messages">No messages yet.</div>
-          <div *ngFor="let msg of messages" 
+          @if (messages.length === 0) {
+            <div class="no-messages">No messages yet.</div>
+          }
+          @for (msg of messages; track msg) {
+            <div
               [ngClass]="{
                 'message-box': true,
                 'sent-message': msg.role === 'Client',
                 'reply-message': msg.role === 'Admin',
                 'system-message': msg.role === 'System' || msg.isStatusChange
               }">
-            <div class="message-header" *ngIf="msg.role !== 'System' && !msg.isStatusChange">
-              <div class="message-sender">
-                <span class="name">{{ msg.sender }}</span>
-                <span class="role">{{ msg.role }}</span>
-              </div>
-              <span class="time">{{ msg.time }}</span>
-            </div>
-            <div class="message-body">
-              <p>{{ msg.content }}</p>
-              <div *ngIf="msg.attachments && msg.attachments.length > 0" class="message-footer">
-                <div class="attachments">
-                  <div *ngFor="let attachment of msg.attachments" class="attachment">
+              @if (msg.role !== 'System' && !msg.isStatusChange) {
+                <div class="message-header">
+                  <div class="message-sender">
+                    <span class="name">{{ msg.sender }}</span>
+                    <span class="role">{{ msg.role }}</span>
+                  </div>
+                  <span class="time">{{ msg.time }}</span>
+                </div>
+              }
+              <div class="message-body">
+                <p>{{ msg.content }}</p>
+                @if (msg.attachments && msg.attachments.length > 0) {
+                  <div class="message-footer">
+                    <div class="attachments">
+                      @for (attachment of msg.attachments; track attachment) {
+                        <div class="attachment">
                     <i class='bx' [ngClass]="{
                       'bx-image': attachment?.type === 'image',
                       'bx-file': attachment?.type !== 'image'
                     }"></i>
-                    <span>{{attachment?.name || 'Untitled'}}</span>
-                    <a *ngIf="attachment?.url" [href]="attachment.url" target="_blank" class="preview-link">
-                      <i class='bx bx-search-alt'></i> Preview
-                    </a>
+                          <span>{{attachment?.name || 'Untitled'}}</span>
+                          @if (attachment?.url) {
+                            <a [href]="attachment.url" target="_blank" class="preview-link">
+                              <i class='bx bx-search-alt'></i> Preview
+                            </a>
+                          }
+                        </div>
+                      }
+                    </div>
                   </div>
-                </div>
+                }
               </div>
+            </div>
+          }
+        </div>
+      </div>
+      @if (selectedTicket?.status !== 'CLOSED') {
+        <div class="response-section">
+          @if (attachments.length > 0) {
+            <div class="attachments-preview">
+              <div class="attachment-preview">
+                @for (file of attachments; track file; let i = $index) {
+                  <div class="attachment-item">
+                    <span>{{ file.name }}</span>
+                    <button class="remove-attachment" (click)="removeAttachment(i)">
+                      <i class='bx bx-x'></i>
+                    </button>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+          <div class="response-input-container">
+            <input type="text" [(ngModel)]="newMessage" placeholder="Type your response here..." [disabled]="isChatDisabled" />
+            <div class="response-actions">
+              <label for="fileInput" class="attachment-btn" title="Attach file">
+                <i class='bx bx-paperclip'></i>
+                <input id="fileInput" type="file" (change)="onFileSelected($event)" multiple style="display: none;">
+              </label>
+              <button class="send-btn" (click)="sendMessage()" [disabled]="isChatDisabled || !newMessage.trim()">
+                Send <i class='bx bx-send'></i>
+              </button>
             </div>
           </div>
         </div>
-    </div>
-
-    <div class="response-section" *ngIf="selectedTicket?.status !== 'CLOSED'">
-      <div class="attachments-preview" *ngIf="attachments.length > 0">
-        <div class="attachment-preview">
-          <div *ngFor="let file of attachments; let i = index" class="attachment-item">
-            <span>{{ file.name }}</span>
-            <button class="remove-attachment" (click)="removeAttachment(i)">
-              <i class='bx bx-x'></i>
-            </button>
-          </div>
+      }
+      <!-- View-only message when ticket is closed -->
+      @if (selectedTicket?.status === 'CLOSED') {
+        <div class="view-only-message">
+          <p>This ticket is closed and cannot be modified.</p>
         </div>
-      </div>
-      
-      <div class="response-input-container">
-        <input type="text" [(ngModel)]="newMessage" placeholder="Type your response here..." [disabled]="isChatDisabled" />
-        <div class="response-actions">
-          <label for="fileInput" class="attachment-btn" title="Attach file">
-            <i class='bx bx-paperclip'></i>
-            <input id="fileInput" type="file" (change)="onFileSelected($event)" multiple style="display: none;">
-
-          </label>
-          <button class="send-btn" (click)="sendMessage()" [disabled]="isChatDisabled || !newMessage.trim()">
-          Send <i class='bx bx-send'></i>
-        </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- View-only message when ticket is closed -->
-    <div class="view-only-message" *ngIf="selectedTicket?.status === 'CLOSED'">
-      <p>This ticket is closed and cannot be modified.</p>
+      }
     </div>
   </div>
-</div>
+}

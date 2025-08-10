@@ -13,19 +13,19 @@ import { GlobalFilterPipe } from 'src/app/pipe/globalFilter.pipe';
 import { TruncatePipe } from 'src/app/pipe/truncate.pipe';
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    RouterModule,
-    RouterLink, 
-    FirstLetterUppercasePipe,
-    GlobalFilterPipe,
-    TruncatePipe
-  ]
+    selector: 'app-dashboard',
+    templateUrl: './dashboard.component.html',
+    styleUrls: ['./dashboard.component.css'],
+    standalone: true,
+    imports: [
+        CommonModule,
+        FormsModule,
+        RouterModule,
+        RouterLink
+        // FirstLetterUppercasePipe,
+        //  GlobalFilterPipe,
+        // TruncatePipe
+    ]
 })
 export class DashboardComponent implements OnInit {
   selectedSeverity: string = 'all';

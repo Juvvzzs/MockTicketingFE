@@ -13,11 +13,11 @@ import { Message, ClientInfo, StatusOption, TicketForm } from '../models/tkt-det
 
 
 @Component({
-  selector: 'app-tkt-clienticket',
-  templateUrl: './tkt-clienticket.component.html',
-  styleUrls: ['./tkt-clienticket.component.css'],
-  standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule]
+    selector: 'app-tkt-clienticket',
+    templateUrl: './tkt-clienticket.component.html',
+    styleUrls: ['./tkt-clienticket.component.css'],
+    standalone: true,
+    imports: [CommonModule, FormsModule, RouterModule]
 })
 export class TktClienticketComponent implements OnInit {
   private previousStatus = '';

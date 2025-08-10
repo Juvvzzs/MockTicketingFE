@@ -33,11 +33,11 @@
     styleUrls: ['./tkt-details.component.css'],
     standalone: true,
     imports: [
-      CommonModule,
-      FormsModule,
-      RouterModule
+        CommonModule,
+        FormsModule,
+        RouterModule
     ]
-  })
+})
 
   export class TktDetailsComponent {
      private previousStatus = '';

@@ -9,16 +9,15 @@ import Swal from 'sweetalert2';
 declare var bootstrap: any; 
 
 @Component({
-  selector: 'app-tkt-category',
-  templateUrl: './tkt-category.component.html',
-  styleUrls: ['./tkt-category.component.css'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    RouterModule
-  ],
-  providers: [DatePipe]
+    selector: 'app-tkt-category',
+    templateUrl: './tkt-category.component.html',
+    styleUrls: ['./tkt-category.component.css'],
+    imports: [
+        CommonModule,
+        FormsModule,
+        RouterModule
+    ],
+    providers: [DatePipe]
 })
 export class TktCategoryComponent implements OnInit {
 
