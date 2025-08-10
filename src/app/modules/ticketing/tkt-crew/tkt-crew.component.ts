@@ -1,4 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { TktCategory } from '../models/tkt-category';
 import { TicketingCrew } from '../models/user';
 import { TicketingCrewService } from '../service/ticketing-crew.service';
@@ -10,7 +13,9 @@ declare var bootstrap: any;
 @Component({
   selector: 'app-tkt-crew',
   templateUrl: './tkt-crew.component.html',
-  styleUrls: ['./tkt-crew.component.css']
+  styleUrls: ['./tkt-crew.component.css'],
+  standalone: true,
+  imports: [CommonModule, FormsModule, RouterModule]
 })
 export class TktCrewComponent implements OnInit {
 

@@ -1,15 +1,31 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { RouterLink, RouterModule } from '@angular/router';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 import { IncidentList, Ticket } from 'src/app/modules/ticketing/models/tkt-details.model';
 import { IncidentserviceService } from 'src/app/modules/ticketing/service/incidents.service';
 import { TktCreated } from 'src/app/modules/ticketing/models/tkt-created';
 import { TktCreatedService } from 'src/app/modules/ticketing/service/tkt-created.service';
+import { FirstLetterUppercasePipe } from 'src/app/pipe/first-letter-uppercase.pipe';
+import { GlobalFilterPipe } from 'src/app/pipe/globalFilter.pipe';
+import { TruncatePipe } from 'src/app/pipe/truncate.pipe';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+  styleUrls: ['./dashboard.component.css'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    RouterLink, 
+    FirstLetterUppercasePipe,
+    GlobalFilterPipe,
+    TruncatePipe
+  ]
 })
 export class DashboardComponent implements OnInit {
   selectedSeverity: string = 'all';

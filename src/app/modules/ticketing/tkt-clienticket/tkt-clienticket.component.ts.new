@@ -8,9 +8,41 @@ import { TktCreatedService } from '../service/tkt-created.service';
 import { TktDemochatService } from '../service/tkt-demochat.service';
 import Swal from 'sweetalert2';
 import { Ticket, TktCreated } from '../models/tkt-created';
-import { Message, ClientInfo, StatusOption, TicketForm } from '../models/tkt-details.model';
 
+interface Message {
+  messageId: number;
+  sender: string;
+  role: string;
+  content: string;
+  time: string;
+  attachments: Array<{ name: string; type: string; url?: string }>;
+  type: string;
+  isStatusChange?: boolean;
+}
 
+interface ClientInfo {
+  ClientID: string;
+  ClientName: string;
+  Role: string;
+}
+
+interface TicketForm {
+  subject: string;
+  description: string;
+  category: string;
+  catId: string;
+  tktCategory: string;
+  tktId: string;
+  status: string;
+  priority: string;
+  assignedTo?: string;
+}
+
+interface StatusOption {
+  value: string;
+  label: string;
+  selected?: boolean;
+}
 
 @Component({
   selector: 'app-tkt-clienticket',
@@ -320,14 +352,13 @@ export class TktClienticketComponent implements OnInit {
     this.previousStatus = this.selectedTicket.status;
     this.selectedTicket.status = newStatus;
     this.selectedTicket.updated = new Date().toLocaleString();
-    this.selectedTicket.statusClass = this.normalizeStatusClass(this.selectedTicket.status);
     this.isChatDisabled = ['CLOSED'].includes(newStatus);
 
     this.addStatusChangeMessage(this.currentTicketId, newStatus);
     this.updateTicketStatus(this.selectedTicket);
   }
-    
-private normalizeStatusClass(status: string): string {
+
+  private normalizeStatusClass(status: string): string {
     if (!status) return 'new';
 
     const statusLower = status.toLowerCase().trim();
@@ -342,31 +373,6 @@ private normalizeStatusClass(status: string): string {
       return 'closed';
     }
     return statusLower;
-  }
-  getFirstItemOnPage(): number {
-    return this.startIndex + 1;
-  }
-
-  getLastItemOnPage(): number {
-    return Math.min(this.endIndex, this.filteredTickets.length);
-  }
-
-  getTotalPages(): number {
-    return Math.ceil(this.filteredTickets.length / this.itemsPerPage);
-  }
-
-  previousPage(): void {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-      this.updatePagination();
-    }
-  }
-
-  nextPage(): void {
-    if (this.currentPage < this.getTotalPages()) {
-      this.currentPage++;
-      this.updatePagination();
-    }
   }
 
   updateTicketStatus(ticket: Ticket): void {
@@ -434,15 +440,14 @@ private normalizeStatusClass(status: string): string {
   }
 
   openTicket(ticketId: string): void {
-    const ticket = this.tickets.find(t => t.tktId === ticketId);
-    this.selectedTicket = ticket || null;
+    this.selectedTicket = this.tickets.find(t => t.tktId === ticketId);
     this.currentTicketId = ticketId;
     this.loadMessages(ticketId);
     this.messages = this.chatService.getMessages(ticketId);
     this.newMessage = '';
 
     if (this.selectedTicket) {
-      this.selectedTicket.statusClass = this.selectedTicket.status?.toLowerCase() || 'new';
+      this.selectedTicket.statusClass = this.normalizeStatusClass(this.selectedTicket.status);
       this.isChatDisabled = ['CLOSED'].includes(this.selectedTicket.status);
 
       if (!this.messages.some(m => m.isStatusChange)) {
@@ -508,5 +513,30 @@ private normalizeStatusClass(status: string): string {
     return this.filteredTickets.filter(ticket => ticket.status === 'CLOSED').length;
   }
 
- 
+  getTotalPages(): number {
+    return Math.ceil(this.filteredTickets.length / this.itemsPerPage);
+  }
+
+  getFirstItemOnPage(): number {
+    return (this.currentPage - 1) * this.itemsPerPage + 1;
+  }
+
+  getLastItemOnPage(): number {
+    const lastItem = this.currentPage * this.itemsPerPage;
+    return lastItem > this.filteredTickets.length ? this.filteredTickets.length : lastItem;
+  }
+
+  nextPage(): void {
+    if (this.currentPage < this.getTotalPages()) {
+      this.currentPage++;
+      this.updatePagination();
+    }
+  }
+
+  previousPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.updatePagination();
+    }
+  }
 }

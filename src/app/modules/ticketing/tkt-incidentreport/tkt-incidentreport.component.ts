@@ -1,12 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
 import { IncidentList } from '../models/tkt-details.model';
 import { IncidentserviceService } from '../service/incidents.service';
 
 @Component({
   selector: 'app-tkt-incidentreport',
   templateUrl: './tkt-incidentreport.component.html',
-  styleUrls: ['./tkt-incidentreport.component.css']
+  styleUrls: ['./tkt-incidentreport.component.css'],
+  standalone: true,
+  imports: [CommonModule, FormsModule, RouterModule]
 })
 export class TktIncidentreportComponent implements OnInit {
   incidentList: IncidentList[] = [];

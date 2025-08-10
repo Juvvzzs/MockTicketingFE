@@ -89,3 +89,40 @@ export interface IncidentTimeline {
 export interface IncidentDetail extends IncidentList {
     timeline: IncidentTimeline[];
 }
+
+//para ni sa tktClientTicket
+
+export interface ClientInfo {
+  ClientID: string;
+  ClientName: string;
+  Role: string;
+}
+
+export interface TicketForm {
+  subject: string;
+  description: string;
+  category: string;
+  catId: string;
+  tktCategory: string;
+  tktId: string;
+  status: string;
+  priority: string;
+  assignedTo?: string;
+}
+
+export interface StatusOption {
+  value: string;
+  label: string;
+  selected?: boolean;
+}
+
+export interface Message {
+  messageId: number;
+  sender: string;
+  role: string;
+  content: string;
+  time: string;
+  attachments: Array<{ name: string; type: string; url?: string }>;
+  type: string;
+  isStatusChange?: boolean;
+}

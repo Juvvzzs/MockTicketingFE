@@ -1,16 +1,23 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { TktCategoryService } from '../service/tkt-category.service';
 import { TktCategory } from '../models/tkt-category'; 
 import Swal from 'sweetalert2';
 
 declare var bootstrap: any; 
 
-
 @Component({
   selector: 'app-tkt-category',
   templateUrl: './tkt-category.component.html',
   styleUrls: ['./tkt-category.component.css'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule
+  ],
   providers: [DatePipe]
 })
 export class TktCategoryComponent implements OnInit {
