@@ -3,7 +3,7 @@
 =======
 # TICKETINGFE
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.16.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.16. and Upgraded to version 20
 
 ## Development server
 
