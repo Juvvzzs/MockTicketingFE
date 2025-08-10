@@ -6,11 +6,11 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
 import { FooterComponent } from '../footer/footer.component';
 
 @Component({
-  selector: 'app-mainlayout',
-  templateUrl: './mainlayout.component.html',
-  styleUrls: ['./mainlayout.component.css'],
-  standalone: true,
-  imports: [RouterOutlet, HeaderComponent, SidebarComponent, FooterComponent]
+    selector: 'app-mainlayout',
+    templateUrl: './mainlayout.component.html',
+    styleUrls: ['./mainlayout.component.css'],
+    standalone: true,
+    imports: [RouterOutlet, HeaderComponent, SidebarComponent, FooterComponent]
 })
 export class MainlayoutComponent implements OnInit {
   constructor(private Auth: AuthService) {}

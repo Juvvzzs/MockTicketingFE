@@ -11,11 +11,10 @@ import Swal from 'sweetalert2';
 declare var bootstrap: any; 
 
 @Component({
-  selector: 'app-tkt-crew',
-  templateUrl: './tkt-crew.component.html',
-  styleUrls: ['./tkt-crew.component.css'],
-  standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule]
+    selector: 'app-tkt-crew',
+    templateUrl: './tkt-crew.component.html',
+    styleUrls: ['./tkt-crew.component.css'],
+    imports: [CommonModule, FormsModule, RouterModule]
 })
 export class TktCrewComponent implements OnInit {
 

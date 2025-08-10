@@ -7,11 +7,10 @@ import { AuthService } from 'src/app/modules/ticketing/service/auth.service';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-user-login',
-  templateUrl: './user-login.component.html',
-  styleUrls: ['./user-login.component.css'],
-  standalone: true,
-  imports: [CommonModule, FormsModule]
+    selector: 'app-user-login',
+    templateUrl: './user-login.component.html',
+    styleUrls: ['./user-login.component.css'],
+    imports: [CommonModule, FormsModule]
 })
 export class LoginComponent implements OnInit {
   username = '';

@@ -6,11 +6,11 @@ import { faUserDoctor } from '@fortawesome/free-solid-svg-icons';
 import { UtilsService } from 'src/app/service/utils.service';
 
 @Component({
-  selector: 'app-sidebar',
-  templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.css'],
-  standalone: true,
-  imports: [CommonModule, RouterModule, FontAwesomeModule]
+    selector: 'app-sidebar',
+    templateUrl: './sidebar.component.html',
+    styleUrls: ['./sidebar.component.css'],
+    standalone: true,
+    imports: [CommonModule, RouterModule, FontAwesomeModule]
 })
 export class SidebarComponent implements OnInit {
   utilsService = inject(UtilsService);

@@ -7,11 +7,11 @@ import { IncidentReport } from '../models/tkt-details.model';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-tkt-info',
-  templateUrl: './tkt-info.component.html',
-  styleUrls: ['./tkt-info.component.css'],
-  standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule]
+    selector: 'app-tkt-info',
+    templateUrl: './tkt-info.component.html',
+    styleUrls: ['./tkt-info.component.css'],
+    standalone: true,
+    imports: [CommonModule, FormsModule, RouterModule]
 })
 export class TktInfoComponent implements OnInit {
   incident: IncidentReport | null = null;

@@ -6,11 +6,11 @@ import { IncidentList } from '../models/tkt-details.model';
 import { IncidentserviceService } from '../service/incidents.service';
 
 @Component({
-  selector: 'app-tkt-incidentreport',
-  templateUrl: './tkt-incidentreport.component.html',
-  styleUrls: ['./tkt-incidentreport.component.css'],
-  standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule]
+    selector: 'app-tkt-incidentreport',
+    templateUrl: './tkt-incidentreport.component.html',
+    styleUrls: ['./tkt-incidentreport.component.css'],
+    standalone: true,
+    imports: [CommonModule, FormsModule, RouterModule]
 })
 export class TktIncidentreportComponent implements OnInit {
   incidentList: IncidentList[] = [];
