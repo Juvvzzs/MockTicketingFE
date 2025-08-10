@@ -21,10 +21,10 @@ import { TruncatePipe } from 'src/app/pipe/truncate.pipe';
     CommonModule,
     FormsModule,
     RouterModule,
-    RouterLink, 
-    FirstLetterUppercasePipe,
-    GlobalFilterPipe,
-    TruncatePipe
+    RouterLink
+   // FirstLetterUppercasePipe,
+   //  GlobalFilterPipe,
+   // TruncatePipe
   ]
 })
 export class DashboardComponent implements OnInit {
