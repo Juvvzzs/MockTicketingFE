@@ -16,10 +16,10 @@
               <div class="label">IN PROGRESS</div>
             </div>
             <img src="assets/img/icons/unicons/inprogress.png" alt="Closed Tickets" class="stat-icon">
-            
+
           </div>
           <div class="stat-card">
-             <div class="stat-content">
+            <div class="stat-content">
               <div class="count">{{ ResolveCount() }}</div>
               <div class="label">RESOLVE</div>
             </div>
@@ -33,45 +33,49 @@
             <img src="assets/img/icons/unicons/openticket.png" alt="Closed Tickets" class="stat-icon">
           </div>
         </div>
-   
-        <div class="filter-bar">
-        <div class="filter-group">
-          <label>Status</label>
-          <select [(ngModel)]="selectedStatus" (change)="applyFilters()">
-            <option value="all">All Status</option>
-            <option *ngFor="let statuses of status" [value]="statuses.value">
-              {{statuses.value}}
-            </option>
-          </select>
-        </div>
-        <div class="filter-group">
-          <label>Date Range</label>
-          <select [(ngModel)]="selectedDateRange" (change)="applyFilters()">
-            <option value="all">All Dates</option>
-            <option value="today">Today</option>
-            <option value="week">This Week</option>
-            <option value="month">This Month</option>
-            <option value="custom">Custom Range</option>
-          </select>
-        </div>
-        <div class="filter-group">
-          <label>Category</label>
-          <select [(ngModel)]="selectedCategory" (change)="applyFilters()">
-            <option value="all">All Categories</option>
-            <option *ngFor="let category of categories" [value]="category.Category">
-              {{category.Category}}
-            </option>
-          </select>
-        </div>
-        <button class="filter-btn" (click)="applyFilters()">
-          <i class="bx bx-filter-alt"></i> Apply Filters
-        </button>
-        <button class="tktcrtincdnrrprt-btn" (click)="CreateIncReport()">
-          <i class="tf-icons bx bx-error-circle"></i> Create Incident Report
-        </button>
-      </div>
 
-        
+        <div class="filter-bar">
+          <div class="filter-group">
+            <label>Status</label>
+            <select [(ngModel)]="selectedStatus" (change)="applyFilters()">
+              <option value="all">All Status</option>
+              @for (statuses of status; track statuses) {
+                <option [value]="statuses.value">
+                  {{statuses.value}}
+                </option>
+              }
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>Date Range</label>
+            <select [(ngModel)]="selectedDateRange" (change)="applyFilters()">
+              <option value="all">All Dates</option>
+              <option value="today">Today</option>
+              <option value="week">This Week</option>
+              <option value="month">This Month</option>
+              <option value="custom">Custom Range</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>Category</label>
+            <select [(ngModel)]="selectedCategory" (change)="applyFilters()">
+              <option value="all">All Categories</option>
+              @for (category of categories; track category) {
+                <option [value]="category.Category">
+                  {{category.Category}}
+                </option>
+              }
+            </select>
+          </div>
+          <button class="filter-btn" (click)="applyFilters()">
+            <i class="bx bx-filter-alt"></i> Apply Filters
+          </button>
+          <button class="tktcrtincdnrrprt-btn" (click)="CreateIncReport()">
+            <i class="tf-icons bx bx-error-circle"></i> Create Incident Report
+          </button>
+        </div>
+
+
         <div class="ticket-table-container">
           <table class="ticket-table">
             <thead>
@@ -87,39 +91,38 @@
               </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let ticket of paginatedTickets"
-
-                 [class.selected-row]="ticket === selectedRow"
-                 (click)="onRowClick(ticket)">
-
-                <td class="compact">{{ ticket.TicketID }}</td>
-                <td class="compact">{{ ticket.ClientName }}</td>
-                <td class="compact">{{ ticket.CategoryID }}-{{ ticket.CategoryName }}</td>
-                <td class="compact">{{ ticket.Subject }}</td>
-                <td class="compact">
+              @for (ticket of paginatedTickets; track ticket) {
+                <tr
+                  [class.selected-row]="ticket === selectedRow"
+                  (click)="onRowClick(ticket)">
+                  <td class="compact">{{ ticket.TicketID }}</td>
+                  <td class="compact">{{ ticket.ClientName }}</td>
+                  <td class="compact">{{ ticket.CategoryID }}-{{ ticket.CategoryName }}</td>
+                  <td class="compact">{{ ticket.Subject }}</td>
+                  <td class="compact">
                     <span class="status-badge {{ ticket.statusClass }}">{{ ticket.Status }}</span>
-                </td>
-                <td class="compact">{{ formatDate(ticket.CreatedDT) }}</td>
-                <td class="compact">{{ formatDate(ticket.LastUpdatedDT) }}</td>
-                <td class="compact actions">
-                  <button class="icon-btn" title="View" (click)="openTicket(ticket.TicketID)">
-                    <i class="bx bx-message"></i>
-                  </button>
-                
-                </td>
-              </tr>
+                  </td>
+                  <td class="compact">{{ formatDate(ticket.CreatedDT) }}</td>
+                  <td class="compact">{{ formatDate(ticket.LastUpdatedDT) }}</td>
+                  <td class="compact actions">
+                    <button class="icon-btn" title="View" (click)="openTicket(ticket.TicketID)">
+                      <i class="bx bx-message"></i>
+                    </button>
+                  </td>
+                </tr>
+              }
             </tbody>
           </table>
-              <ng-template #noTickets>
-                <tbody>
-                    <tr>
-                        <td colspan="7" style="text-align: center;">No tickets found.</td>
-                    </tr>
-                </tbody>
-              </ng-template>
+          <ng-template #noTickets>
+            <tbody>
+              <tr>
+                <td colspan="7" style="text-align: center;">No tickets found.</td>
+              </tr>
+            </tbody>
+          </ng-template>
         </div>
 
-        
+
         <div class="pagination-controls">
           <div class="page-info">
             Showing {{ startIndex + 1 }}–{{ endIndex }} of {{ tickets.length }} tickets
@@ -140,170 +143,195 @@
 </div>
 
 
-<div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
-  <div class="modal-content" (click)="$event.stopPropagation()">
-   
-    <div class="ticket-header">
-      <div class="priority-badge {{selectedTicket?.Priority?.toLowerCase() || 'medium'}}">
-        {{selectedTicket?.Priority || 'Medium'}} Priority
-      </div>
-      <div class="ticket-id">Ticket #{{selectedTicket?.TicketID}}</div>
-      <div class="ticket-status">
-        <span class="status-label">Status</span>
-        <div class="status-display {{selectedTicket?.statusClass || 'new'}}" 
-             *ngIf="selectedTicket?.status === 'CLOSED'">
-          {{selectedTicket?.status}}
+@if (showModal) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="ticket-header">
+        <div class="priority-badge {{selectedTicket?.Priority?.toLowerCase() || 'medium'}}">
+          {{selectedTicket?.Priority || 'Medium'}} Priority
         </div>
-        <div class="status-dropdown {{selectedTicket?.statusClass || 'new'}}" 
-             *ngIf="selectedTicket?.status !== 'CLOSED'">
-          <select class="status-select"
-            [ngModel]="selectedTicket?.status"
-            (ngModelChange)="selectedTicket && onStatusChange($event)">
-            <option *ngFor="let option of statusOptions" [value]="option.value">
-              {{ option.label }}
-            </option>
-          </select>
-          <i class='bx bx-chevron-down dropdown-icon'></i>
+        <div class="ticket-id">Ticket #{{selectedTicket?.TicketID}}</div>
+        <div class="ticket-status">
+          <span class="status-label">Status</span>
+          @if (selectedTicket?.status === 'CLOSED') {
+            <div class="status-display {{selectedTicket?.statusClass || 'new'}}"
+              >
+              {{selectedTicket?.status}}
+            </div>
+          }
+          @if (selectedTicket?.status !== 'CLOSED') {
+            <div class="status-dropdown {{selectedTicket?.statusClass || 'new'}}"
+              >
+              <select class="status-select"
+                [ngModel]="selectedTicket?.status"
+                (ngModelChange)="selectedTicket && onStatusChange($event)">
+                @for (option of statusOptions; track option) {
+                  <option [value]="option.value">
+                    {{ option.label }}
+                  </option>
+                }
+              </select>
+              <i class='bx bx-chevron-down dropdown-icon'></i>
+            </div>
+          }
         </div>
       </div>
-    </div>
-
-    <h2 class="ticket-subject">{{selectedTicket?.Subject}} <p class="ticket-description">Description: {{selectedTicket?.Description}}</p></h2>
-    
-    <div class="ticket-meta">
-      <div class="meta-item">
-        <span class="meta-label">Client:</span>
-        <span class="meta-value">{{selectedTicket?.ClientName}}</span>
+      <h2 class="ticket-subject">{{selectedTicket?.Subject}} <p class="ticket-description">Description: {{selectedTicket?.Description}}</p></h2>
+      <div class="ticket-meta">
+        <div class="meta-item">
+          <span class="meta-label">Client:</span>
+          <span class="meta-value">{{selectedTicket?.ClientName}}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Category:</span>
+          <span class="meta-value">{{selectedTicket?.CategoryName}}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Created:</span>
+          <span class="meta-value">{{formatDate(selectedTicket?.CreatedDT)}}</span>
+        </div>
       </div>
-      <div class="meta-item">
-        <span class="meta-label">Category:</span>
-        <span class="meta-value">{{selectedTicket?.CategoryName}}</span>
-      </div>
-      <div class="meta-item">
-        <span class="meta-label">Created:</span>
-        <span class="meta-value">{{formatDate(selectedTicket?.CreatedDT)}}</span>
-      </div>
-    </div>
-
-    <!-- Scrollable Conversation Area -->
-    <div class="conversation-container">
-      <div class="conversation-thread">  
-        <div *ngIf="messages.length === 0" class="no-messages">No messages yet.</div>
-        <div *ngFor="let msg of messages" 
+      <!-- Scrollable Conversation Area -->
+      <div class="conversation-container">
+        <div class="conversation-thread">
+          @if (messages.length === 0) {
+            <div class="no-messages">No messages yet.</div>
+          }
+          @for (msg of messages; track msg) {
+            <div
          [ngClass]="{
        'message-box': true,
        'sent-message': msg.role === 'Admin',
        'reply-message': msg.role === 'Client',
        'system-message': msg.role === 'System' || msg.isStatusChange
      }">
-
-        <div class="message-header"  *ngIf="msg.role !== 'System' && !msg.isStatusChange">
-          <div class="message-sender">
-            <span class="name">{{ msg.sender }}</span>
-            <span class="role">{{ msg.role }}</span>
-          </div>
-          <span class="time">{{ msg.time }}</span>
-        </div>
-        <div class="message-body">
-          <p>{{ msg.content }}</p>
-          <div *ngIf="msg.attachments?.length" class="message-footer">
-           <div class="attachments">
-                  <div *ngFor="let attachment of msg.attachments" class="attachment">
+              @if (msg.role !== 'System' && !msg.isStatusChange) {
+                <div class="message-header" >
+                  <div class="message-sender">
+                    <span class="name">{{ msg.sender }}</span>
+                    <span class="role">{{ msg.role }}</span>
+                  </div>
+                  <span class="time">{{ msg.time }}</span>
+                </div>
+              }
+              <div class="message-body">
+                <p>{{ msg.content }}</p>
+                @if (msg.attachments?.length) {
+                  <div class="message-footer">
+                    <div class="attachments">
+                      @for (attachment of msg.attachments; track attachment) {
+                        <div class="attachment">
                     <i class='bx' [ngClass]="{
                       'bx-image': attachment.type === 'image',
                       'bx-file': attachment.type !== 'image'
                     }"></i>
-                    <span>{{attachment.name}}</span>
-                    <a *ngIf="attachment.url" [href]="attachment.url" target="_blank" class="preview-link">
-                      <i class='bx bx-search-alt'></i> Preview
-                    </a>
+                          <span>{{attachment.name}}</span>
+                          @if (attachment.url) {
+                            <a [href]="attachment.url" target="_blank" class="preview-link">
+                              <i class='bx bx-search-alt'></i> Preview
+                            </a>
+                          }
+                        </div>
+                      }
+                    </div>
                   </div>
-                </div>
-           </div>
-         </div>
+                }
+              </div>
+            </div>
+          }
         </div>
       </div>
+      @if (selectedTicket?.status !== 'CLOSED') {
+        <div class="response-section">
+          @if (attachments.length > 0) {
+            <div class="attachments-preview">
+              <div class="attachment-preview">
+                @for (file of attachments; track file; let i = $index) {
+                  <div class="attachment-item">
+                    <span>{{ file.name }}</span>
+                    <button class="remove-attachment" (click)="removeAttachment(i)">
+                      <i class='bx bx-x'></i>
+                    </button>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+          <div class="response-input-container">
+            <input type="text" [(ngModel)]="newMessage" placeholder="Type your response here..." [disabled]="isChatDisabled" />
+            <div class="response-actions">
+              <label for="fileInput" class="attachment-btn" title="Attach file">
+                <i class='bx bx-paperclip'></i>
+                <input id="fileInput" type="file" (change)="onFileSelected($event)" multiple style="display: none;">
+              </label>
+              <button class="send-btn" (click)="sendMessage()" [disabled]="isChatDisabled || !newMessage.trim()">
+                Send <i class='bx bx-send'></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+      <!-- View-only message when ticket is closed -->
+      @if (selectedTicket?.Status === 'CLOSED') {
+        <div class="view-only-message">
+          <p>This ticket is closed and cannot be modified.</p>
+        </div>
+      }
     </div>
-
-    <div class="response-section" *ngIf="selectedTicket?.status !== 'CLOSED'">
-         <div class="attachments-preview" *ngIf="attachments.length > 0">
-        <div class="attachment-preview">
-          <div *ngFor="let file of attachments; let i = index" class="attachment-item">
-            <span>{{ file.name }}</span>
-            <button class="remove-attachment" (click)="removeAttachment(i)">
-              <i class='bx bx-x'></i>
-            </button>
+  </div>
+}
+<!-- Incident Report Modal -->
+@if (showTicketModal) {
+  <div class="modal-overlay" (click)="onBackdropClick($event)">
+    <div class="modal-container">
+      <div class="modal-header">
+        Create Incident Report
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-col">
+            <label>Ticket ID</label>
+            <div class="static-text">{{ selectedRow?.TicketID }}</div>
+          </div>
+          <div class="form-col">
+            <label>Category</label>
+            <div class="static-text">{{ selectedRow?.CategoryName }}</div>
+          </div>
+          <div class="form-col">
+            <label>Reported By</label>
+            <div class="static-text">{{ selectedRow?.ClientName }}</div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-col">
+            <label for="severity">Severity</label>
+            <select id="severity" class="form-control" [(ngModel)]="incReportForm.Severity">
+              @for (option of severityOptions; track option) {
+                <option [value]="option.value">{{ option.label }}</option>
+              }
+            </select>
+          </div>
+          <div class="form-col">
+            <label for="incidentType">Incident Type</label>
+            <select id="incidentType" class="form-control" [(ngModel)]="incReportForm.IncidentType">
+              @for (option of incidentTypeOptions; track option) {
+                <option [value]="option.value">{{ option.label }}</option>
+              }
+            </select>
           </div>
         </div>
       </div>
-
-      <div class="response-input-container">
-        <input type="text" [(ngModel)]="newMessage" placeholder="Type your response here..." [disabled]="isChatDisabled" />
-        <div class="response-actions">
-          <label for="fileInput" class="attachment-btn" title="Attach file">
-            <i class='bx bx-paperclip'></i>
-            <input id="fileInput" type="file" (change)="onFileSelected($event)" multiple style="display: none;">
-
-          </label>
-          <button class="send-btn" (click)="sendMessage()" [disabled]="isChatDisabled || !newMessage.trim()">
-          Send <i class='bx bx-send'></i>
-        </button>
+      @if (error) {
+        <div class="alert alert-danger mb-3">
+          {{ error }}
         </div>
-      </div>
-    </div>
-
-      <!-- View-only message when ticket is closed -->
-    <div class="view-only-message" *ngIf="selectedTicket?.Status === 'CLOSED'">
-      <p>This ticket is closed and cannot be modified.</p>
-    </div>
-  </div>
-</div>
-<!-- Incident Report Modal -->
-<div class="modal-overlay" *ngIf="showTicketModal" (click)="onBackdropClick($event)">
-  <div class="modal-container">
-    
-    <div class="modal-header">
-      Create Incident Report 
-    </div>
-    <div class="modal-body">
-      <div class="form-row">
-        <div class="form-col">
-          <label>Ticket ID</label>
-          <div class="static-text">{{ selectedRow?.TicketID }}</div>
-          
-        </div>
-        <div class="form-col">
-          <label>Category</label>
-          <div class="static-text">{{ selectedRow?.CategoryName }}</div>
-        </div>
-        <div class="form-col">
-          <label>Reported By</label>
-          <div class="static-text">{{ selectedRow?.ClientName }}</div>
-        </div>
-      </div> 
-      <div class="form-row">
-        <div class="form-col">
-          <label for="severity">Severity</label>
-          <select id="severity" class="form-control" [(ngModel)]="incReportForm.Severity">
-            <option *ngFor="let option of severityOptions" [value]="option.value">{{ option.label }}</option>
-          </select>
-        </div>
-        <div class="form-col">
-          <label for="incidentType">Incident Type</label>
-          <select id="incidentType" class="form-control" [(ngModel)]="incReportForm.IncidentType">
-            <option *ngFor="let option of incidentTypeOptions" [value]="option.value">{{ option.label }}</option>
-          </select>
-        </div>
-      </div>
-    </div>
-    <div *ngIf="error" class="alert alert-danger mb-3">
-    {{ error }}
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-danger" (click)="closeIncidentModal()">Cancel</button>
-      <button class="btn btn-primary" (click)="SubmitIncidentReport()" [disabled]="submitting">
+      }
+      <div class="modal-footer">
+        <button class="btn btn-danger" (click)="closeIncidentModal()">Cancel</button>
+        <button class="btn btn-primary" (click)="SubmitIncidentReport()" [disabled]="submitting">
         {{ submitting ? 'Submitting...' : 'Report Submit' }}</button>
+      </div>
     </div>
   </div>
-</div>
+}
 

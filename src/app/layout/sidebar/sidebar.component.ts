@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faUserDoctor } from '@fortawesome/free-solid-svg-icons';
@@ -10,7 +10,7 @@ import { UtilsService } from 'src/app/service/utils.service';
     templateUrl: './sidebar.component.html',
     styleUrls: ['./sidebar.component.css'],
     standalone: true,
-    imports: [CommonModule, RouterModule, FontAwesomeModule]
+    imports: [RouterModule, FontAwesomeModule]
 })
 export class SidebarComponent implements OnInit {
   utilsService = inject(UtilsService);

@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { TktCategory } from '../models/tkt-category';
@@ -14,7 +14,7 @@ declare var bootstrap: any;
     selector: 'app-tkt-crew',
     templateUrl: './tkt-crew.component.html',
     styleUrls: ['./tkt-crew.component.css'],
-    imports: [CommonModule, FormsModule, RouterModule]
+    imports: [FormsModule, RouterModule]
 })
 export class TktCrewComponent implements OnInit {
 

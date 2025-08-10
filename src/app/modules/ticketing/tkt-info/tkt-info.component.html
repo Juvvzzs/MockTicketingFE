@@ -1,156 +1,143 @@
 <!-- Spinner Overlay -->
-<div *ngIf="isSaving" class="overlay-blur">
-  <div class="spinner"></div>
-</div>
+@if (isSaving) {
+  <div class="overlay-blur">
+    <div class="spinner"></div>
+  </div>
+}
 
-<ng-container *ngIf="!loading; else loadingTemplate">
-    <header class="page-header">
-        <div>
-            <div class="breadcrumbs"><a routerLink="/incidents">Incident Reports</a> / {{ incident?.IncidentID }}</div>
-            <div class="title-with-pills">
-                <!-- Change all properties to match your interface exactly -->
-                    <h1>Incident: {{ incident?.IncidentType }}</h1>
-                    <span class="info-value">{{ incident?.ReportDateTime | date:'medium' }}</span>
-                <div class="header-pills">
-                    <span class="pill" [ngClass]="getTicketStatusClass(incident?.Status ?? '')">{{ formatTicketStatus(incident?.Status ?? '') }}</span>
-                    <span class="pill" [ngClass]="getSeverityClass(incident?.Severity ?? '')">{{ incident?.Severity }}</span>
-                </div>
+@if (!loading) {
+  <header class="page-header">
+    <div>
+      <div class="breadcrumbs"><a routerLink="/incidents">Incident Reports</a> / {{ incident?.IncidentID }}</div>
+      <div class="title-with-pills">
+        <!-- Change all properties to match your interface exactly -->
+        <h1>Incident: {{ incident?.IncidentType }}</h1>
+        <span class="info-value">{{ incident?.ReportDateTime | date:'medium' }}</span>
+        <div class="header-pills">
+          <span class="pill" [ngClass]="getTicketStatusClass(incident?.Status ?? '')">{{ formatTicketStatus(incident?.Status ?? '') }}</span>
+          <span class="pill" [ngClass]="getSeverityClass(incident?.Severity ?? '')">{{ incident?.Severity }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondary" (click)="toggleEditMode()">
+        <i class="fas" [ngClass]="isEditMode ? 'fa-save' : 'fa-edit'"></i>
+        {{ isEditMode ? 'Save Changes' : 'Edit Report Details' }}
+      </button>
+      <button class="btn btn-secondary" (click)="viewTicketDetails()" ><i class="fas fa-ticket-alt"></i> View Ticket</button>
+      <button class="btn btn-secondary"><i class="fas fa-file-export"></i> Export</button>
+    </div>
+  </header>
+  <div class="content-card key-info-card">
+    <div class="info-item">
+      <span class="info-label">Incident ID</span>
+      <span class="info-value">{{ incident?.IncidentID }}</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">Linked Ticket</span>
+      <span class="info-value"><a href="#" title="View Ticket Details">#{{ incident?.ticketCategory }}</a></span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">Incident Type</span>
+      <span class="info-value">{{ incident?.IncidentType }}</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">Reported</span>
+      <span class="info-value">{{ incident?.ReportDateTime }}</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">Reported to Authorities</span>
+      <span class="info-value">{{ incident?.ReportedToAuthorities ? 'Yes' : 'No' }}</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">Reported By</span>
+      <span class="info-value">{{ incident?.ReportedBy }}</span>
+    </div>
+  </div>
+  <div class="incident-details-grid">
+    <div class="details-column">
+      <!-- Impact Section -->
+      <section class="content-card" style="margin-bottom: 20px;">
+        <h2><i class="bi bi-bullseye icon-title"></i> Impact</h2>
+        <div class="incident-details-section">
+          <p><strong>Impact Assessment:</strong></p>
+          @if (!isEditMode) {
+            <p>{{ incident?.ImpactAssessment }}</p>
+          }
+          @if (isEditMode && editableIncident) {
+            <textarea [(ngModel)]="editableIncident.ImpactAssessment" class="form-control" rows="3"></textarea>
+          }
+        </div>
+      </section>
+      <!-- Response & Recovery Section -->
+      <section class="content-card" style="margin-bottom: 20px;">
+        <h2><i class="bi bi-shield-check icon-title"></i> Response & Recovery</h2>
+        <div class="incident-details-section">
+          <p><strong>Containment Actions:</strong></p>
+          @if (!isEditMode) {
+            <p>{{ incident?.ContainmentActions }}</p>
+          }
+          @if (isEditMode && editableIncident) {
+            <textarea [(ngModel)]="editableIncident.ContainmentActions" class="form-control" rows="2"></textarea>
+          }
+          <p><strong>Eradication Steps:</strong></p>
+          @if (!isEditMode) {
+            <p>{{ incident?.EradicationSteps }}</p>
+          }
+          @if (isEditMode && editableIncident) {
+            <textarea [(ngModel)]="editableIncident.EradicationSteps" class="form-control" rows="2"></textarea>
+          }
+          <p><strong>Recovery Process:</strong></p>
+          @if (!isEditMode) {
+            <p>{{ incident?.RecoveryProcess }}</p>
+          }
+          @if (isEditMode && editableIncident) {
+            <textarea [(ngModel)]="editableIncident.RecoveryProcess" class="form-control" rows="2"></textarea>
+          }
+        </div>
+      </section>
+      <!-- Post-Incident Review Section -->
+      <section class="content-card">
+        <h2><i class="bi bi-clipboard icon-title"></i> Post-Incident Review</h2>
+        <div class="incident-details-section">
+          <p><strong>Lessons Learned:</strong></p>
+          @if (!isEditMode) {
+            <p>{{ incident?.LessonsLearned }}</p>
+          }
+          @if (isEditMode && editableIncident) {
+            <textarea [(ngModel)]="editableIncident.LessonsLearned" class="form-control" rows="2"></textarea>
+          }
+        </div>
+      </section>
+    </div>
+    <div class="timeline-column">
+      <section class="content-card">
+        <h2><i class="bi bi-clock-history icon-title"></i> Incident Timeline</h2>
+        <button class="btn btn-secondary btn-small btn-add-timeline"><i class="fas fa-plus"></i> Add Timeline Entry</button>
+        <div class="timeline">
+          <div  class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <span class="timeline-time"></span>
+              <p class="timeline-description"></p>
+              <span class="timeline-author">Recorded By: </span>
+              <span class="timeline-recorded-dt">Logged: </span>
             </div>
+          </div>
+          <div  class="timeline-item">
+            <p class="timeline-description">No timeline entries recorded.</p>
+          </div>
         </div>
-        <div class="header-actions">
-           <button class="btn btn-secondary" (click)="toggleEditMode()">
-            <i class="fas" [ngClass]="isEditMode ? 'fa-save' : 'fa-edit'"></i>
-            {{ isEditMode ? 'Save Changes' : 'Edit Report Details' }}
-          </button>
-
-
-
-            <button class="btn btn-secondary" (click)="viewTicketDetails()" ><i class="fas fa-ticket-alt"></i> View Ticket</button>
-            <button class="btn btn-secondary"><i class="fas fa-file-export"></i> Export</button>
-        </div>
-    </header>
-  
-    <div class="content-card key-info-card">
-         <div class="info-item">
-             <span class="info-label">Incident ID</span>
-             <span class="info-value">{{ incident?.IncidentID }}</span>
-         </div>
-         <div class="info-item">
-            <span class="info-label">Linked Ticket</span>
-            <span class="info-value"><a href="#" title="View Ticket Details">#{{ incident?.ticketCategory }}</a></span>
-         </div>
-         <div class="info-item">
-            <span class="info-label">Incident Type</span>
-            <span class="info-value">{{ incident?.IncidentType }}</span>
-         </div>
-         <div class="info-item">
-             <span class="info-label">Reported</span>
-             <span class="info-value">{{ incident?.ReportDateTime }}</span>
-         </div>
-         <div class="info-item">
-             <span class="info-label">Reported to Authorities</span>
-             <span class="info-value">{{ incident?.ReportedToAuthorities ? 'Yes' : 'No' }}</span>
-         </div>
-         <div class="info-item">
-             <span class="info-label">Reported By</span>
-             <span class="info-value">{{ incident?.ReportedBy }}</span>
-         </div>
+      </section>
     </div>
-  
-    <div class="incident-details-grid">
- <div class="details-column">
-  <!-- Impact Section -->
-  <section class="content-card" style="margin-bottom: 20px;">
-    <h2><i class="bi bi-bullseye icon-title"></i> Impact</h2>
-    <div class="incident-details-section">
-      <p><strong>Impact Assessment:</strong></p>
-      <ng-container *ngIf="!isEditMode">
-        <p>{{ incident?.ImpactAssessment }}</p>
-      </ng-container>
-      <ng-container *ngIf="isEditMode && editableIncident">
-        <textarea [(ngModel)]="editableIncident.ImpactAssessment" class="form-control" rows="3"></textarea>
-      </ng-container>
-    </div>
-  </section>
+  </div>
+} @else {
+  <div class="loading-indicator">
+    <i class="fas fa-spinner fa-spin"></i> Loading...
+  </div>
+}
 
-  <!-- Response & Recovery Section -->
-  <section class="content-card" style="margin-bottom: 20px;">
-    <h2><i class="bi bi-shield-check icon-title"></i> Response & Recovery</h2>
-    <div class="incident-details-section">
-      <p><strong>Containment Actions:</strong></p>
-      <ng-container *ngIf="!isEditMode">
-        <p>{{ incident?.ContainmentActions }}</p>
-      </ng-container>
-      <ng-container *ngIf="isEditMode && editableIncident">
-        <textarea [(ngModel)]="editableIncident.ContainmentActions" class="form-control" rows="2"></textarea>
-      </ng-container>
-
-      <p><strong>Eradication Steps:</strong></p>
-      <ng-container *ngIf="!isEditMode">
-        <p>{{ incident?.EradicationSteps }}</p>
-      </ng-container>
-      <ng-container *ngIf="isEditMode && editableIncident">
-        <textarea [(ngModel)]="editableIncident.EradicationSteps" class="form-control" rows="2"></textarea>
-      </ng-container>
-
-      <p><strong>Recovery Process:</strong></p>
-      <ng-container *ngIf="!isEditMode">
-        <p>{{ incident?.RecoveryProcess }}</p>
-      </ng-container>
-      <ng-container *ngIf="isEditMode && editableIncident">
-        <textarea [(ngModel)]="editableIncident.RecoveryProcess" class="form-control" rows="2"></textarea>
-      </ng-container>
-    </div>
-  </section>
-
-  <!-- Post-Incident Review Section -->
-  <section class="content-card">
-    <h2><i class="bi bi-clipboard icon-title"></i> Post-Incident Review</h2>
-    <div class="incident-details-section">
-      <p><strong>Lessons Learned:</strong></p>
-      <ng-container *ngIf="!isEditMode">
-        <p>{{ incident?.LessonsLearned }}</p>
-      </ng-container>
-      <ng-container *ngIf="isEditMode && editableIncident">
-        <textarea [(ngModel)]="editableIncident.LessonsLearned" class="form-control" rows="2"></textarea>
-      </ng-container>
-    </div>
-  </section>
-</div>
-
-
-
-
-  
-        <div class="timeline-column">
-            <section class="content-card">
-                <h2><i class="bi bi-clock-history icon-title"></i> Incident Timeline</h2>
-                <button class="btn btn-secondary btn-small btn-add-timeline"><i class="fas fa-plus"></i> Add Timeline Entry</button>
-                <div class="timeline">
-                    <div  class="timeline-item">
-                       <div class="timeline-dot"></div>
-                       <div class="timeline-content">
-                           <span class="timeline-time"></span>
-                           <p class="timeline-description"></p>
-                           <span class="timeline-author">Recorded By: </span>
-                           <span class="timeline-recorded-dt">Logged: </span>
-                       </div>
-                   </div>
-                   <div  class="timeline-item">
-                      <p class="timeline-description">No timeline entries recorded.</p>
-                   </div>
-                </div>
-            </section>
-        </div>
-    </div>
-</ng-container>
-  
 <ng-template #noIncident>
   <p class="error-message">Incident not found or failed to load</p>
 </ng-template>
 
-<ng-template #loadingTemplate>
-  <div class="loading-indicator">
-    <i class="fas fa-spinner fa-spin"></i> Loading...
-  </div>
-</ng-template>
