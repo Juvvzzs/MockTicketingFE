@@ -652,5 +652,14 @@ private scrollToBottom() {
     if (thread) thread.scrollTop = thread.scrollHeight;
   }, 100);
 }
+previewAttachment: { name: string; url: string; type: string } | null = null;
 
-  }
+openAttachmentPreview(attachment: any) {
+  this.previewAttachment = attachment;
+}
+
+closeAttachmentPreview() {
+  this.previewAttachment = null;
+}
+
+}
