@@ -227,78 +227,108 @@ export class TktClienticketComponent implements OnInit {
     }
   }
 
-  createTicket(): void {
-    if (!this.ticketForm.subject || !this.ticketForm.category || !this.ticketForm.description || !this.ticketForm.catId) {
-      this.error = 'Please fill in all required fields.';
-      return;
-    }
-
-    this.submitting = true;
-    this.error = '';
-    this.successMessage = '';
-
-    this.tktCreatedService.getTickets().subscribe({
-      next: (tickets) => {
-        const maxIdNum = tickets.reduce((max, ticket) => {
-          const match = ticket.TicketID.match(/^TKT-(\d{3})$/);
-          const num = match ? parseInt(match[1], 10) : 0;
-          return Math.max(max, num);
-        }, 0);
-
-        const nextIdNum = maxIdNum + 1;
-        const paddedNum = nextIdNum.toString().padStart(3, '0');
-        const nextId = `TKT-${paddedNum}`;
-
-        const newTicket: TktCreated = {
-          TicketID: nextId,
-          ClientEIC: this.ticket.client.ClientID,
-          ClientName: this.ticket.client.ClientName,
-          CatId: this.ticketForm.catId,
-          CategoryName: this.ticketForm.category,
-          Subject: this.ticketForm.subject,
-          Description: this.ticketForm.description,
-          Status: 'NEW',
-          CreatedDT: new Date().toISOString(),
-          LastUpdatedDT: new Date().toISOString(),
-          Priority: 'low'
-        };
-
-        this.tktCreatedService.createTicket(newTicket).subscribe({
-          next: () => {
-            Swal.fire({
-              toast: true,
-              position: 'top-end',
-              icon: 'success',
-              title: 'Ticket created successfully!',
-              showConfirmButton: false,
-              timer: 3000,
-              timerProgressBar: true,
-              didOpen: (toast) => {
-                toast.addEventListener('mouseenter', Swal.stopTimer);
-                toast.addEventListener('mouseleave', Swal.resumeTimer);
-              }
-            });
-
-            this.successMessage = 'Ticket created successfully!';
-            this.resetForm();
-            this.showTicketModal = false;
-            this.loadTickets();
-            this.openMessageModal(nextId);
-          },
-          error: (error) => {
-            this.submitting = false;
-            this.error = 'Failed to save ticket.';
-            console.error('Error creating ticket:', error);
-          }
-        });
-      },
-      error: (err) => {
-        this.submitting = false;
-        this.error = 'Failed to fetch existing tickets.';
-        console.error('Error fetching tickets:', err);
-      }
-    });
+createTicket(): void {
+  if (!this.ticketForm.subject || !this.ticketForm.category || !this.ticketForm.description || !this.ticketForm.catId) {
+    this.error = 'Please fill in all required fields.';
+    return;
   }
+
+  this.submitting = true;
+  this.error = '';
+  this.successMessage = '';
+
+  this.tktCreatedService.getTickets().subscribe({
+    next: (tickets) => {
+      const maxIdNum = tickets.reduce((max, ticket) => {
+        const match = ticket.TicketID.match(/^TKT-(\d{3})$/);
+        const num = match ? parseInt(match[1], 10) : 0;
+        return Math.max(max, num);
+      }, 0);
+
+      const nextIdNum = maxIdNum + 1;
+      const paddedNum = nextIdNum.toString().padStart(3, '0');
+      const nextId = `TKT-${paddedNum}`;
+
+      const newTicket: TktCreated = {
+        TicketID: nextId,
+        ClientEIC: this.ticket.client.ClientID,
+        ClientName: this.ticket.client.ClientName,
+        CatId: this.ticketForm.catId,
+        CategoryName: this.ticketForm.category,
+        Subject: this.ticketForm.subject,
+        Description: this.ticketForm.description,
+        Status: 'NEW',
+        CreatedDT: new Date().toISOString(),
+        LastUpdatedDT: new Date().toISOString(),
+        Priority: 'low'
+      };
+
+
+      this.tktCreatedService.createTicket(newTicket).subscribe({
+        next: () => {
+
+        
+          if (this.initialAttachments.length > 0) {
+            const attachMsg: Message = {
+              messageId: Date.now(),
+              sender: this.client.ClientName,
+              role: this.client.Role,
+              content: 'Initial attachments',
+              time: new Date().toLocaleTimeString(),
+              attachments: this.initialAttachments.map(file => ({
+                name: file.name,
+                type: file.type.split('/')[0],
+                url: URL.createObjectURL(file)
+              })),
+              type: 'text'
+            };
+            this.chatService.sendMessage(nextId, attachMsg);
+            this.messages = [attachMsg]; 
+          } else {
+            this.messages = [];
+          }
+
+          this.initialAttachments = [];
+
+  
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: 'Ticket created successfully!',
+            showConfirmButton: false,
+            timer: 3000
+          });
+
+          this.resetForm();
+          this.showTicketModal = false;
+          this.loadTickets();
+          this.openMessageModal(nextId); 
+        },
+        error: (error) => {
+          this.submitting = false;
+          this.error = 'Failed to save ticket.';
+          console.error('Error creating ticket:', error);
+        }
+      });
+    },
+    error: (err) => {
+      this.submitting = false;
+      this.error = 'Failed to fetch existing tickets.';
+      console.error('Error fetching tickets:', err);
+    }
+  });
+}
+
+previewAttachment: { name: string; url: string; type: string } | null = null;
+
+openAttachmentPreview(attachment: any) {
+  this.previewAttachment = attachment;
+}
+
+closeAttachmentPreview() {
+  this.previewAttachment = null;
+}
 
   resetForm(): void {
     this.ticketForm = {

@@ -141,6 +141,18 @@
           }
         </div>
       </div>
+      <div class="form-group">
+        <label>Attach Images or Files (optional)</label>
+        <input type="file" (change)="onInitialFileSelected($event)" multiple />
+        <div *ngIf="initialAttachments.length" class="attachments-preview-modal">
+          <div *ngFor="let file of initialAttachments; let i = index" class="attachment-preview-modal">
+            <span>{{ file.name }}</span>
+            <button (click)="removeAttachment(i)" class="remove-attachment">
+              <i class='bx bx-x'></i>
+            </button>
+          </div>
+      </div>
+    </div>
       <div class="modal-actions">
         <button class="cancel-btn" (click)="showTicketModal = false">Cancel</button>
         <button class="submit-btn" (click)="createTicket()" [disabled]="submitting">
@@ -237,7 +249,7 @@
                     }"></i>
                           <span>{{attachment?.name || 'Untitled'}}</span>
                           @if (attachment?.url) {
-                            <a [href]="attachment.url" target="_blank" class="preview-link">
+                            <a href="#" (click)="openAttachmentPreview(attachment); $event.preventDefault()" class="preview-link">
                               <i class='bx bx-search-alt'></i> Preview
                             </a>
                           }
@@ -287,6 +299,33 @@
           <p>This ticket is closed and cannot be modified.</p>
         </div>
       }
+
+
+      <!-- Attachment Preview Modal -->
+        <div *ngIf="previewAttachment" class="preview-overlay">
+          <div class="preview-content">
+            <span class="close-btn" (click)="closeAttachmentPreview()">✖</span>
+            <h3>{{ previewAttachment.name }}</h3>
+
+            <img *ngIf="previewAttachment.type === 'image'" 
+                [src]="previewAttachment.url" 
+                alt="Attachment Preview" />
+
+            <video *ngIf="previewAttachment.type === 'video'" 
+                  controls 
+                  [src]="previewAttachment.url"></video>
+
+            <iframe *ngIf="previewAttachment.type === 'application' && previewAttachment.name.endsWith('.pdf')"
+                    [src]="previewAttachment.url" width="100%" height="500px"></iframe>
+
+            <p *ngIf="previewAttachment.type !== 'image' && previewAttachment.type !== 'video' 
+                      && !(previewAttachment.name.endsWith('.pdf'))">
+              Cannot preview this file type. 
+              <a [href]="previewAttachment.url" target="_blank">Download</a>
+            </p>
+          </div>
+        </div>
+
     </div>
   </div>
 }
