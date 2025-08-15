@@ -168,8 +168,8 @@
   <div class="modal-overlay" (click)="closeModal()">
     <div class="modal-content" (click)="$event.stopPropagation()">
       <div class="ticket-header">
-        <div class="priority-badge {{selectedTicket?.priority?.toLowerCase() || 'low'}}">
-          {{selectedTicket?.priority || 'Low'}} Priority
+        <div class="priority-badge {{selectedTicket?.priority?.toLowerCase() || 'medium'}}">
+          {{selectedTicket?.priority || 'Medium'}} Priority
         </div>
         <div class="ticket-id">Ticket #{{selectedTicket?.tktId}}</div>
         <div class="ticket-status">
@@ -293,13 +293,12 @@
           </div>
         </div>
       }
-      <!-- View-only message when ticket is closed -->
+     
       @if (selectedTicket?.status === 'CLOSED') {
         <div class="view-only-message">
           <p>This ticket is closed and cannot be modified.</p>
         </div>
       }
-
 
       <!-- Attachment Preview Modal -->
         <div *ngIf="previewAttachment" class="preview-overlay">

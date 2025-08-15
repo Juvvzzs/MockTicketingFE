@@ -39,7 +39,7 @@
             <label>Status</label>
             <select [(ngModel)]="selectedStatus" (change)="applyFilters()">
               <option value="all">All Status</option>
-              @for (statuses of status; track statuses) {
+              @for (statuses of statusOptions; track statuses) {
                 <option [value]="statuses.value">
                   {{statuses.value}}
                 </option>
@@ -153,17 +153,17 @@
         <div class="ticket-id">Ticket #{{selectedTicket?.TicketID}}</div>
         <div class="ticket-status">
           <span class="status-label">Status</span>
-          @if (selectedTicket?.status === 'CLOSED') {
+          @if (selectedTicket?.Status === 'CLOSED') {
             <div class="status-display {{selectedTicket?.statusClass || 'new'}}"
               >
-              {{selectedTicket?.status}}
+              {{selectedTicket?.Status}}
             </div>
           }
-          @if (selectedTicket?.status !== 'CLOSED') {
+          @if (selectedTicket?.Status !== 'CLOSED') {
             <div class="status-dropdown {{selectedTicket?.statusClass || 'new'}}"
               >
               <select class="status-select"
-                [ngModel]="selectedTicket?.status"
+                [ngModel]="selectedTicket?.Status"
                 (ngModelChange)="selectedTicket && onStatusChange($event)">
                 @for (option of statusOptions; track option) {
                   <option [value]="option.value">
@@ -216,7 +216,7 @@
               }
               <div class="message-body">
                 <p>{{ msg.content }}</p>
-                @if (msg.attachments.length) {
+                @if (msg.attachments && msg.attachments.length > 0) {
                   <div class="message-footer">
                     <div class="attachments">
                       @for (attachment of msg.attachments; track attachment) {
@@ -225,7 +225,7 @@
                       'bx-image': attachment.type === 'image',
                       'bx-file': attachment.type !== 'image'
                     }"></i>
-                          <span>{{attachment.name}}</span>
+                          <span>{{attachment.name || 'Untitled'}}</span>
                           @if (attachment.url) {
                              <a href="#" (click)="openAttachmentPreview(attachment); $event.preventDefault()" class="preview-link">
                               <i class='bx bx-search-alt'></i> Preview
@@ -241,7 +241,7 @@
           }
         </div>
       </div>
-      @if (selectedTicket?.status !== 'CLOSED') {
+        @if (selectedTicket?.status !== 'CLOSED') {
         <div class="response-section">
           @if (attachments.length > 0) {
             <div class="attachments-preview">

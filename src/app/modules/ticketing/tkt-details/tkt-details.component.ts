@@ -3,29 +3,15 @@
   import { FormsModule } from '@angular/forms';
   import { ActivatedRoute, Router, RouterModule } from '@angular/router';
   import { TktAdminviewService } from '../service/tkt-adminview.service';
-  import { Ticket, StatusOption, IncidentReport } from '../models/tkt-details.model';
+  import { Ticket, StatusOption, IncidentReport, Message, Status } from '../models/tkt-details.model';
   import { TktCrtincReportService } from '../service/tkt-crtinc-report.service';
   import { TktCategoryService } from '../service/tkt-category.service';
   import { TktCategory } from '../models/tkt-category';
   import { TktDemochatService } from '../service/tkt-demochat.service';
+  import { TktAdminview } from '../models/tkt-adminview';
   import Swal from 'sweetalert2';
   import { tap, switchMap } from 'rxjs';
 
-  interface Message {
-  messageId: number;
-  sender: string;
-  role: string;
-  content: string;
-  time: string;
-  attachments: { name: string; type: string; url?: string }[];
-  type: string;
-  isStatusChange?: boolean;
-}
-
-
-  interface Status {
-    value: string;
-  } 
 
   @Component({
     selector: 'app-tkt-details',
@@ -35,7 +21,7 @@
     imports: [
         CommonModule,
         FormsModule,
-        RouterModule
+        RouterModule    
     ]
 })
 
@@ -71,13 +57,6 @@
   newMessage = '';
   initialAttachments: File[] = [];
   attachments: File[] = [];
-
-    status: Status [] = [
-      { value: 'NEW'},
-      { value: 'IN PROGRESS'},
-      { value: 'RESOLVED'},
-      { value: 'CLOSED'}
-    ];
 
     incReportForm = {
       IncidentID: '',
@@ -118,10 +97,10 @@
 
     // Status options for ticket status dropdown
     statusOptions: StatusOption[] = [
-      { value: 'new', label: 'New' },
-      { value: 'in-progress', label: 'In Progress' },
-      { value: 'resolved', label: 'Resolved' },
-      { value: 'closed', label: 'Closed' }
+      { value: 'NEW', label: 'New' },
+      { value: 'IN PROGRESS', label: 'In Progress' },
+      { value: 'RESOLVED', label: 'Resolved' },
+      { value: 'CLOSED', label: 'Closed' }
     ];
 
     constructor(
@@ -138,7 +117,7 @@
   this.selectedDateRange = 'all';
   this.selectedCategory = 'all';
   this.loadCategories();
-  
+
   // Chain the operations properly
   this.tktAdminviewService.getTickets().pipe(
     tap(data => {
@@ -185,35 +164,6 @@ private processTicketData(data: any): void {
       });
     }
 
-    loadTickets(): void {
-    this.tktAdminviewService.getTickets().subscribe({
-      next: (data) => {
-        this.tickets = data.map((ticket: any) => ({
-          TicketID: ticket.TicketID || '',
-          ClientName: ticket.ClientName || 'Unknown',
-          CategoryName: ticket.CategoryName || ticket.CategoryID || '',
-          CategoryID: ticket.CategoryID || '', // Make sure to include CategoryID
-          Subject: ticket.Subject || '',
-          Description: ticket.Description || '',
-          Status: ticket.Status || 'NEW',
-          CreatedDT: ticket.CreatedDT || new Date().toISOString(),
-          LastUpdatedDT: ticket.LastUpdatedDT || new Date().toISOString(),
-          statusClass: this.getStatusClass(ticket.Status)
-        })).sort((a, b) => 
-          new Date(b.CreatedDT).getTime() - new Date(a.CreatedDT).getTime()
-        );
-        
-        this.filteredTickets = [...this.tickets];
-        this.updatePagination();
-      },
-      error: err => {
-        console.error('Failed to load tickets from API', err);
-        this.tickets = [];
-        this.filteredTickets = [];
-        this.updatePagination();
-      }
-    });
-  }
 
     applyFilters(): void {
   this.filteredTickets = this.tickets.filter(ticket => {
@@ -311,34 +261,22 @@ private processTicketData(data: any): void {
       return new Date(dateString).toLocaleDateString(undefined, options);
     }
 
-   openTicket(ticketId: string) {
+  openTicket(ticketId: string): void {
 
-      let ticket = this.tickets.find(t => t.TicketID === ticketId);
-  
-  // If not found, try filtered tickets
-  if (!ticket) {
-    ticket = this.filteredTickets.find(t => t.TicketID === ticketId);
-  }
-  
-  // If still not found, show error
-  if (!ticket) {
-    console.error(`Ticket with ID ${ticketId} not found`);
-    return;
-  }
       this.selectedTicket = this.tickets.find(t => t.TicketID === ticketId);
-      this.currentTicketId = ticketId; // ← Add this line
+      this.currentTicketId = ticketId; 
       this.loadMessages(ticketId);
       this.messages = this.chatService.getMessages(ticketId);
       this.newMessage = '';
 
       if (this.selectedTicket) {
-        const statusClass = this.getStatusClass(this.selectedTicket.Status);
-        this.selectedTicket.statusClass = statusClass;
-        this.isChatDisabled = ['RESOLVED', 'CLOSED'].includes(
-          this.tickets.find(t => t.TicketID === ticketId)?.Status || ''
-        );
-      }
+         this.selectedTicket.statusClass = this.selectedTicket.Status.toLowerCase() || 'NEW';
+        this.isChatDisabled = ['CLOSED'].includes(this.selectedTicket.status);
 
+      if (!this.messages.some(m => m.isStatusChange)) {
+        this.addStatusChangeMessage(ticketId, ` ${this.selectedTicket.Status}`);
+      }
+      }
       this.showModal = true;
     }
 
@@ -417,12 +355,12 @@ private processTicketData(data: any): void {
       return Math.ceil(this.filteredTickets.length / this.itemsPerPage);
     }
   
-    updateTicketStatus(ticket: Ticket): void {
+    updateTicketStatus(ticket: TktAdminview): void {
       if (!ticket?.TicketID) return;
   
       this.tktAdminviewService.updateTicketStatus(ticket.TicketID, ticket.Status).subscribe({
         next: () => {
-          console.log('Status updated successfully!');
+          console.log('Status updated successfully yawa aha mani pangitaon nano dli masave!');
           this.addStatusChangeMessage(ticket.TicketID, `Status confirmed as ${ticket.Status}`);
         },
         error: (err) => {
@@ -623,8 +561,9 @@ loadMessages(ticketId: string): void {
 
 
 sendMessage(): void {
-  if (!this.newMessage.trim() || !this.currentTicketId || this.isChatDisabled) return;
-
+  if (!this.newMessage.trim() || !this.currentTicketId || this.isChatDisabled) {
+    return;
+  }
   const newMsg: Message = {
     messageId: Date.now(),
     sender: 'Technical Support',

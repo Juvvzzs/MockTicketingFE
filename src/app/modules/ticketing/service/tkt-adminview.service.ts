@@ -39,11 +39,11 @@ export class TktAdminviewService {
           map(tickets => tickets.find(t => t.TicketID === ticketId))
         );
       }
-      updateTicketStatus(tktId: string, newStatus: string): Observable<any> {
+      updateTicketStatus(ticketId: string, newStatus: string): Observable<any> {
       return this.getTickets().pipe(
         switchMap((tickets: TktAdminview[]) => {
           const updatedTickets = tickets.map(ticket =>
-            ticket.TicketID === tktId ? { ...ticket, Status: newStatus, updated: new Date().toISOString() } : ticket
+            ticket.TicketID === ticketId ? { ...ticket, Status: newStatus, updated: new Date().toISOString() } : ticket
           );
           return this.http.put(this.apiUrl, { TicketsCreated: updatedTickets });
         }),
