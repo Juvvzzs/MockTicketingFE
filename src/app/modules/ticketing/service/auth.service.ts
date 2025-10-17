@@ -10,8 +10,8 @@ import Swal from 'sweetalert2';
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly TOKEN_KEY = 'vics_auth_token';
-  private readonly USER_DATA_KEY = 'vics_user_data';
+  private readonly TOKEN_KEY = 'auth_token';
+  private readonly USER_DATA_KEY = 'user_data';
 
   private isAuthenticated = false;
   private currentUser: User | null = null;

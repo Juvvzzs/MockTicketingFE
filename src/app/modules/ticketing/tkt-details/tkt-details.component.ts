@@ -506,7 +506,7 @@ private processTicketData(data: any): void {
     });
   }
 
-  // Update your resetForm method to return the default form:
+  // Update resetForm method to return the default form:
   resetForm(): any {
     return {
       IncidentID: '',

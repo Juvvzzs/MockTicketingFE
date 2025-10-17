@@ -7,7 +7,7 @@ import { catchError, switchMap, throwError } from 'rxjs';
 
 interface JsonBinResponse{
   record: {
-    TicketsCreated: TktAdminview[]; // Replace 'any' with the actual type if available
+    TicketsCreated: TktAdminview[]; // Replace 'any' with the actual type
   };
 }
 
@@ -25,7 +25,7 @@ export class TktAdminviewService {
       return this.http.get<JsonBinResponse>(`${this.apiUrl}/latest`).pipe(
         map(res => {
           const tickets = res.record?.TicketsCreated || [];
-          // Sort tickets by CreatedDT in descending order (newest first)
+          // Sort tickets by CreatedDT in descending order
           return tickets.sort((a, b) => 
             new Date(b.CreatedDT).getTime() - new Date(a.CreatedDT).getTime()
           );
