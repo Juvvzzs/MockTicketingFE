@@ -20,7 +20,7 @@ import { Message, ClientInfo, StatusOption, TicketForm } from '../models/tkt-det
     imports: [CommonModule, FormsModule, RouterModule]
 })
 export class TktClienticketComponent implements OnInit {
-  private previousStatus = '';
+  previousStatus = '';
   successMessage = '';
   error = '';
   loading = false;
@@ -49,19 +49,9 @@ export class TktClienticketComponent implements OnInit {
   initialAttachments: Array<File> = [];
   attachments: Array<File> = [];
 
-  ticketForm: TicketForm = {
-    subject: '',
-    description: '',
-    category: '',
-    catId: '',
-    tktCategory: '',
-    tktId: '',
-    status: 'NEW',
-    priority: 'low'
-  };
+  ticketForm: TicketForm = {subject: '', description: '', category: '', catId: '', tktCategory: '', tktId: '', status: 'NEW', priority: 'low'};
 
-  client: ClientInfo = {
-    ClientID: 'EMP-0001',
+  client: ClientInfo = {ClientID: 'EMP-0001',
     ClientName: 'Azaleah Lenihan',
     Role: 'Client'
   };
@@ -149,15 +139,6 @@ export class TktClienticketComponent implements OnInit {
     this.showTicketModal = true;
   }
 
-  openMessageModal(ticketId: string): void {
-    this.currentTicketId = ticketId;
-    this.messages = this.chatService.getMessages(ticketId);
-    this.showMessageModal = true;
-    this.isChatDisabled = ['CLOSED'].includes(
-      this.tickets.find(t => t.tktId === ticketId)?.status || ''
-    );
-  }
-
   sendMessage(): void {
     if (!this.newMessage.trim() || !this.currentTicketId || this.isChatDisabled) {
       alert('Please fill in all required fields');
@@ -198,7 +179,7 @@ export class TktClienticketComponent implements OnInit {
   }
 
   private addStatusChangeMessage(ticketId: string, newStatus: string): void {
-    const statusMessage = `Ticket status changed to ${newStatus}`;
+    const statusMessage = `Ticket current status ${newStatus}`;
 
     const systemMsg: Message = {
       messageId: Date.now(),
@@ -303,7 +284,7 @@ createTicket(): void {
           this.resetForm();
           this.showTicketModal = false;
           this.loadTickets();
-          this.openMessageModal(nextId); 
+         
         },
         error: (error) => {
           this.submitting = false;
@@ -405,7 +386,7 @@ private normalizeStatusClass(status: string): string {
     this.tktCreatedService.updateTicketStatus(ticket.tktId, ticket.status).subscribe({
       next: () => {
         console.log('Status updated successfully!');
-        this.addStatusChangeMessage(ticket.tktId, `Status confirmed as ${ticket.status}`);
+        this.addStatusChangeMessage(ticket.tktId, `confirmed as ${ticket.status}`);
       },
       error: (err) => {
         console.error('Error updating status:', err);
@@ -476,7 +457,7 @@ private normalizeStatusClass(status: string): string {
       this.isChatDisabled = ['CLOSED'].includes(this.selectedTicket.status);
 
       if (!this.messages.some(m => m.isStatusChange)) {
-        this.addStatusChangeMessage(ticketId, `Ticket opened with status: ${this.selectedTicket.status}`);
+        this.addStatusChangeMessage(ticketId, ` ${this.selectedTicket.status}`);
       }
     }
 

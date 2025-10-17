@@ -31,16 +31,6 @@ export interface IncidentReport {
   Status: string
 }
 
-export interface Message {
-  messageId: number;
-  sender: string;
-  role: string;
-  content: string;
-  time: string;
-  attachments: { name: string; type: string; url?: string }[];
-  type: string;
-}
-
 export interface StatusOption {
   value: string;
   label: string;
@@ -116,13 +106,19 @@ export interface StatusOption {
   selected?: boolean;
 }
 
-export interface Message {
+ export interface Message {
   messageId: number;
   sender: string;
   role: string;
   content: string;
   time: string;
-  attachments: Array<{ name: string; type: string; url?: string }>;
+  attachments: { name: string; type: string; url?: string }[];
   type: string;
   isStatusChange?: boolean;
 }
+
+
+
+  export interface Status {
+    value: string;
+  } 

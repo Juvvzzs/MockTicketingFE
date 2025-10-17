@@ -12,10 +12,10 @@ export class IncidentserviceService {
   private binId = '688a3c76ae596e708fbe54d3';
   private apiUrl = `https://api.jsonbin.io/v3/b/${this.binId}`;
 
-  // Add these standard headers
+ 
   private headers = {
     'Content-Type': 'application/json',
-    'X-Bin-Versioning': 'false' // Disable versioning to prevent history buildup
+    'X-Bin-Versioning': 'false' 
   };
 
   constructor(private http: HttpClient) {}
@@ -58,7 +58,7 @@ export class IncidentserviceService {
 
    getIncidentById(reportId: string): Observable<IncidentReport | null> {
     return this.http.get<JsonBinResponse2>(`${this.apiUrl}/latest`).pipe(
-    tap(response => console.log('Raw API Response:', response)), // Add this line
+    tap(response => console.log('Raw API Response:', response)), ////////////////////
     map(res => {
         const reports = res.record?.incident_reports || [];
         const foundIncident = reports.find(incident => 

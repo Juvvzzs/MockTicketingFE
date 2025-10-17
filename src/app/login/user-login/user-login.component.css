@@ -12,7 +12,7 @@
     left: 83%; /* Adjust the left percentage value to center the card horizontally */
     transform: translate(-50%, -50%);
     width: 450px; /* Adjust the width as needed, you can use percentage or vw units */
-    height: 420px; /* Adjust the height as needed, you can use percentage or vh units */
+    height: 500px; /* Adjust the height as needed, you can use percentage or vh units */
   }
   
   /* Media Query for Mobile View */
@@ -28,3 +28,8 @@
       transform: translate(-50%, -50%);
     }
   }
+  .social-login {
+  display: flex;
+  justify-content: center;
+  gap: 20px; /* Adjust logo spacing here */
+}

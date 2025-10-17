@@ -7,7 +7,7 @@ import { catchError, switchMap, throwError } from 'rxjs';
 
 interface JsonBinResponse{
   record: {
-    TicketsCreated: TktAdminview[]; // Replace 'any' with the actual type if available
+    TicketsCreated: TktAdminview[]; // Replace 'any' with the actual type
   };
 }
 
@@ -25,7 +25,7 @@ export class TktAdminviewService {
       return this.http.get<JsonBinResponse>(`${this.apiUrl}/latest`).pipe(
         map(res => {
           const tickets = res.record?.TicketsCreated || [];
-          // Sort tickets by CreatedDT in descending order (newest first)
+          // Sort tickets by CreatedDT in descending order
           return tickets.sort((a, b) => 
             new Date(b.CreatedDT).getTime() - new Date(a.CreatedDT).getTime()
           );
@@ -39,11 +39,11 @@ export class TktAdminviewService {
           map(tickets => tickets.find(t => t.TicketID === ticketId))
         );
       }
-      updateTicketStatus(tktId: string, newStatus: string): Observable<any> {
+      updateTicketStatus(ticketId: string, newStatus: string): Observable<any> {
       return this.getTickets().pipe(
         switchMap((tickets: TktAdminview[]) => {
           const updatedTickets = tickets.map(ticket =>
-            ticket.TicketID === tktId ? { ...ticket, Status: newStatus, updated: new Date().toISOString() } : ticket
+            ticket.TicketID === ticketId ? { ...ticket, Status: newStatus, updated: new Date().toISOString() } : ticket
           );
           return this.http.put(this.apiUrl, { TicketsCreated: updatedTickets });
         }),

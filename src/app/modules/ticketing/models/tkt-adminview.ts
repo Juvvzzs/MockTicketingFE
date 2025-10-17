@@ -13,3 +13,16 @@ export interface TktAdminview {
     statusClass?: string;
     priorityClass?: string;
 }
+ {
+//      "TicketID": "TKT-005",
+//      "ClientEIC": "EMP-0001",
+//      "ClientName": "Azaleah Lenihan",
+//      "CatId": "CAT0",
+//      "CategoryName": "CYBERSECURITY THREAT",
+//      "Subject": "TESTING 5",
+//      "Description": "\nTESTING 5\n",
+//      "Status": "CLOSED",
+//      "CreatedDT": "2025-07-15T05:30:30.561Z",
+//      "LastUpdatedDT": "2025-07-15T05:30:30.561Z",
+//      "Priority": "low"
+    }
